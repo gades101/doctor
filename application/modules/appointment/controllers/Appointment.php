@@ -225,6 +225,7 @@ class Appointment extends CI_Controller {
 			$dep=$_SESSION['dep'];
 			if ($this->form_validation->run() === FALSE){
 				$appointment = $this->appointment_model->get_appointments_id($appointment_id);
+				$appointment['appointment_details']=htmlspecialchars($appointment['appointment_details']);
 				$data['appointment']=$appointment;
 				$patient_id = $appointment['patient_id'];
 				$data['curr_patient']=$this->patient_model->get_patient_detail($patient_id);
