@@ -119,8 +119,12 @@ $(window).load(function(){
 	});
 
 });
+
 </script>
 <?php
+	function generate_id(){
+		return substr(uniqid(rand()),3,6);
+	}
 	if(isset($patient)){
 		if($patient['dob'] == NULL){
 			$dob = "";
@@ -132,7 +136,7 @@ $(window).load(function(){
 		$reference_by = $patient['reference_by'];
 	}else{
 		$dob = "";
-		$display_id = "";
+		$display_id = generate_id();
 		$gender= "";
 		$reference_by = "";
 	}
