@@ -119,8 +119,17 @@ $(window).load(function(){
 	});
 
 });
+<<<<<<< HEAD
 </script>
 <?php
+=======
+
+</script>
+<?php
+	function generate_id(){
+		return substr(uniqid(rand()),3,6);
+	}
+>>>>>>> 73d9043dd4e27a9f1afb26c70a87e3bcfb391eee
 	if(isset($patient)){
 		if($patient['dob'] == NULL){
 			$dob = "";
@@ -132,7 +141,11 @@ $(window).load(function(){
 		$reference_by = $patient['reference_by'];
 	}else{
 		$dob = "";
+<<<<<<< HEAD
 		$display_id = "";
+=======
+		$display_id = generate_id();
+>>>>>>> 73d9043dd4e27a9f1afb26c70a87e3bcfb391eee
 		$gender= "";
 		$reference_by = "";
 	}

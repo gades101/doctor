@@ -162,7 +162,12 @@ function openReason(onof) {
 		$appointment_date = $appointment['appointment_date'];
 		$status = $appointment['status'];
 		$appointment_id = $appointment['appointment_id'];
+<<<<<<< HEAD
 		$appointment_details=$appointment['appointment_details'];
+=======
+		if($status=='Cancel'){$appointment_details=$appointment['appointment_details'];}
+		else {$appointment_details="";}
+>>>>>>> 73d9043dd4e27a9f1afb26c70a87e3bcfb391eee
 	}else{
 		//Add Appointment
 		$header = $this->lang->line("new")." ".$this->lang->line("appointment");
@@ -281,12 +286,20 @@ function openReason(onof) {
 							<?php echo form_dropdown('doctor_id', $doctor_detail, $selected_doctor_id,'class="form-control"'); ?>
 						</div>
 					</div>
+<<<<<<< HEAD
+=======
+					<?php if(!isset($appointment)) {?>
+>>>>>>> 73d9043dd4e27a9f1afb26c70a87e3bcfb391eee
 					<div class="col-md-4">
 						<div class="form-group">
 							<label for="appointment_date">Тип прийому</label>
 							<?php echo form_dropdown('status', array('Appointments'=>'Прийом','Consultation'=>'Консультація'), 'Appointments','class="form-control", id="app_status"'); ?>
 						</div>
 					</div>
+<<<<<<< HEAD
+=======
+					<?php }?>
+>>>>>>> 73d9043dd4e27a9f1afb26c70a87e3bcfb391eee
 					<div class="col-md-4">
 						<div class="form-group">
 							<label for="appointment_date"><?php echo $this->lang->line('date');?></label>
@@ -309,6 +322,7 @@ function openReason(onof) {
 						</div>
 					</div>
 					<br/>
+<<<<<<< HEAD
 					<div class="col-md-12" id='mform_details' <?php if ($status!='Cancel'){echo "style='display: none'";}?> />
 						<div class="form-group">
 							<label for="details_text">Причина скасування</label>
@@ -318,14 +332,32 @@ function openReason(onof) {
 					</div>
 					<br/>
 
+=======
+					<?php if (isset($appointment)){?>
+					<div class="col-md-12" id='mform_details'  <?php if ($status!='Cancel'){echo "style='display: none'";}?> >
+						<div class="form-group">
+							<label for="details_text">Причина скасування</label>
+							<input type="text" name="appointment_details" id="details_text" value=" <?=$appointment_details ?>" class="form-control"/>
+							<?php echo form_error('end_time','<div class="alert alert-danger">','</div>'); ?>
+						</div>
+					</div>		
+					<?php }?>
+>>>>>>> 73d9043dd4e27a9f1afb26c70a87e3bcfb391eee
 					<div class="col-md-12">
 						<div class="form-group">
 							<button class="btn btn-primary" type="submit" name="submit" /><?php echo $this->lang->line('save');?></button>
 						</div>
 					</div>
+<<<<<<< HEAD
 	
 					<?php echo form_close() ?>
 
+=======
+
+					<?php echo form_close() ?>
+					</br>
+					<?php if (isset($appointment)){?>
+>>>>>>> 73d9043dd4e27a9f1afb26c70a87e3bcfb391eee
 					<div id="cancel_details" style="display:none">
 						<?php echo form_open("appointment/change_status/" . $appointment_id . "/Cancel" ) ?>
 							<div class="col-md-12">
@@ -340,6 +372,7 @@ function openReason(onof) {
 						<?php echo form_close() ?>
 						</br>
 					</div>	
+<<<<<<< HEAD
 					
 					<br/>
 					<div class="col-md-12" id="button_panel">
@@ -349,6 +382,17 @@ function openReason(onof) {
 						
 						<?php if ($status != 'Appointment') { ?>
 							<a class="btn btn-primary" href="<?=base_url() . "index.php/appointment/change_status/" . $appointment_id . "/Appointment";?>" ><?php echo $this->lang->line('appointment');?></a>
+=======
+					<?php }?>
+					
+					<div class="col-md-12" id="button_panel">
+						<div class="form-group">
+							<a class="btn btn-primary" href="<?=base_url() . "index.php/appointment/index/".$dep;?>"><?=$this->lang->line('back_to_app');?></a>				
+					<?php if(isset($appointment)){ ?>
+						
+						<?php if ($status != 'Appointments') { ?>
+							<a class="btn btn-primary" href="<?=base_url() . "index.php/appointment/change_status/" . $appointment_id . "/Appointments";?>" ><?php echo $this->lang->line('appointment');?></a>
+>>>>>>> 73d9043dd4e27a9f1afb26c70a87e3bcfb391eee
 						<?php } ?>
 						<?php if ($status != 'Cancel') { ?>
 							<span class="btn btn-primary" onclick=openReason(1)><?php echo $this->lang->line('cancel')." ".$this->lang->line('appointment');?></span>
@@ -360,14 +404,29 @@ function openReason(onof) {
 						<?php if ($status != 'Consultation') { ?>
 							<a class="btn btn-primary" href="<?=base_url() . "index.php/appointment/change_status/" . $appointment_id . "/Consultation";?>">Консультація</a>
 						<?php } ?>
+<<<<<<< HEAD
 					<?php } ?>
 					<?php if (!isset($doctor)) { ?>
 						<a class="btn btn-danger" href="<?=base_url() . "index.php/appointment/del/" . $appointment_id;?>">Видалити запис</a>	
 					<?php } ?>
+=======
+						<?php if (!isset($doctor)) { ?>
+							<a class="btn btn-danger" href="<?=base_url() . "index.php/appointment/del/" . $appointment_id;?>">Видалити запис</a>	
+						<?php } ?>
+						
+					<?php } ?>
+
+>>>>>>> 73d9043dd4e27a9f1afb26c70a87e3bcfb391eee
 						</div>
 					</div>
 
 
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> 73d9043dd4e27a9f1afb26c70a87e3bcfb391eee
 				</div>
 			</div>
 		</div>

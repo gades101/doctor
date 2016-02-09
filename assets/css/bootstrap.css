@@ -6355,8 +6355,12 @@ button.close {
     display: none !important;
   }
 }
+<<<<<<< HEAD
 .appoint{border: 1px solid white;}
 .appoint a{overflow: hidden; padding-left: 5px}
 .appDoc {min-width: 115px;}
 .appTime {width: 30px;}
 /*# sourceMappingURL=bootstrap.css.map */
+=======
+/*# sourceMappingURL=bootstrap.css.map */
+>>>>>>> 73d9043dd4e27a9f1afb26c70a87e3bcfb391eee
