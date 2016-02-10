@@ -118,11 +118,25 @@ $(window).load(function(){
 		calculate_age();
 	});
 
-});
-</script>
-<?php
 
+	
+});
+
+function displayPage(page_num){
+	if (page_num==1){
+		$('#page_1").show();
+		$('#page_2").hide();
+	}
+	if (page_num==2){
+		$('#page_2").show();
+		$('#page_1").hide();
+	}
+
+}
 </script>
+
+
+
 <?php
 	function generate_id(){
 		return substr(uniqid(),6,6);
@@ -180,8 +194,11 @@ $(window).load(function(){
 			<div class="panel panel-primary">
 				<div class="panel-heading">
 					<?php echo $this->lang->line('patient');?>
+					<button class="btn btn-danger" onclick=displayPage(1) />Особисті дані</button>
+					
+
 				</div>
-				<div class="panel-body">
+				<div id="page_1" class="panel-body">
 					<?php if (isset($patient_id)) {?>
 					<?php echo form_open_multipart('patient/edit/'.$patient_id.'/'.$called_from) ?>
 					<?php }else{?>
@@ -316,8 +333,30 @@ $(window).load(function(){
 					</div>
 					<?php echo form_close(); ?>
 				</div>
+				
+				<div id="page_2" class="table-responsive"  style='position:relative;'>
+					<table id="patient_apps" class="table table-condensed table-striped table-bordered table-hover dataTable no-footer"  >
+						<thead>
+							<tr>
+								<th class='appTime'>Дата прийому</th>
+								<th class='docAppTable'>Терапевт</th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php {
+								foreach ($appointments as $appointment) {
+										echo '<tr>'.'<td>'.$appointment['appointment_date'].'</td>'.'<td>'.$appointment['name'].'</td>'.'</tr>';
+								}
+							}
+							?>
+						</tbody>
+					</table>
+				</div>
+				
+				
 			</div>
 		</div>
+
 	</div>
 </div>
 
@@ -325,21 +364,6 @@ $(window).load(function(){
 
 
 
-	<div class="table-responsive"  style='position:relative;'>
-		<table id="patient_apps" class="table table-condensed table-striped table-bordered table-hover dataTable no-footer"  >
-			<thead>
-				<tr>
-					<th class='appTime'>Дата прийому</th>
-					<th class='docAppTable'>Терапевт</th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php {
-					foreach ($appointments as $appointment) {
-							echo '<tr>'.'<td>'.$appointment['appointment_date'].'</td>'.'<td>'.$appointment['name'].'</td>'.'</tr>';
-					}
-				}
-				?>
-			</tbody>
-		</table>
-	</div>
+		
+
+
