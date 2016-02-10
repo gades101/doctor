@@ -54,11 +54,9 @@ class Patient extends CI_Controller {
     }
     
     
-    public function return_apps(){
-		
-    
-    
-    
+    public function patient_ajax_info($patient_id,$page_num=NULL){
+		$appointments=$this->appointment_model->get_all_appointments_by_patient($patient_id);
+		echo json_encode($appointments);
     }
 	/** File Upload for Patient Profile Image */
 	function do_upload() {
@@ -100,7 +98,6 @@ class Patient extends CI_Controller {
 				$data['address'] = $this->contact_model->get_contact_address($contact_id);
 				$data['emails'] = $this->contact_model->get_contact_email($contact_id);
 				$data['def_dateformate'] = $this->settings_model->get_date_formate();
-				$data['appointments']=$this->appointment_model->get_all_appointments_by_patient($patient_id);
 				$this->load->view('templates/header');
 				$this->load->view('templates/menu');
 				$this->load->view('form', $data);

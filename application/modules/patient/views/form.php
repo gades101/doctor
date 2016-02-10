@@ -1,4 +1,6 @@
 <script type="text/javascript">
+var page_2=false;
+
 function readURL(input) {
 	if (input.files && input.files[0]) {//Check if input has files.
 		var reader = new FileReader(); //Initialize FileReader.
@@ -124,14 +126,37 @@ $(window).load(function(){
 
 function displayPage(page_num){
 	if (page_num==1){
-		$('#page_1").show();
-		$('#page_2").hide();
+		$("#page_1").show();
+		$("#page_2").hide();
 	}
 	if (page_num==2){
-		$('#page_2").show();
-		$('#page_1").hide();
-	}
+		$("#page_2").show();
+		$("#page_1").hide();
+		if(page_2!=true){
+			page_2=true;
+			$.ajax({
+				type: "POST",
+				url: "<?php echo base_url(); ?>index.php/patient/patient_ajax_info/<?php echo $patient_id; ?>/"+page_num,
+				dataType: "json",		
+				success: function(data){
+					page_build(page_num,data);
+				}
+			});		
+		
+		
+		}
+	}	
 
+}
+function page_build(page_num,data){
+	if (page_num==2){
+		var tab=$('#page_2_tbody');
+		data.forEach(function(item){
+						console.log(item);
+			var row=$('<tr></tr>').append($('<td></td>').text(item.name)).append($('<td></td>').text(item.appointment_date));
+			tab.append(row);
+		});
+	}
 }
 </script>
 
@@ -195,7 +220,7 @@ function displayPage(page_num){
 				<div class="panel-heading">
 					<?php echo $this->lang->line('patient');?>
 					<button class="btn btn-danger" onclick=displayPage(1) />Особисті дані</button>
-					
+					<button class="btn btn-danger" onclick=displayPage(2) />Прийоми</button>					
 
 				</div>
 				<div id="page_1" class="panel-body">
@@ -338,16 +363,17 @@ function displayPage(page_num){
 					<table id="patient_apps" class="table table-condensed table-striped table-bordered table-hover dataTable no-footer"  >
 						<thead>
 							<tr>
-								<th class='appTime'>Дата прийому</th>
-								<th class='docAppTable'>Терапевт</th>
+								<th class='docAppTable'style='width:50%'>Терапевт</th>
+								<th class='appTime' style='width:50%'>Дата прийому</th>
+
 							</tr>
 						</thead>
-						<tbody>
-							<?php {
+						<tbody id="page_2_tbody">
+							<?php /*{
 								foreach ($appointments as $appointment) {
-										echo '<tr>'.'<td>'.$appointment['appointment_date'].'</td>'.'<td>'.$appointment['name'].'</td>'.'</tr>';
+										echo '<tr>'.'<td>'.$appointment['name'].'</td>'.'<td>'.$appointment['appointment_date'].'</td>'.'</tr>';
 								}
-							}
+							}*/
 							?>
 						</tbody>
 					</table>
