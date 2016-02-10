@@ -123,7 +123,7 @@ $(window).load(function(){
 </script>
 <?php
 	function generate_id(){
-		return substr(uniqid(rand()),3,6);
+		return substr(uniqid(rand()),6,6);
 	}
 	if(isset($patient)){
 		if($patient['dob'] == NULL){
@@ -214,7 +214,8 @@ $(window).load(function(){
 						<div class="col-md-6">
 							<div class="form-group">
 								<label for="display_id"><?php echo $this->lang->line('patient_id');?></label>
-								<input type="input" name="display_id" class="form-control" value="<?php echo $display_id; ?>"/>
+								<input type="input" name="display_id" class="form-control" value="<?php echo $display_id;?>" style="display:none" c/>
+								<input type="input" name="display_blocked_id" class="form-control" value="<?php echo $display_id; ?>" disabled=true/>
 								<?php echo form_error('display_id','<div class="alert alert-danger">','</div>'); ?>
 							</div>
 							<!--<div class="form-group">
@@ -317,3 +318,26 @@ $(window).load(function(){
 		</div>
 	</div>
 </div>
+
+
+
+
+
+	<div class="table-responsive"  style='position:relative;'>
+		<table id="patient_apps" class="table table-condensed table-striped table-bordered table-hover dataTable no-footer"  >
+			<thead>
+				<tr>
+					<th class='appTime'>Дата прийому</th>
+					<th class='docAppTable'>Терапевт</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php {
+					foreach ($appointments as $appointment) {
+							echo '<tr>'.'<td>'.$appointment['appointment_date'].'</td>'.'<td>'.$appointment['name'].'</td>'.'</tr>';
+					}
+				}
+				?>
+			</tbody>
+		</table>
+	</div>

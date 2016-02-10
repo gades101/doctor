@@ -91,6 +91,7 @@ class Patient extends CI_Controller {
 				$data['address'] = $this->contact_model->get_contact_address($contact_id);
 				$data['emails'] = $this->contact_model->get_contact_email($contact_id);
 				$data['def_dateformate'] = $this->settings_model->get_date_formate();
+				$data['appointments']=$this->appointment_model->get_all_appointments_by_patient($patient_id);
 				$this->load->view('templates/header');
 				$this->load->view('templates/menu');
 				$this->load->view('form', $data);

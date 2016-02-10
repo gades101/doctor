@@ -164,6 +164,17 @@ class Appointment_model extends CI_Model {
         }
     }
 
+    function get_all_appointments_by_patient($patient_id){
+		$sql="SELECT ck_appointments.appointment_date,ck_users.name FROM ck_appointments,ck_users WHERE ck_appointments.patient_id=? and ck_appointments.userid=ck_users.userid";
+
+        $query = $this->db->query($sql,array('patient_id' =>$patient_id));
+        $row = $query->num_rows();
+        if ($row > 0) {
+            return $query->result_array();
+        } else {
+            return FALSE;
+        }
+    }
     function delete_appointment($appointment_id){
         $this->db->delete('appointments', array('appointment_id' => $appointment_id));
     }
