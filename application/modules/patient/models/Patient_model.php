@@ -19,7 +19,7 @@ class Patient_model extends CI_Model {
     function insert_patient($contact_id) {
         $data['contact_id'] = $contact_id;
         $data['patient_since'] = date("Y-m-d");
-        $data['display_id'] = "";
+        $data['display_id'] = $this->input->post('display_id');
         $data['reference_by'] = $this->input->post('reference_by');
 		$data['gender'] = $this->input->post('gender');
 		if($this->input->post('dob')){
@@ -29,7 +29,7 @@ class Patient_model extends CI_Model {
         $this->db->insert('patient', $data);
         $p_id = $this->db->insert_id();
 
-        $this->display_id($p_id);
+        //$this->display_id($p_id);
         return $p_id;
     }
     function display_id($id) {
