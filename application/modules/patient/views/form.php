@@ -119,17 +119,14 @@ $(window).load(function(){
 	});
 
 });
-<<<<<<< HEAD
 </script>
 <?php
-=======
 
 </script>
 <?php
 	function generate_id(){
-		return substr(uniqid(rand()),3,6);
+		return substr(uniqid(),6,6);
 	}
->>>>>>> 73d9043dd4e27a9f1afb26c70a87e3bcfb391eee
 	if(isset($patient)){
 		if($patient['dob'] == NULL){
 			$dob = "";
@@ -141,11 +138,7 @@ $(window).load(function(){
 		$reference_by = $patient['reference_by'];
 	}else{
 		$dob = "";
-<<<<<<< HEAD
-		$display_id = "";
-=======
 		$display_id = generate_id();
->>>>>>> 73d9043dd4e27a9f1afb26c70a87e3bcfb391eee
 		$gender= "";
 		$reference_by = "";
 	}
@@ -223,7 +216,7 @@ $(window).load(function(){
 						<div class="col-md-6">
 							<div class="form-group">
 								<label for="display_id"><?php echo $this->lang->line('patient_id');?></label>
-								<input type="input" name="display_id" class="form-control" value="<?php echo $display_id; ?>"/>
+								<input type="input" name="display_id" class="form-control" value="<?php echo $display_id; ?>" disabled=true/>
 								<?php echo form_error('display_id','<div class="alert alert-danger">','</div>'); ?>
 							</div>
 							<!--<div class="form-group">

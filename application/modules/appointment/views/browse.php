@@ -279,17 +279,9 @@ function check_doctor_availability($i,$doctor_id){
 
 
 ?>
-<<<<<<< HEAD
-
+		<?php $day_date=date('d', strtotime($day . "-" . $month . "-" . $year));?>
 		<?php $day = date('l', strtotime($day . "-" . $month . "-" . $year));?>
-		<?php $day_date=date('d', strtotime($day . "-" . $month . "-" . $year));?>
-=======
-		<?php $day_date=date('d', strtotime($day . "-" . $month . "-" . $year));?>
-		<?php //$day = date('l', strtotime($day . "-" . $month . "-" . $year));
-		?>
 
-		
->>>>>>> 73d9043dd4e27a9f1afb26c70a87e3bcfb391eee
                     </div>
                     <div class="panel-body">
 					<?php
@@ -327,13 +319,10 @@ function check_doctor_availability($i,$doctor_id){
 										<tr>
 											<th><?=inttotime12( $i ,$time_format);?></th><!-- Display the Time -->
 											<td id="app<?=$i*100;?>" class="appointments"><a href='<?=base_url() . "index.php/appointment/add/"  . $year . "/" . $month . "/" . $day_date . "/" . $time[0] . "/" . $time[1] . "/Appointments" ?>' class="add_appointment"></a></div></td>
-<<<<<<< HEAD
 											<td id="wai<?=$i*100;?>" class="waiting"><a href='<?=base_url() . "index.php/appointment/add/" .  $year . "/" . $month . "/" . $day . "/" . $day_date . "/" . $time[0] . "/" . $time[1] . "/Waiting" ?>' class="add_appointment" ></a></div></td>
 											<td id="con<?=$i*100;?>" class="consultation"><a href='<?=base_url() . "index.php/appointment/add/" . $year . "/" . $month . "/" . $day . "/" . $day_date . "/" . $time[0] . "/" . $time[1] . "/Consultation" ?>' class="add_appointment" ></a></div></td>
-=======
 											<td id="wai<?=$i*100;?>" class="waiting"><a href='<?=base_url() . "index.php/appointment/add/" .  $year . "/" . $month . "/" . $day_date . "/" . $time[0] . "/" . $time[1] . "/Waiting" ?>' class="add_appointment" ></a></div></td>
 											<td id="con<?=$i*100;?>" class="consultation"><a href='<?=base_url() . "index.php/appointment/add/" . $year . "/" . $month . "/" . $day . "/" . $time[0] . "/" . $time[1] . "/Consultation" ?>' class="add_appointment" ></a></div></td>
->>>>>>> 73d9043dd4e27a9f1afb26c70a87e3bcfb391eee
 											<td id="com<?=$i*100;?>" class="complete"></td>
 											<td id="can<?=$i*100;?>" class="cancel"></td>
 										</tr>
@@ -438,18 +427,15 @@ function check_doctor_availability($i,$doctor_id){
 										default:
 											break;
 									}
-<<<<<<< HEAD
 						?>
 
 									<div id="<?=$appointment_id;?>" start_position="<?=$start_position;?>" end_position="<?=$end_position;?>" appointment_column="<?=$appointment_column;?>"  style="display:none;" >
 										<a href='<?=$href;?>' title="<?=$appointment['title'];?>" class="btn square-btn-adjust <?=$class;?> " style="height:100%;width: <?=$d_width?>;" ><?= $appointment_title;?></a><?php if ($nxt){?><a href='<?=$nextstatus;?>' class="btn square-btn-adjust <?=$class;?> " style="height:100%;width:20%;"><i class="fa fa-arrow-circle-right"></i></a><?php } ?><?php if($ca){ ?><a href='<?=$cancelapp;?>'class="btn square-btn-adjust <?=$class;?>" style="height:100%;width:19%;"><i class="fa fa-times"></i></a><?php } ?>
-=======
 													
 						?>
 
 									<div id="<?=$appointment_id;?>" start_position="<?=$start_position;?>" end_position="<?=$end_position;?>" appointment_column="<?=$appointment_column;?>"  style="display:none;" >
 										<a href='<?=$href;?>' title="<?=$appointment['title'];?>" class="btn square-btn-adjust <?=$class;?>" style="height:100%;width:<?=$d_width;?>"; ><?= $appointment_title;?></a><?php if ($nxt){?><a href='<?=$nextstatus;?>' class="btn square-btn-adjust <?=$class;?> " style="height:100%;width:20%;"><i class="fa fa-arrow-circle-right"></i></a><?php } ?><?php if($ca){ ?><a href='<?=$cancelapp;?>'class="btn square-btn-adjust <?=$class;?>" style="height:100%;width:19%;"><i class="fa fa-times"></i></a><?php } ?>
->>>>>>> 73d9043dd4e27a9f1afb26c70a87e3bcfb391eee
 									</div>
 									<script>
 										//$(window).load(function() {

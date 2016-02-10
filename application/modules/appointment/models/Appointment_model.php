@@ -98,10 +98,8 @@ class Appointment_model extends CI_Model {
 		$data['title'] = $title;
 		$data['userid'] = $this->input->post('doctor_id');
 
-<<<<<<< HEAD
-=======
+
 		$data['appointment_details'] = $this->input->post('appointment_details');
->>>>>>> 73d9043dd4e27a9f1afb26c70a87e3bcfb391eee
 		$this->db->where('appointment_id', $appointment_id);
 		$this->db->update('appointments', $data);
 	}

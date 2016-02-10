@@ -44,12 +44,21 @@ class Patient extends CI_Controller {
 		if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
             redirect('login/index');
         } else {
+        $this->patient_model->update_pat_ids();
             $data['patients'] = $this->patient_model->find_patient();
             $this->load->view('templates/header');
             $this->load->view('templates/menu');
             $this->load->view('patient/browse',$data);
             $this->load->view('templates/footer');
         }
+    }
+    
+    
+    public function return_apps(){
+		
+    
+    
+    
     }
 	/** File Upload for Patient Profile Image */
 	function do_upload() {

@@ -225,10 +225,8 @@ class Appointment extends CI_Controller {
 			$dep=$_SESSION['dep'];
 			if ($this->form_validation->run() === FALSE){
 				$appointment = $this->appointment_model->get_appointments_id($appointment_id);
-<<<<<<< HEAD
-=======
+
 				$appointment['appointment_details']=htmlspecialchars($appointment['appointment_details']);
->>>>>>> 73d9043dd4e27a9f1afb26c70a87e3bcfb391eee
 				$data['appointment']=$appointment;
 				$patient_id = $appointment['patient_id'];
 				$data['curr_patient']=$this->patient_model->get_patient_detail($patient_id);
@@ -240,10 +238,7 @@ class Appointment extends CI_Controller {
 				$data['def_timeformate'] = $this->settings_model->get_time_formate();
 				$data['time_interval'] = $this->settings_model->get_time_interval();
 				$data['dep']=$dep;
-<<<<<<< HEAD
-				
-=======
->>>>>>> 73d9043dd4e27a9f1afb26c70a87e3bcfb391eee
+
 
 				$this->load->view('templates/header');
 				$this->load->view('templates/menu');
@@ -276,10 +271,7 @@ class Appointment extends CI_Controller {
          $month = date("m", strtotime($appointment_date));
          $day = date("d", strtotime($appointment_date));
 			$this->appointment_model->delete_appointment($appointment_id);
-<<<<<<< HEAD
-=======
-			file_put_contents('t1',print_r($year.$month.$day, true));
->>>>>>> 73d9043dd4e27a9f1afb26c70a87e3bcfb391eee
+
          $dep=$_SESSION['dep'];
 			redirect('appointment/index/'.$dep.'/'.$year.'/'. $month.'/'.$day);
         }
@@ -315,17 +307,13 @@ class Appointment extends CI_Controller {
     }
 
 	function change_status($appointment_id = NULL,$new_status = NULL) {
-<<<<<<< HEAD
 
-=======
->>>>>>> 73d9043dd4e27a9f1afb26c70a87e3bcfb391eee
 		if ( $this->is_session_started() === FALSE ){
 			session_start();
 		}
         if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
             redirect('login/index');
         }else{
-<<<<<<< HEAD
 				$this->appointment_model->change_status($appointment_id,$new_status);
 				$appointment = $this->appointment_model->get_appointment_from_id($appointment_id);
 				$appointment_date = $appointment['appointment_date'];
@@ -333,7 +321,6 @@ class Appointment extends CI_Controller {
 					$month = date("m", strtotime($appointment_date));
 					$day = date("d", strtotime($appointment_date));
 				redirect('appointment/index/'.$_SESSION['dep'].'/'.$year.'/'.$month.'/'.$day);
-=======
 			$this->appointment_model->change_status($appointment_id,$new_status);
 			$appointment = $this->appointment_model->get_appointment_from_id($appointment_id);
 			$appointment_date = $appointment['appointment_date'];
@@ -342,7 +329,6 @@ class Appointment extends CI_Controller {
             $day = date("d", strtotime($appointment_date));
 			redirect('appointment/index/'.$_SESSION['dep'].'/'.$year.'/'.$month.'/'.$day);
 
->>>>>>> 73d9043dd4e27a9f1afb26c70a87e3bcfb391eee
         }
     }
 

@@ -88,6 +88,19 @@ class Patient_model extends CI_Model {
         else
             return 0;
     }
+    
+   function update_pat_ids(){
+
+	$this->db->select('patient_id');
+   $query=$this->db->get('patient');
+   foreach ($query->result_array() as $row){
+		$display_id=array('display_id'=>substr(uniqid(),6,6));
+		$this->db->update('patient',$display_id,array('patient_id'=>$row['patient_id']));
+   
+   }
+   //$this->db->query("update patient set display_id=$display_id where patient_id=(select min(id) from foo where id > 4"));
+		//$this->db->update('patient',array('display_id'=>substr(uniqid(),6,6)));
+   }
     public function get_previous_visits($patient_id) {
         $level = $_SESSION['category'];
         if($level == 'Doctor'){
