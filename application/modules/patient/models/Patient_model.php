@@ -660,6 +660,11 @@ class Patient_model extends CI_Model {
         $data['display_id'] = $this->input->post('display_id');
         $this->db->update('patient', $data, array('patient_id' => $patient_id));
     }
+	public function update_diagnosis(){
+		$patient_id = $this->input->post('patient_id');
+        $data['diagnosis'] = $this->input->post('diagnosis');
+        $this->db->update('patient', $data, array('patient_id' => $patient_id));
+    }
 	function get_balance_amount($bill_id) {
 		//Fetch Patient ID from bill id
 		$query = $this->db->get_where('bill', array('bill_id' => $bill_id));

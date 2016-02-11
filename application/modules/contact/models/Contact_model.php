@@ -68,6 +68,7 @@ class Contact_model extends CI_Model {
 		$data['last_name']    = $this->input->post('last_name');
 		$data['phone_number'] = $this->input->post('phone_number');
 		$data['display_name'] = $this->input->post('display_name');
+		$data['details'] = $this->input->post('details');
 		$data['email'] = $this->input->post('email');
 		if($name != NULL && $name != "" ){
 			$data['contact_image'] = 'profile_picture/'. $name;
@@ -89,7 +90,6 @@ class Contact_model extends CI_Model {
 		$contact_id               = $this->input->post('contact_id');
 		$data['type']             = $this->input->post('type');
 		$data['address_line_1']   = $this->input->post('address_line_1');
-		$data['address_line_2']   = $this->input->post('address_line_2');
 		$data['city']             = $this->input->post('city');
 		$data['state ']           = $this->input->post('state');
 		$data['postal_code']      = $this->input->post('postal_code');

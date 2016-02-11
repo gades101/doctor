@@ -142,22 +142,45 @@ function displayPage(page_num){
 					page_build(page_num,data);
 				}
 			});		
-		
-		
 		}
 	}	
 
 }
 function page_build(page_num,data){
 	if (page_num==2){
-		var tab=$('#page_2_tbody');
+		var tab=$('#page_2_tbody'),link,field_class;
 		data.forEach(function(item){
+			link="<?=base_url();?>"+"index.php/appointment/edit_appointment/"+item.appointment_id;
+			switch (item.status){
+				case "Appointments":
+					field_class="btn-primary";
+					break;
+				case 'Consultation':
+					field_class = "btn-danger";
+					break;
+				case 'Complete':
+					field_class = "btn-success";
+					break;
+				case 'Cancel':
+					field_class = "btn-info";
+					break;
+				case 'Waiting':
+					field_class = "warning";
+					break;
+				default:
+					break;
+			}
 						console.log(item);
-			var row=$('<tr></tr>').append($('<td></td>').text(item.name)).append($('<td></td>').text(item.appointment_date));
+			var row=$('<tr></tr>').append($('<td></td>').text(item.name).addClass(field_class).click(function(){goToApp(link);})).append($('<td></td>').text(item.appointment_date));
 			tab.append(row);
 		});
 	}
 }
+function goToApp(link){
+	window.open(link);
+	//document.location.href=link;
+}
+
 </script>
 
 
@@ -175,11 +198,14 @@ function page_build(page_num,data){
 		$display_id = $patient['display_id'];
 		$gender=$patient['gender'];
 		$reference_by = $patient['reference_by'];
+		$diagnosis = $patient['diagnosis'];
+
 	}else{
 		$dob = "";
 		$display_id = generate_id();
 		$gender= "";
 		$reference_by = "";
+		$diagnosis = "";
 	}
 	if(isset($contacts)){
 		$contact_id = $contacts['contact_id'];
@@ -191,7 +217,7 @@ function page_build(page_num,data){
 		$contact_email = $contacts['email'];
 		$contact_contact_image = $contacts['contact_image'];
 		$contact_address_line_1 = $contacts['address_line_1'];
-		$contact_address_line_2 = $contacts['address_line_2'];
+		$details = $contacts['details'];
 		$contact_city = $contacts['city'];
 		$contact_state = $contacts['state'];
 		$contact_postal_code = $contacts['postal_code'];
@@ -206,7 +232,7 @@ function page_build(page_num,data){
 		$contact_email = NULL;
 		$contact_contact_image = NULL;
 		$contact_address_line_1 = NULL;
-		$contact_address_line_2 = NULL;
+		$details = NULL;
 		$contact_city = NULL;
 		$contact_state = NULL;
 		$contact_postal_code = NULL;
@@ -218,9 +244,8 @@ function page_build(page_num,data){
 		<div class="col-md-12">
 			<div class="panel panel-primary">
 				<div class="panel-heading">
-					<?php echo $this->lang->line('patient');?>
-					<button class="btn btn-danger" onclick=displayPage(1) />Особисті дані</button>
-					<button class="btn btn-danger" onclick=displayPage(2) />Прийоми</button>					
+					<span class="tblHead" onclick=displayPage(1) style="min-width:20%"/>Особисті дані пацієнта</span>
+					<span class="tblHead" onclick=displayPage(2) />Прийоми</span>					
 
 				</div>
 				<div id="page_1" class="panel-body">
@@ -296,9 +321,18 @@ function page_build(page_num,data){
 							<div class="form-group">
 								<label for="email"><?php echo $this->lang->line('email');?></label>
 								<input type="input" name="email" class="form-control" value="<?php  echo $contact_email; ?>"/><br/>
-								<?php echo form_error('email','<div class="alert alert-danger">','</div>'); ?>
+								<?php echo form_error('email','<divdisplay_id class="alert alert-danger">','</div>'); ?>
 							</div>
-
+							<div class="form-group">
+								<label for="type">Причина звернення/діагноз</label>
+								<input type="input" class="form-control" name="diagnosis" value="<?php echo $diagnosis; ?>"/>
+								<?php echo form_error('diagnosis','<div class="alert alert-danger">','</div>'); ?>
+							</div>
+							<div class="form-group">
+								<label for="type">Примітки</label>
+								<input type="input" class="form-control" name="details" value="<?php echo $details; ?>"/>
+								<?php echo form_error('details','<div class="alert alert-danger">','</div>'); ?>
+							</div>
 							<div class="form-group">
 								<button class="btn btn-primary" type="submit" name="submit" /><?php echo $this->lang->line('save');?></button>
 								<a class="btn btn-primary" href="<?= site_url('patient/index');?>"  /><?php echo $this->lang->line('back');?></a>
@@ -329,11 +363,6 @@ function page_build(page_num,data){
 								<input type="input"  class="form-control" name="address_line_1" value="<?php echo $contact_address_line_1; ?>"/>
 								<?php echo form_error('address_line_1','<div class="alert alert-danger">','</div>'); ?>
 							</div>
-							<!--<div class="form-group">
-								<label for="type"><?php echo $this->lang->line('address') . " " . $this->lang->line('line2');?></label>
-								<input type="input" class="form-control" name="address_line_2" value="<?php echo $contact_address_line_2; ?>"/>
-								<?php echo form_error('address_line_2','<div class="alert alert-danger">','</div>'); ?>
-							</div>-->
 							<div class="form-group">
 								<label for="city"><?php echo $this->lang->line('city');?></label>
 								<input type="input" class="form-control" name="city" value="<?php echo $contact_city; ?>"/>

@@ -95,9 +95,10 @@ class Patient extends CI_Controller {
 				$data['patient_id'] = $patient_id;
 				$data['patient'] = $this->patient_model->get_patient_detail($patient_id);
 				$data['contacts'] = $this->contact_model->get_contacts($contact_id);
-				$data['address'] = $this->contact_model->get_contact_address($contact_id);
+				//$data['address'] = $this->contact_model->get_contact_address($contact_id);
 				$data['emails'] = $this->contact_model->get_contact_email($contact_id);
 				$data['def_dateformate'] = $this->settings_model->get_date_formate();
+				//file_put_contents('t1',print_r($data,true));
 				$this->load->view('templates/header');
 				$this->load->view('templates/menu');
 				$this->load->view('form', $data);
@@ -110,7 +111,7 @@ class Patient extends CI_Controller {
 				if(isset($file_upload['error']) && $file_upload['error']!='<p>Ви не обрали файл для завантаження.</p>'){
 					$contact_id = $this->patient_model->get_contact_id($patient_id);
 					$data['patient_id'] = $patient_id;
-					$data['patient'] = $this->patient_model->get_patient_detail($patient_id);
+					$data['patient'] = $this->patient_model->get_patient_diagnosis($patient_id);
 					$data['contacts'] = $this->contact_model->get_contacts($contact_id);
 					$data['address'] = $this->contact_model->get_contact_address($contact_id);
 					$data['emails'] = $this->contact_model->get_contact_email($contact_id);
@@ -132,7 +133,8 @@ class Patient extends CI_Controller {
 						$this->contact_model->update_address();
 						$this->patient_model->update_reference_by($patient_id);
 						$this->patient_model->update_patient_data($patient_id);
-						$this->patient_model->update_display_id();
+						//$this->patient_model->update_display_id();
+						$this->patient_model->update_diagnosis();
 						if($called_from =="patient"){
 							$this->index();
 						}else{
