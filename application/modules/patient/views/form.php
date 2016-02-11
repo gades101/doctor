@@ -148,9 +148,10 @@ function displayPage(page_num){
 }
 function page_build(page_num,data){
 	if (page_num==2){
-		var tab=$('#page_2_tbody'),link,field_class;
+		var tab=$('#page_2_tbody'),field_class;
+		var i=1;
 		data.forEach(function(item){
-			link="<?=base_url();?>"+"index.php/appointment/edit_appointment/"+item.appointment_id;
+			var link="<?=base_url();?>"+"index.php/appointment/edit_appointment/"+item.appointment_id;
 			switch (item.status){
 				case "Appointments":
 					field_class="btn-primary";
@@ -164,15 +165,17 @@ function page_build(page_num,data){
 				case 'Cancel':
 					field_class = "btn-info";
 					break;
-				case 'Waiting':
+				/*case 'Waiting':
 					field_class = "warning";
-					break;
+					break;*/
 				default:
 					break;
 			}
 						console.log(item);
-			var row=$('<tr></tr>').append($('<td></td>').text(item.name).addClass(field_class).click(function(){goToApp(link);})).append($('<td></td>').text(item.appointment_date));
+			var row=$('<tr></tr>').append($('<td></td>').text(i)).append($('<td></td>').addClass(field_class)).append($('<td></td>').append($('<a></a>').text(item.appointment_date).attr("href",link)))
+			.append($('<td></td>').text(item.start_time)).append($('<td></td>').text(item.name));
 			tab.append(row);
+			i++;
 		});
 	}
 }
@@ -198,7 +201,7 @@ function goToApp(link){
 		$display_id = $patient['display_id'];
 		$gender=$patient['gender'];
 		$reference_by = $patient['reference_by'];
-		$diagnosis = $patient['diagnosis'];
+		$diagnosis = htmlspecialchars($patient['diagnosis']);
 
 	}else{
 		$dob = "";
@@ -217,7 +220,7 @@ function goToApp(link){
 		$contact_email = $contacts['email'];
 		$contact_contact_image = $contacts['contact_image'];
 		$contact_address_line_1 = $contacts['address_line_1'];
-		$details = $contacts['details'];
+		$details = htmlspecialchars($contacts['details']);
 		$contact_city = $contacts['city'];
 		$contact_state = $contacts['state'];
 		$contact_postal_code = $contacts['postal_code'];
@@ -329,11 +332,6 @@ function goToApp(link){
 								<?php echo form_error('diagnosis','<div class="alert alert-danger">','</div>'); ?>
 							</div>
 							<div class="form-group">
-								<label for="type">Примітки</label>
-								<input type="input" class="form-control" name="details" value="<?php echo $details; ?>"/>
-								<?php echo form_error('details','<div class="alert alert-danger">','</div>'); ?>
-							</div>
-							<div class="form-group">
 								<button class="btn btn-primary" type="submit" name="submit" /><?php echo $this->lang->line('save');?></button>
 								<a class="btn btn-primary" href="<?= site_url('patient/index');?>"  /><?php echo $this->lang->line('back');?></a>
 							</div>
@@ -349,15 +347,7 @@ function goToApp(link){
 								<input type="hidden" id="src" name="src" value="<?php echo $contact_contact_image; ?>" />
 								<?php echo form_error('userfile','<div class="alert alert-danger">','</div>'); ?>
 							</div>
-							<div class="form-group">
-								<label for="type"><?php echo $this->lang->line('addresstype');?></label>
-								<select name="type" class="form-control">
-									<option></option>
-									<option value="Home" <?php if ($contacts['type'] == "Home") { echo "selected"; } ?>><?php echo $this->lang->line('home');?></option>
-									<option value="Office" <?php if ($contacts['type'] == "Office") { echo "selected"; } ?>><?php echo $this->lang->line('office');?></option>
-								</select>
-								<?php echo form_error('type','<div class="alert alert-danger">','</div>'); ?>
-							</div>
+							
 							<div class="form-group">
 								<label for="type"><?php echo $this->lang->line('address');?></label>
 								<input type="input"  class="form-control" name="address_line_1" value="<?php echo $contact_address_line_1; ?>"/>
@@ -383,17 +373,25 @@ function goToApp(link){
 								<input type="input" class="form-control" name="country" value="<?php echo $contact_country; ?>"/>
 								<?php echo form_error('country','<div class="alert alert-danger">','</div>'); ?>
 							</div>
+							<div class="form-group">
+								<label for="type">Примітки</label>
+								<input type="input" class="form-control" name="details" value="<?php echo $details; ?>"/>
+								<?php echo form_error('details','<div class="alert alert-danger">','</div>'); ?>
+							</div>
 						</div>
 					</div>
 					<?php echo form_close(); ?>
 				</div>
 				
-				<div id="page_2" class="table-responsive"  style='position:relative;'>
+				<div id="page_2" class="table-responsive"  style='position:relative;display:none;'>
 					<table id="patient_apps" class="table table-condensed table-striped table-bordered table-hover dataTable no-footer"  >
 						<thead>
 							<tr>
-								<th class='docAppTable'style='width:50%'>Терапевт</th>
-								<th class='appTime' style='width:50%'>Дата прийому</th>
+								<th class='appTime'>№</th>
+								<th class=''>Процедура</th>
+								<th class='' >Дата прийому</th>
+								<th class='' >Час прийому</th>
+								<th class=''>Терапевт</th>
 
 							</tr>
 						</thead>

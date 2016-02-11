@@ -166,7 +166,7 @@ class Appointment_model extends CI_Model {
     }
 
 	 function get_all_appointments_by_patient($patient_id){
-			$sql="SELECT a.appointment_id,a.appointment_date,a.status,u.name FROM ck_appointments a,ck_users u WHERE a.patient_id=? and a.userid=u.userid ORDER	
+			$sql="SELECT a.appointment_id,a.appointment_date,a.start_time, a.status,u.name FROM ck_appointments a,ck_users u WHERE a.patient_id=? and a.userid=u.userid ORDER	
 			BY a.appointment_date DESC;";
 			$query = $this->db->query($sql,array('patient_id' =>$patient_id));
 			$row = $query->num_rows();

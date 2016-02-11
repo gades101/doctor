@@ -111,7 +111,7 @@ class Patient extends CI_Controller {
 				if(isset($file_upload['error']) && $file_upload['error']!='<p>Ви не обрали файл для завантаження.</p>'){
 					$contact_id = $this->patient_model->get_contact_id($patient_id);
 					$data['patient_id'] = $patient_id;
-					$data['patient'] = $this->patient_model->get_patient_diagnosis($patient_id);
+					$data['patient'] = $this->patient_model->get_patient_detail($patient_id);
 					$data['contacts'] = $this->contact_model->get_contacts($contact_id);
 					$data['address'] = $this->contact_model->get_contact_address($contact_id);
 					$data['emails'] = $this->contact_model->get_contact_email($contact_id);

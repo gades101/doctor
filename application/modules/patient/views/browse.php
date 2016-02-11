@@ -55,7 +55,7 @@ $( window ).load(function() {
 								<?php } ?>
 								<tr <?php if ($i%2 == 0) { echo "class='even'"; } else { echo "class='odd'"; }?> >
 									<td><?php echo $patient['display_id']; ?></td>
-									<td><a class="btn btn-info btn-sm square-btn-adjust" title="Редагувати" href="<?php echo site_url("patient/edit/" . $patient['patient_id']."/patient"); ?>"><?php echo $patient['first_name'] . " " . $patient['middle_name'] . " " . $patient['last_name'] ?></a></td>
+									<td><a class="btn btn-primary btn-sm square-btn-adjust" title="Редагувати" href="<?php echo site_url("patient/edit/" . $patient['patient_id']."/patient"); ?>"><?php echo $patient['first_name'] . " " . $patient['middle_name'] . " " . $patient['last_name'] ?></a></td>
 									<!--<td><?php echo $patient['display_name']; ?></td>-->
 									<td><?php echo $patient['phone_number']; ?></td>
 									<td><?php echo $patient['reference_by'];?></td>

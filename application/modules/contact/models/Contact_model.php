@@ -41,8 +41,8 @@ class Contact_model extends CI_Model {
 		if($this->input->post('address_line_1') != false){
 			$data['address_line_1'] = $this->input->post('address_line_1');
 		}
-		if($this->input->post('address_line_2') != false){
-			$data['address_line_2'] = $this->input->post('address_line_2');
+		if($this->input->post('details') != false){
+			$data['details'] = $this->input->post('details');
 		}
 		if($this->input->post('city') != false){
 			$data['city'] = $this->input->post('city');
