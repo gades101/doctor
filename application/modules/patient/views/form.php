@@ -201,7 +201,7 @@ function goToApp(link){
 		$display_id = $patient['display_id'];
 		$gender=$patient['gender'];
 		$reference_by = $patient['reference_by'];
-		$diagnosis = htmlspecialchars($patient['diagnosis']);
+		$diagnosis = $patient['diagnosis'];
 
 	}else{
 		$dob = "";
@@ -220,7 +220,7 @@ function goToApp(link){
 		$contact_email = $contacts['email'];
 		$contact_contact_image = $contacts['contact_image'];
 		$contact_address_line_1 = $contacts['address_line_1'];
-		$details = htmlspecialchars($contacts['details']);
+		$details = $contacts['details'];
 		$contact_city = $contacts['city'];
 		$contact_state = $contacts['state'];
 		$contact_postal_code = $contacts['postal_code'];
@@ -286,8 +286,8 @@ function goToApp(link){
 						<div class="col-md-6">
 							<div class="form-group">
 								<label for="display_id"><?php echo $this->lang->line('patient_id');?></label>
-								<input type="input" name="display_id" class="form-control" value="<?php echo $display_id;?>" style="display:none" c/>
-								<input type="input" name="display_blocked_id" class="form-control" value="<?php echo $display_id; ?>" disabled=true/>
+								<input type="hidden" name="display_id" class="form-control" value="<?php echo $display_id;?>" />
+								<div class="form-control"/><?php echo $display_id; ?></div>
 								<?php echo form_error('display_id','<div class="alert alert-danger">','</div>'); ?>
 							</div>
 							<!--<div class="form-group">
@@ -328,7 +328,7 @@ function goToApp(link){
 							</div>
 							<div class="form-group">
 								<label for="type">Причина звернення/діагноз</label>
-								<input type="input" class="form-control" name="diagnosis" value="<?php echo $diagnosis; ?>"/>
+								<textarea class="form-control" name="diagnosis" row='2'/><?php echo $diagnosis; ?></textarea>
 								<?php echo form_error('diagnosis','<div class="alert alert-danger">','</div>'); ?>
 							</div>
 							<div class="form-group">
@@ -375,7 +375,7 @@ function goToApp(link){
 							</div>
 							<div class="form-group">
 								<label for="type">Примітки</label>
-								<input type="input" class="form-control" name="details" value="<?php echo $details; ?>"/>
+								<textarea class="form-control" name="details" rows='3'/><?php echo $details; ?></textarea>
 								<?php echo form_error('details','<div class="alert alert-danger">','</div>'); ?>
 							</div>
 						</div>
@@ -412,11 +412,3 @@ function goToApp(link){
 
 	</div>
 </div>
-
-
-
-
-
-		
-
-
