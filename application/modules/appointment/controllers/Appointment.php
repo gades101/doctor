@@ -12,7 +12,8 @@ class Appointment extends CI_Controller {
         $this->load->model('settings/settings_model');
 		$this->load->model('module/module_model');
 		$this->load->model('menu_model');
-
+		$this->load->model('treatment/treatment_model');
+		
         $this->load->helper('url');
         $this->load->helper('form');
 		$this->load->helper('currency_helper');
@@ -225,9 +226,10 @@ class Appointment extends CI_Controller {
 			$dep=$_SESSION['dep'];
 			if ($this->form_validation->run() === FALSE){
 				$appointment = $this->appointment_model->get_appointments_id($appointment_id);
-
-				$appointment['appointment_details']=htmlspecialchars($appointment['appointment_details']);
+				//$appointment['appointment_details']=htmlspecialchars($appointment['appointment_details']);
 				$data['appointment']=$appointment;
+				$data['treatments']=$this->treatment_model->get_treatments();
+				$data['curr_treatment']=$this->treatment_model->get_edit_treatment($appointment['treatment_id']);
 				$patient_id = $appointment['patient_id'];
 				$data['curr_patient']=$this->patient_model->get_patient_detail($patient_id);
 				$data['patients']=$this->patient_model->get_patient();

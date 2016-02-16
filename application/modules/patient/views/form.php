@@ -171,7 +171,6 @@ function page_build(page_num,data){
 				default:
 					break;
 			}
-						console.log(item);
 			var row=$('<tr></tr>').append($('<td></td>').text(i)).append($('<td></td>').addClass(field_class)).append($('<td></td>').append($('<a></a>').text(item.appointment_date).attr("href",link)))
 			.append($('<td></td>').text(item.start_time)).append($('<td></td>').text(item.name));
 			tab.append(row);

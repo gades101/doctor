@@ -64,8 +64,10 @@ class Appointment_model extends CI_Model {
             $data['title'] = $this->input->post('title');
         }
         $data['patient_id'] = $this->input->post('patient_id');
+		$data['treatment_id'] = $this->input->post('treatment_id');
+		$data['app_note'] = $this->input->post('app_note');
+		
         $patient_id = $this->input->post('patient_id');
-
 
 		//Adding Appintment, so reset the followup date
         if ($patient_id <> NULL) {
@@ -97,8 +99,8 @@ class Appointment_model extends CI_Model {
         $data['patient_id'] = $this->input->post('patient_id');
 		$data['title'] = $title;
 		$data['userid'] = $this->input->post('doctor_id');
-
-
+		$data['treatment_id'] = $this->input->post('treatment_id');
+		$data['app_note'] = $this->input->post('app_note');
 		$data['appointment_details'] = $this->input->post('appointment_details');
 		$this->db->where('appointment_id', $appointment_id);
 		$this->db->update('appointments', $data);

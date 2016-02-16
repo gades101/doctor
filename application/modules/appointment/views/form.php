@@ -3,13 +3,54 @@
 <script type="text/javascript">
 
     $(window).load(function(){
+		var searchtreatment=[<?php $i = 0;
+		foreach ($treatments as $treatment) {
+			if ($i > 0) { echo ",";}
+			echo '{value:"' . $treatment['treatment'] . '",id:"' . $treatment['id'] . '"}';
+			$i++;
+		}		
+		?>];
+		$("#treatment").autocomplete({
+			autoFocus: true,
+			source: searchtreatment,
+			minLength: 1,//search after one characters
 
+			select: function(event,ui){
+				//do something
+				console.log(event);
+				$("#treatment_id").val(ui.item ? ui.item.id : '');
+				$("#treatment").val(ui.item ? ui.item.treatment : '');
+
+			},
+			change: function(event, ui) {
+				 if (ui.item == null) {
+					$("#treatment_id").val('');
+					$("#treatment").val('');
+					}
+			},
+			response: function(event, ui) {
+				if (ui.content.length === 0)
+				{
+					$("#treatment_id").val('');
+					$("#treatment").val('');
+				}
+			}
+		});
+
+	
+	
+	
+	
 		var searcharrpatient=[<?php $i = 0;
 		foreach ($patients as $patient) {
 			if ($i > 0) { echo ",";}
+
 			echo '{value:"' . $patient['first_name'] . " " . $patient['middle_name'] . " " . $patient['last_name'] . '",id:"' . $patient['patient_id'] . '",display:"' . $patient['display_id'] . '",num:"' . $patient['phone_number'] . '"}';
 			$i++;
-		}?>];
+			
+		}
+		?>];
+		
 		$("#patient_name").autocomplete({
 			autoFocus: true,
 			source: searcharrpatient,
@@ -33,6 +74,7 @@
 			response: function(event, ui) {
 				if (ui.content.length === 0)
 				{
+
 					$("#patient_id").val('');
 					$("#phone_number").val('');
 					$("#display_id").val('');
@@ -132,6 +174,7 @@
 			formatTime:'<?=$def_timeformate; ?>'
 		});
 });
+
 function openReason(onof) {
 	if (onof==1){
 	   $('#cancel_details').show();
@@ -162,6 +205,7 @@ function openReason(onof) {
 		$appointment_date = $appointment['appointment_date'];
 		$status = $appointment['status'];
 		$appointment_id = $appointment['appointment_id'];
+		$app_note=$appointment['app_note'];
 		if($status=='Cancel'){$appointment_details=$appointment['appointment_details'];}
 		else {$appointment_details="";}
 	}else{
@@ -172,7 +216,7 @@ function openReason(onof) {
 		$time_interval =  $time_interval*60;
 		$start_time = date($def_timeformate, strtotime($appointment_time));
 		$end_time = date($def_timeformate, strtotime("+$time_interval minutes", strtotime($appointment_time)));
-
+		$app_note="";
 		$appointment_date = $appointment_date;
 		$status = "Appointments";
 	}
@@ -248,6 +292,8 @@ function openReason(onof) {
 					<?php } ?>
 					<input type="hidden" name="appointment_id" value="<?= $appointment_id; ?>"/>
 					<input type="hidden" name="patient_id" id="patient_id" value="<?php if(isset($curr_patient)){echo $curr_patient['patient_id']; } ?>"/>
+					<input type="hidden" name="treatment_id" id="treatment_id" value=""/>
+
 					<div class="panel panel-success">
 						<div class="panel-heading">
 							<?= $this->lang->line('search')." ".$this->lang->line('patient').'а';?>
@@ -311,16 +357,30 @@ function openReason(onof) {
 							<?php echo form_error('end_time','<div class="alert alert-danger">','</div>'); ?>
 						</div>
 					</div>
+					
+					<div class="col-md-3">
+						<div class="form-group">
+							<label for="treatment">Процедура</label>
+							<input type="text" name="treatment" value="<?=$curr_treatment['treatment'];?>" id="treatment" class="form-control "/>
+						</div>
+					</div>					
+					
+					
 					<br/>
 					<?php if (isset($appointment)){?>
 					<div class="col-md-12" id='mform_details'  <?php if ($status!='Cancel'){echo "style='display: none'";}?> >
 						<div class="form-group">
 							<label for="details_text">Причина скасування</label>
-							<input type="text" name="appointment_details" id="details_text" value=" <?=$appointment_details ?>" class="form-control"/>
-							<?php echo form_error('end_time','<div class="alert alert-danger">','</div>'); ?>
+							<textarea name="appointment_details" id="details_text" class="form-control"/><?=$appointment_details ?></textarea>
 						</div>
 					</div>
 					<?php }?>
+					<div class="col-md-12">
+						<div class="form-group">
+							<label for="details_text">Примітки</label>
+							<textarea name="app_note" id="app_note" class="form-control"/><?=$app_note ?></textarea>
+						</div>
+					</div>
 					<div class="col-md-12">
 						<div class="form-group">
 							<button class="btn btn-primary" type="submit" name="submit" /><?php echo $this->lang->line('save');?></button>
