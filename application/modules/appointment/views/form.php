@@ -3,6 +3,12 @@
 <script type="text/javascript">
 
     $(window).load(function(){
+
+	
+	
+
+	
+	
 		var searchtreatment=[<?php $i = 0;
 		foreach ($treatments as $treatment) {
 			if ($i > 0) { echo ",";}
@@ -17,7 +23,6 @@
 
 			select: function(event,ui){
 				//do something
-				console.log(event);
 				$("#treatment_id").val(ui.item ? ui.item.id : '');
 				$("#treatment").val(ui.item ? ui.item.treatment : '');
 
@@ -38,6 +43,7 @@
 		});
 
 	
+		
 	
 	
 	
@@ -206,6 +212,7 @@ function openReason(onof) {
 		$status = $appointment['status'];
 		$appointment_id = $appointment['appointment_id'];
 		$app_note=$appointment['app_note'];
+		$curr_treatment_name=$curr_treatment['treatment'];
 		if($status=='Cancel'){$appointment_details=$appointment['appointment_details'];}
 		else {$appointment_details="";}
 	}else{
@@ -217,6 +224,7 @@ function openReason(onof) {
 		$start_time = date($def_timeformate, strtotime($appointment_time));
 		$end_time = date($def_timeformate, strtotime("+$time_interval minutes", strtotime($appointment_time)));
 		$app_note="";
+		$curr_treatment_name="";
 		$appointment_date = $appointment_date;
 		$status = "Appointments";
 	}
@@ -292,7 +300,7 @@ function openReason(onof) {
 					<?php } ?>
 					<input type="hidden" name="appointment_id" value="<?= $appointment_id; ?>"/>
 					<input type="hidden" name="patient_id" id="patient_id" value="<?php if(isset($curr_patient)){echo $curr_patient['patient_id']; } ?>"/>
-					<input type="hidden" name="treatment_id" id="treatment_id" value=""/>
+					<input type="hidden" name="treatment_id" id="treatment_id" value="<?php if(isset($curr_treatment)){echo $curr_treatment['id']; } ?>"/>
 
 					<div class="panel panel-success">
 						<div class="panel-heading">
@@ -361,7 +369,7 @@ function openReason(onof) {
 					<div class="col-md-3">
 						<div class="form-group">
 							<label for="treatment">Процедура</label>
-							<input type="text" name="treatment" value="<?=$curr_treatment['treatment'];?>" id="treatment" class="form-control "/>
+							<input type="text" name="treatment" value="<?=$curr_treatment_name;?>" id="treatment" class="form-control "/>
 						</div>
 					</div>					
 					
@@ -408,6 +416,9 @@ function openReason(onof) {
 
 					<div class="col-md-12" id="button_panel">
 						<div class="form-group">
+		
+							<!--<a class="btn btn-primary" href="<?=$this->agent->referrer()?>"><?=$this->lang->line('back');?></a>-->
+
 							<a class="btn btn-primary" href="<?=base_url() . "index.php/appointment/index/".$dep;?>"><?=$this->lang->line('back_to_app');?></a>
 					<?php if(isset($appointment)){ ?>
 

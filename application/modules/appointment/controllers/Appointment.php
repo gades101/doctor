@@ -23,6 +23,7 @@ class Appointment extends CI_Controller {
 
 		$this->lang->load('main');
         $this->load->library('form_validation');
+		//$this->load->library('user_agent');
 		if ( $this->is_session_started() === FALSE ){
 			session_start();
 		}
@@ -180,6 +181,7 @@ class Appointment extends CI_Controller {
 				$data['clinic_end_time'] = $this->settings_model->get_clinic_end_time();
 				$data['time_interval'] = $this->settings_model->get_time_interval();
 				$data['patients'] = $this->patient_model->get_patient();
+				$data['treatments']=$this->treatment_model->get_treatments();
 				$data['def_dateformate'] = $this->settings_model->get_date_formate();
 				$data['def_timeformate'] = $this->settings_model->get_time_formate();
 				if ($patient_id) {

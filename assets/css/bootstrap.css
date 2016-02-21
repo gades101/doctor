@@ -6360,5 +6360,11 @@ button.close {
 .appDoc {min-width: 115px;}
 .appTime {width: 30px;}
 .tblHead   {font-size: 1.3em; padding: 0 10px; cursor:pointer;}
+.tbl-past {background-color: RGBA(66, 139, 202, 0.2);}
+.tbl-cancel {background-color: RGBA(121, 121, 122, 0.2);}
+.tbl-now {background-color: RGBA(66, 139, 202, 0.2);}
+.tbl-future {background-color: RGBA(66, 202, 101, 0.2);}
+#patient_apps a{color: black;}
+/*.dataTables_empty {display:none;}*/
 /*# sourceMappingURL=bootstrap.css.map */
 /*# sourceMappingURL=bootstrap.css.map */

@@ -1,6 +1,5 @@
 <script type="text/javascript">
 var page_2=false;
-
 function readURL(input) {
 	if (input.files && input.files[0]) {//Check if input has files.
 		var reader = new FileReader(); //Initialize FileReader.
@@ -14,14 +13,17 @@ function readURL(input) {
 		$('#PreviewImage').attr('src', "#");
 	}
 }
+$(document).ready(function(){
 
+});
 $(window).load(function(){
+
 	$('#dob').datetimepicker({
 			timepicker:false,
 			format: '<?=$def_dateformate; ?>',
 
 	});
-
+		
 	function convertDateFormat(dateString){
 		if('<?=$def_dateformate; ?>' == 'd-m-Y'){
 			var dateArray = dateString.split("-");
@@ -148,34 +150,35 @@ function displayPage(page_num){
 }
 function page_build(page_num,data){
 	if (page_num==2){
-		var tab=$('#page_2_tbody'),field_class;
+		var tab=$('#page_2_tbody'),field_class,curr_date="<?=date('Y-m-d')?>",curr_time="<?=date('H:i')?>";
 		var i=1;
 		data.forEach(function(item){
-			var link="<?=base_url();?>"+"index.php/appointment/edit_appointment/"+item.appointment_id;
-			switch (item.status){
-				case "Appointments":
-					field_class="btn-primary";
-					break;
-				case 'Consultation':
-					field_class = "btn-danger";
-					break;
-				case 'Complete':
-					field_class = "btn-success";
-					break;
-				case 'Cancel':
-					field_class = "btn-info";
-					break;
-				/*case 'Waiting':
-					field_class = "warning";
-					break;*/
-				default:
-					break;
+			if (item.treatment==null){
+				item.treatment="Процедура не визначена"
 			}
-			var row=$('<tr></tr>').append($('<td></td>').text(i)).append($('<td></td>').addClass(field_class)).append($('<td></td>').append($('<a></a>').text(item.appointment_date).attr("href",link)))
-			.append($('<td></td>').text(item.start_time)).append($('<td></td>').text(item.name));
+			item.start_time=item.start_time.substr(0,5);
+			item.end_time=item.end_time.substr(0,5);
+			var link="<?=base_url();?>"+"index.php/appointment/edit_appointment/"+item.appointment_id;
+			if (item.status=='Cancel'){
+				field_class = "tbl-cancel";
+			}
+			else {
+				if (item.appointment_date < curr_date || (item.appointment_date == curr_date && item.start_time < curr_time)){
+					field_class = "tbl-past";					
+				}
+				else {
+					field_class = "tbl-future";	
+				}		
+			}
+			var row=$('<tr></tr>').append($('<td></td>').text(i)).append($('<td></td>').addClass(field_class).append($('<a></a>').text(item.treatment).attr("href",link)))
+			.append($('<td></td>').text(item.appointment_date))
+			.append($('<td></td>').text(item.start_time)).append($('<td></td>').text(item.name)).append($('<td></td>'));
 			tab.append(row);
 			i++;
 		});
+		$("#patient_apps").dataTable({
+			"pageLength": 50
+		});	
 	}
 }
 function goToApp(link){
@@ -391,6 +394,7 @@ function goToApp(link){
 								<th class='' >Дата прийому</th>
 								<th class='' >Час прийому</th>
 								<th class=''>Терапевт</th>
+								<th class=''>Оплата</th>
 
 							</tr>
 						</thead>
