@@ -4,6 +4,103 @@
 
     $(window).load(function(){
 
+//START
+$(function(){
+    function rownumbers(){
+        $('#othdetails tbody tr').each(function(i) {
+            var number = i + 1;
+            $(this).find('td:first').text(number);
+        });
+    }
+    
+    function update(){
+        var url = '<?=site_url('otherdetails/updateOthDet')?>';
+        var postData = $('.form-control').serialize();
+        $.post(url, postData, function(){}, 'json');
+    }
+    
+    var curimg = '';
+    var intervalID = '';
+    
+    function checkphotoname() {
+        var linkedFrame = document.getElementById('hiddenframe');
+        var content = linkedFrame.contentWindow.document.body.innerHTML;
+        var completed = false;
+        if (content === 'error'){
+            curimg.attr('src','<?=base_url()?>public/img/photo_icon.png');
+            $('#error').show(200).delay(6000).hide(200);
+            $('#error').html('<span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Фото не было загружено. Максимальный размер фото - 10 Мб, форматы: jpg,png,gif.');
+            completed = true;
+        }
+        else
+        if (content !== ''){
+            curimg.parent().children('.form-control').val(content);
+            curimg.attr('src','<?=base_url()?>public/uploads/othdet/' + content);    
+            completed = true;
+        }
+        if (completed === true){
+            update();
+            clearInterval(intervalID);
+            $('#hiddenframe').contents().find('body').html('');
+        }
+    }
+    
+    rownumbers();
+    
+    $(document).on('click', '.othdet_photo', function(){
+        $('#hiddenframe').contents().find('body').html('');
+        curimg = $(this);
+        curimg.attr('src','<?=base_url()?>public/img/photo_icon.png');
+        curimg.parent().children('.form-control').val('');
+        update();
+        $('#photoloader').click();
+    });
+    
+    $('#photoloader').change(function(){
+        curimg.attr('src','<?=base_url()?>public/img/indicator.gif');
+        $('#othdetphotoform').submit();
+        $('#photoloader').val('');
+    });
+    
+    $('#othdetphotoform').submit(function(){
+        intervalID = setInterval(checkphotoname, 500);
+    });
+    
+    $(document).on('change', '.form-control', function(){
+        update();
+    });
+    
+    $("#addnewdet").click(function(){
+        var emp = 0;
+        $(".form-control[name!='dform_oth_details_photo[]']").each(function(indx){
+            if ($(this).val() === ''){
+                emp = 1;
+                $(this).focus();
+             }    
+        });    
+        if (emp === 1){
+            $('#error').show(200).delay(2000).hide(200);
+            $('#error').html('<span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Пожалуйста, заполните все поля');
+        }else{
+            var row = '<tr><td class="col-xs-2 col-md-1" style="vertical-align:middle;"></td><td style="width:110px;"><img src="<?=base_url()?>public/img/photo_icon.png" alt="Загрузить фото" class="img-circle othdet_photo"/><input class="form-control" type="hidden" name="dform_oth_details_photo[]" value=""/></td><td><textarea name="dform_oth_details_descr[]" class="form-control" rows="3" placeholder="Описание детали"></textarea></td><td class="col-xs-2 col-md-1" style="vertical-align:middle;"><input name="dform_oth_details_cnt[]" type="number" class="form-control" value="1" placeholder="шт"/></td><td style="vertical-align:middle;text-align:right;"><span class="glyphicon glyphicon-remove removebtn" aria-hidden="true"></span></td></tr>';
+            $("#othdetails tbody").append(row);
+            rownumbers();
+            $('[name="dform_oth_details_descr[]"]').last().focus();
+        }    
+    });
+    
+    $(document).on('click', '.removebtn', function(){
+        $(this).parent().parent().remove();
+        update();
+        rownumbers();
+    });
+    
+});
+//END
+
+
+
+
 	
 	
 
@@ -373,7 +470,6 @@ function openReason(onof) {
 						</div>
 					</div>					
 					
-					
 					<br/>
 					<?php if (isset($appointment)){?>
 					<div class="col-md-12" id='mform_details'  <?php if ($status!='Cancel'){echo "style='display: none'";}?> >
@@ -416,8 +512,6 @@ function openReason(onof) {
 
 					<div class="col-md-12" id="button_panel">
 						<div class="form-group">
-		
-							<!--<a class="btn btn-primary" href="<?=$this->agent->referrer()?>"><?=$this->lang->line('back');?></a>-->
 
 							<a class="btn btn-primary" href="<?=base_url() . "index.php/appointment/index/".$dep;?>"><?=$this->lang->line('back_to_app');?></a>
 					<?php if(isset($appointment)){ ?>
@@ -445,7 +539,34 @@ function openReason(onof) {
 					</div>
 
 
-
+					
+					<form enctype="multipart/form-data" action="<?=site_url('appointment/uploadOthDetPhoto')?>" method="post" id="othdetphotoform" target="hiddenframe">
+						<input type="file" id="photoloader" name="photo"/>
+					</form>
+					<iframe id="hiddenframe" name="hiddenframe" style="width:0px;height:0px;border:0px"></iframe>
+					<table id="othdetails" class="table table-hover borderbottom">
+						<thead>
+							<tr>
+								<th>№ п/п</th>
+								<th>Фото</th>
+								<th>Описание</th>
+								<th>шт</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td class="col-xs-2 col-md-1" style="vertical-align:middle;"></td>
+								<td style="width:110px;">
+									<img src="photo_icon.png" alt="Загрузить фото" class="img-circle othdet_photo"/>
+									<input class="form-control" type="hidden" name="dform_oth_details_photo[]" value=""/>
+								</td>
+								<td><textarea name="dform_oth_details_descr[]" class="form-control" rows="3" placeholder="Описание детали"></textarea></td>
+								<td class="col-xs-2 col-md-1" style="vertical-align:middle;"><input name="dform_oth_details_cnt[]" type="number" class="form-control" value="1" placeholder="шт"/></td>
+								<td style="vertical-align:middle;text-align:right;"><span class="glyphicon glyphicon-remove removebtn" aria-hidden="true"></span></td>
+							</tr>
+						</tbody>
+					</table>
 
 
 				</div>

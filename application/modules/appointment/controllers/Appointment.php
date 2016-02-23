@@ -485,5 +485,37 @@ class Appointment extends CI_Controller {
         $this->appointment_model->delete_todo($id);
         $this->index();
     }
+	
+	public function uploadOthDetPhoto()
+    {
+        $this->isDformSet();
+        $config['upload_path'] = 'public/uploads/othdet/';
+        $config['allowed_types'] = 'gif|jpg|png';
+        $config['max_size'] = '10240';
+        $config['encrypt_name'] = true;
+        $this->load->library('upload', $config);
+        $this->upload->initialize($config);
+        $this->upload->do_upload('photo');
+        $arrErrors = $this->upload->display_errors();
+        if (!empty($arrErrors) > 0){
+            echo 'error';
+        }else{
+            $arrPhotoData = $this->upload->data();
+            $strFileName = $arrPhotoData['file_name'];
+            echo $strFileName;
+            $intMaxWidth = 800;
+            if ($arrPhotoData['image_width'] > $intMaxWidth){
+                unset($config);
+                $config['image_library'] = 'gd2';
+                $config['source_image']	= $arrPhotoData['full_path'];
+                $config['width'] = $intMaxWidth;
+                $config['height'] = $intMaxWidth*$arrPhotoData['image_height']/$arrPhotoData['image_width'];
+                $config['maintain_ratio'] = TRUE;
+                $this->load->library('image_lib', $config); 
+                $this->image_lib->resize();
+            }
+        }
+    }	
+	
 }
 ?>
