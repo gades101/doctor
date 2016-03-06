@@ -33,7 +33,7 @@
 
             /*====================================
             MORRIS BAR CHART
-         ======================================*/
+         ======================================
             Morris.Bar({
                 element: 'morris-bar-chart',
                 data: [{
@@ -71,10 +71,10 @@
                 hideHover: 'auto',
                 resize: true
             });
-
+*/
             /*====================================
           MORRIS DONUT CHART
-       ======================================*/
+       ======================================
             Morris.Donut({
                 element: 'morris-donut-chart',
                 data: [{
@@ -89,10 +89,10 @@
                 }],
                 resize: true
             });
-
+*/
             /*====================================
          MORRIS AREA CHART
-      ======================================*/
+      ======================================
 
             Morris.Area({
                 element: 'morris-area-chart',
@@ -154,10 +154,10 @@
                 hideHover: 'auto',
                 resize: true
             });
-
+*/
             /*====================================
     MORRIS LINE CHART
- ======================================*/
+ ======================================
             Morris.Line({
                 element: 'morris-line-chart',
                 data: [{
@@ -196,7 +196,7 @@
                 resize: true
             });
            
-     
+  */   
         },
 
         initialization: function () {

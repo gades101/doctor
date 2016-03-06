@@ -485,11 +485,15 @@ class Appointment extends CI_Controller {
         $this->appointment_model->delete_todo($id);
         $this->index();
     }
-	
+
+
+
+//rez	
 	public function uploadOthDetPhoto()
     {
+		file_put_contents('t1.txt',print_r($this,true));
         $this->isDformSet();
-        $config['upload_path'] = 'public/uploads/othdet/';
+        $config['upload_path'] = 'patient_images/';
         $config['allowed_types'] = 'gif|jpg|png';
         $config['max_size'] = '10240';
         $config['encrypt_name'] = true;
@@ -515,7 +519,51 @@ class Appointment extends CI_Controller {
                 $this->image_lib->resize();
             }
         }
-    }	
-	
+    }
+//end rez
+	function uploadfiles($patient_id=NULL,$app_id){
+		$data = array();$error = false;$files = array();
+		$uploaddir="patient_media/".$patient_id."/".$app_id."/foto/";
+		// Создадим папку если её нет
+		//if( ! is_dir( $uploaddir ) ) {mkdir( $uploaddir, 0777 );				}
+		if( ! is_dir("patient_media/".$patient_id."/" ) ) {mkdir( "patient_media/".$patient_id."/", 0777 );}
+		if( ! is_dir( "patient_media/".$patient_id."/".$app_id."/") ){ mkdir( "patient_media/".$patient_id."/".$app_id."/", 0777 );	
+				if( ! is_dir( $uploaddir ) ) mkdir( $uploaddir, 0777 );
+		}		
+//file_put_contents('t1',print_r($uploaddir,true));
+		// переместим файлы из временной директории в указанную
+		foreach( $_FILES as $file ){
+		   if($file == "image/gif" || $file['type'] == "image/png" ||
+			$file['type'] == "image/jpg" || $file['type'] == "image/jpeg")
+			{
+			  //черный список типов файлов
+				$blacklist = array(".php", ".phtml", ".php3", ".php4");
+				foreach ($blacklist as $item)
+				{
+					if(preg_match("/$item\$/i", $file['name']))
+					{
+					  $error = true;
+					  exit;
+					}
+				}
+				if( move_uploaded_file( $file['tmp_name'], $uploaddir . basename($file['name']) ) ){
+					$files[] = realpath( $uploaddir . $file['name'] );
+				}
+				else{
+					$error = true;
+				}
+			}
+		}
+		$data = $error ? array('error' => 'Ошибка загрузки файлов.') : array('files' => $files );
+		
+		echo json_encode( $data );	
+	}
+	public function showmedia($patient_id,$app_id){
+		$uploaddir="patient_media/".$patient_id."/".$app_id."/foto/";
+		$error = false;
+		$data=scandir($uploaddir);
+		echo json_encode( $data );	
+	}
+		
 }
 ?>
