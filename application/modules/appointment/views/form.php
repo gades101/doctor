@@ -1,10 +1,11 @@
 <!--display on Click of Appointment page -->
 <script src="<?= base_url() ?>assets/js/fliplightbox.min.js"></script>
 <script type="text/javascript">
+<?php if (isset($appointment)){ ?>
 var img_path="<?= base_url() ?>patient_media/<?= $curr_patient['patient_id'] ?>/<?= $appointment['appointment_id'] ?>/foto/";
 function showimages(){
 	$.ajax({
-		url: "<?= base_url() ?>index.php/appointment/showmedia/124/875",
+		url: "<?= base_url() ?>index.php/appointment/showmedia/<?= $curr_patient['patient_id'] ?>/<?= $appointment['appointment_id'] ?>/",
 		type: 'POST',
 		cache: false,
 		dataType: 'json',
@@ -31,7 +32,7 @@ function showimages(){
 		}
 	});
 }
-
+<?php } ?>
 
 
 
@@ -319,8 +320,8 @@ function openReason(onof) {
 	}else{
 		$patient_id = 0;
 	}
-
 ?>
+
 <div id="page-inner">
 	<div class="row">
 		<div class="col-md-12">
