@@ -523,19 +523,28 @@ class Appointment extends CI_Controller {
 	function uploadfiles($patient_id=NULL,$app_id){
 		$data = array();$error = false;$files = array();
 		$uploaddir="patient_media/".$patient_id."/".$app_id."/foto/";
+<<<<<<< HEAD
 		// Создадим папку если её нет
+=======
+>>>>>>> bfe6e5766b912211671f5b306eaa6c20966658b4
 		//if( ! is_dir( $uploaddir ) ) {mkdir( $uploaddir, 0777 );				}
 		if( ! is_dir("patient_media/".$patient_id."/" ) ) {mkdir( "patient_media/".$patient_id."/", 0777 );}
 		if( ! is_dir( "patient_media/".$patient_id."/".$app_id."/") ){ mkdir( "patient_media/".$patient_id."/".$app_id."/", 0777 );	
 				if( ! is_dir( $uploaddir ) ) mkdir( $uploaddir, 0777 );
 		}		
+<<<<<<< HEAD
 //file_put_contents('t1',print_r($uploaddir,true));
 		// переместим файлы из временной директории в указанную
+=======
+>>>>>>> bfe6e5766b912211671f5b306eaa6c20966658b4
 		foreach( $_FILES as $file ){
 		   if($file == "image/gif" || $file['type'] == "image/png" ||
 			$file['type'] == "image/jpg" || $file['type'] == "image/jpeg")
 			{
+<<<<<<< HEAD
 			  //черный список типов файлов
+=======
+>>>>>>> bfe6e5766b912211671f5b306eaa6c20966658b4
 				$blacklist = array(".php", ".phtml", ".php3", ".php4");
 				foreach ($blacklist as $item)
 				{
@@ -553,13 +562,96 @@ class Appointment extends CI_Controller {
 				}
 			}
 		}
+<<<<<<< HEAD
 		$data = $error ? array('error' => 'Ошибка загрузки файлов.') : array('files' => $files );
+=======
+		$data = $error ? array('error' => 'error...') : array('files' => $files );
+>>>>>>> bfe6e5766b912211671f5b306eaa6c20966658b4
 		
 		echo json_encode( $data );	
 	}
+	// Функция изменения размера
+	// Изменяет размер изображения в зависимости от type:
+	//	type = 1 - эскиз
+	// 	type = 2 - большое изображение
+	//	rotate - поворот на количество градусов (желательно использовать значение 90, 180, 270)
+	//	quality - качество изображения (по умолчанию 75%)
+	function resize($file, $type = 1, $rotate = null, $quality = null)
+	{
+		global $tmp_path;
+
+		// Ограничение по ширине в пикселях
+		$max_thumb_size = 200;
+		$max_size = 600;
+	
+		// Качество изображения по умолчанию
+		if ($quality == null)
+			$quality = 75;
+
+		// Cоздаём исходное изображение на основе исходного файла
+		if ($file['type'] == 'image/jpeg')
+			$source = imagecreatefromjpeg($file['tmp_name']);
+		elseif ($file['type'] == 'image/png')
+			$source = imagecreatefrompng($file['tmp_name']);
+		elseif ($file['type'] == 'image/gif')
+			$source = imagecreatefromgif($file['tmp_name']);
+		else
+			return false;
+			
+		// Поворачиваем изображение
+		if ($rotate != null)
+			$src = imagerotate($source, $rotate, 0);
+		else
+			$src = $source;
+
+		// Определяем ширину и высоту изображения
+		$w_src = imagesx($src); 
+		$h_src = imagesy($src);
+
+		// В зависимости от типа (эскиз или большое изображение) устанавливаем ограничение по ширине.
+		if ($type == 1)
+			$w = $max_thumb_size;
+		elseif ($type == 2)
+			$w = $max_size;
+
+		// Если ширина больше заданной
+		if ($w_src > $w)
+		{
+			// Вычисление пропорций
+			$ratio = $w_src/$w;
+			$w_dest = round($w_src/$ratio);
+			$h_dest = round($h_src/$ratio);
+
+			// Создаём пустую картинку
+			$dest = imagecreatetruecolor($w_dest, $h_dest);
+			
+			// Копируем старое изображение в новое с изменением параметров
+			imagecopyresampled($dest, $src, 0, 0, 0, 0, $w_dest, $h_dest, $w_src, $h_src);
+
+			// Вывод картинки и очистка памяти
+			imagejpeg($dest, $tmp_path . $file['name'], $quality);
+			imagedestroy($dest);
+			imagedestroy($src);
+
+			return $file['name'];
+		}
+		else
+		{
+			// Вывод картинки и очистка памяти
+			imagejpeg($src, $tmp_path . $file['name'], $quality);
+			imagedestroy($src);
+
+			return $file['name'];
+		}
+	}
+	
+	
+	
+	
 	public function showmedia($patient_id,$app_id){
 		$uploaddir="patient_media/".$patient_id."/".$app_id."/foto/";
 		$error = false;
+
 		$data=scandir($uploaddir);
 		echo json_encode( $data );	
 	}
