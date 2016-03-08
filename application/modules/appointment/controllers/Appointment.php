@@ -523,19 +523,19 @@ class Appointment extends CI_Controller {
 	function uploadfiles($patient_id=NULL,$app_id){
 		$data = array();$error = false;$files = array();
 		$uploaddir="patient_media/".$patient_id."/".$app_id."/foto/";
-		// Ñîçäàäèì ïàïêó åñëè å¸ íåò
+		// Ð¡Ð¾Ð·Ð´Ð°Ð´Ð¸Ð¼ Ð¿Ð°Ð¿ÐºÑƒ ÐµÑÐ»Ð¸ ÐµÑ‘ Ð½ÐµÑ‚
 		//if( ! is_dir( $uploaddir ) ) {mkdir( $uploaddir, 0777 );				}
 		if( ! is_dir("patient_media/".$patient_id."/" ) ) {mkdir( "patient_media/".$patient_id."/", 0777 );}
 		if( ! is_dir( "patient_media/".$patient_id."/".$app_id."/") ){ mkdir( "patient_media/".$patient_id."/".$app_id."/", 0777 );	
 				if( ! is_dir( $uploaddir ) ) mkdir( $uploaddir, 0777 );
 		}		
 //file_put_contents('t1',print_r($uploaddir,true));
-		// ïåðåìåñòèì ôàéëû èç âðåìåííîé äèðåêòîðèè â óêàçàííóþ
+		// Ð¿ÐµÑ€ÐµÐ¼ÐµÑÑ‚Ð¸Ð¼ Ñ„Ð°Ð¹Ð»Ñ‹ Ð¸Ð· Ð²Ñ€ÐµÐ¼ÐµÐ½Ð½Ð¾Ð¹ Ð´Ð¸Ñ€ÐµÐºÑ‚Ð¾Ñ€Ð¸Ð¸ Ð² ÑƒÐºÐ°Ð·Ð°Ð½Ð½ÑƒÑŽ
 		foreach( $_FILES as $file ){
 		   if($file == "image/gif" || $file['type'] == "image/png" ||
 			$file['type'] == "image/jpg" || $file['type'] == "image/jpeg")
 			{
-			  //÷åðíûé ñïèñîê òèïîâ ôàéëîâ
+			  //Ñ‡ÐµÑ€Ð½Ñ‹Ð¹ ÑÐ¿Ð¸ÑÐ¾Ðº Ñ‚Ð¸Ð¿Ð¾Ð² Ñ„Ð°Ð¹Ð»Ð¾Ð²
 				$blacklist = array(".php", ".phtml", ".php3", ".php4");
 				foreach ($blacklist as $item)
 				{
@@ -553,7 +553,7 @@ class Appointment extends CI_Controller {
 				}
 			}
 		}
-		$data = $error ? array('error' => 'Îøèáêà çàãðóçêè ôàéëîâ.') : array('files' => $files );
+		$data = $error ? array('error' => 'ÐžÑˆÐ¸Ð±ÐºÐ° Ð·Ð°Ð³Ñ€ÑƒÐ·ÐºÐ¸ Ñ„Ð°Ð¹Ð»Ð¾Ð².') : array('files' => $files );
 		
 		echo json_encode( $data );	
 	}
