@@ -491,7 +491,6 @@ class Appointment extends CI_Controller {
 //rez	
 	public function uploadOthDetPhoto()
     {
-		file_put_contents('t1.txt',print_r($this,true));
         $this->isDformSet();
         $config['upload_path'] = 'patient_images/';
         $config['allowed_types'] = 'gif|jpg|png';
