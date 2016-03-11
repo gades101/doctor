@@ -527,7 +527,8 @@ class Appointment extends CI_Controller {
 		if( ! is_dir("patient_media/".$patient_id."/" ) ) {mkdir( "patient_media/".$patient_id."/", 0777 );}
 		if( ! is_dir( "patient_media/".$patient_id."/".$app_id."/") ){ mkdir( "patient_media/".$patient_id."/".$app_id."/", 0777 );	
 				if( ! is_dir( $uploaddir ) ) mkdir( $uploaddir, 0777 );
-		}		
+		}	
+		/*
 		foreach( $_FILES as $file ){
 		   if($file == "image/gif" || $file['type'] == "image/png" ||
 			$file['type'] == "image/jpg" || $file['type'] == "image/jpeg")
@@ -541,6 +542,7 @@ class Appointment extends CI_Controller {
 					  exit;
 					}
 				}
+			   //$files[] = $this->resize($file, $uploaddir);
 				if( move_uploaded_file( $file['tmp_name'], $uploaddir . basename($file['name']) ) ){
 					$files[] = realpath( $uploaddir . $file['name'] );
 				}
@@ -550,6 +552,17 @@ class Appointment extends CI_Controller {
 			}
 		}
 		$data = $error ? array('error' => 'error...') : array('files' => $files );
+	*/
+	if ($_POST) {
+		$img = $_POST['images'];
+		$img = str_replace('data:image/jpeg;base64,', '', $img);
+		$img = str_replace(' ', '+', $img);
+		$data = base64_decode($img);
+		$file = $uploaddir . uniqid() . '.jpg';
+		$success = file_put_contents($file, $data);
+		print $success ? $file : 'Unable to save the file.';
+		echo "11";
+	}
 		
 		echo json_encode( $data );	
 	}
@@ -559,17 +572,18 @@ class Appointment extends CI_Controller {
 	// 	type = 2 - большое изображение
 	//	rotate - поворот на количество градусов (желательно использовать значение 90, 180, 270)
 	//	quality - качество изображения (по умолчанию 75%)
-	function resize($file, $type = 1, $rotate = null, $quality = null)
+	function resize($file, $uploaddir, $type = 2, $quality = null, $rotate = null)
 	{
 		global $tmp_path;
 
 		// Ограничение по ширине в пикселях
-		$max_thumb_size = 200;
-		$max_size = 600;
-	
+		$max_thumb_size = 120;
+		$max_size = 1000;
+
 		// Качество изображения по умолчанию
 		if ($quality == null)
 			$quality = 75;
+						//file_put_contents('t1',print_r($file,true));
 
 		// Cоздаём исходное изображение на основе исходного файла
 		if ($file['type'] == 'image/jpeg')
@@ -580,7 +594,7 @@ class Appointment extends CI_Controller {
 			$source = imagecreatefromgif($file['tmp_name']);
 		else
 			return false;
-			
+
 		// Поворачиваем изображение
 		if ($rotate != null)
 			$src = imagerotate($source, $rotate, 0);
@@ -588,31 +602,33 @@ class Appointment extends CI_Controller {
 			$src = $source;
 
 		// Определяем ширину и высоту изображения
-		$w_src = imagesx($src); 
+		$w_src = imagesx($src);
 		$h_src = imagesy($src);
 
 		// В зависимости от типа (эскиз или большое изображение) устанавливаем ограничение по ширине.
 		if ($type == 1)
-			$w = $max_thumb_size;
+			$h = $max_thumb_size;
 		elseif ($type == 2)
-			$w = $max_size;
+			$h = $max_size;
 
-		// Если ширина больше заданной
-		if ($w_src > $w)
+		// Если высота больше заданной
+		if ($h_src > $w)
 		{
 			// Вычисление пропорций
-			$ratio = $w_src/$w;
+			$ratio = $h_src/$h;
 			$w_dest = round($w_src/$ratio);
 			$h_dest = round($h_src/$ratio);
 
 			// Создаём пустую картинку
 			$dest = imagecreatetruecolor($w_dest, $h_dest);
-			
+
 			// Копируем старое изображение в новое с изменением параметров
 			imagecopyresampled($dest, $src, 0, 0, 0, 0, $w_dest, $h_dest, $w_src, $h_src);
 
 			// Вывод картинки и очистка памяти
-			imagejpeg($dest, $tmp_path . $file['name'], $quality);
+
+			imagejpeg($dest, $uploaddir . $file['name'], $quality);
+			//imagejpeg($dest, $tmp_path . $file['name'], $quality);
 			imagedestroy($dest);
 			imagedestroy($src);
 
@@ -621,21 +637,18 @@ class Appointment extends CI_Controller {
 		else
 		{
 			// Вывод картинки и очистка памяти
-			imagejpeg($src, $tmp_path . $file['name'], $quality);
+			imagejpeg($src, $uploaddir . $file['name'], $quality);
 			imagedestroy($src);
 
 			return $file['name'];
 		}
 	}
-	
-	
-	
-	
 	public function showmedia($patient_id,$app_id){
 		$uploaddir="patient_media/".$patient_id."/".$app_id."/foto/";
 		$error = false;
-
 		$data=scandir($uploaddir);
+	//file_put_contents('t1',(print_r(json_encode( $data ),true)));
+
 		echo json_encode( $data );	
 	}
 		
