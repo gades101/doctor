@@ -33,17 +33,16 @@ function showimages(){
 	});
 }
 <?php } ?>
-
-
-
-    $(window).load(function(){
+$(window).load(function(){
 	
 //UPLOAD
 <?php if (isset($appointment)){ ?>
+
 (function($){
 // Глобальная переменная куда будут располагаться данные файлов. С не будем работать
 var files;
-
+//var data = new FormData();
+var data="";
 // Вешаем функцию на событие
 // Получим данные файлов и добавим их в переменную
 $('input[type=file]').change(function(){
@@ -53,43 +52,65 @@ $('input[type=file]').change(function(){
 $('.submit.button').click(function( event ){
 	event.stopPropagation(); // Остановка происходящего
 	event.preventDefault();  // Полная остановка происходящего
-
 	// Содадим данные формы и добавим в них данные файлов из files
-	var data = new FormData();
 	$.each( files, function( key, value ){
-		data.append( key, value );
-	});
-
-	// Отправляем запрос
-	$.ajax({
-		url: "<?=base_url()?>index.php/appointment/uploadfiles/<?= $curr_patient['patient_id'] ?>/<?= $appointment['appointment_id'] ?>",
-		type: 'POST',
-		data: data,
-		cache: false,
-		dataType: 'json',
-		processData: false, // Не обрабатываем файлы (Don't process the files)
-		contentType: false, // Так jQuery скажет серверу что это строковой запрос
-		success: function( respond, textStatus, jqXHR ){
-			// Если все ОК
-			if( typeof respond.error === 'undefined' ){
-				// Файлы успешно загружены, делаем что нибудь здесь
-				// выведем пути к загруженным файлам в блок '.ajax-respond'
-				var files_path = respond.files;
-				var html = '';
-				$.each( files_path, function( key, val ){ html += val +'<br>'; } )
-				$('.ajax-respond').html( html );
+			var reader = new FileReader(),
+			canvas = document.createElement('canvas'),
+			//canvas =document.getElementById('test2'),
+			max_height=1000,max_width=1000,
+			ctx= canvas.getContext("2d");		
+			reader.onloadend =function(){
+				tempImg  = document.createElement("img"),
+				tempImg.src=this.result;	
+				tempImg.onload=function(){
+					var width = tempImg.width;
+					var height = tempImg.height;
+					if (width > height) {
+						if (width > max_width) {
+							height *= max_width / width;
+							width = max_width;
+						}
+					} else {
+						if (height > max_height) {
+							width *= max_height / height;
+							height = max_height;
+						}
+					}							
+						ctx.clearRect(0,0,width,height);
+						canvas.width=width;
+						canvas.height=height;
+						ctx.drawImage(tempImg, 0, 0, width, height);
+						val = canvas.toDataURL('image/jpeg');
+						data=val;
+					$.ajax({
+						url: "<?=base_url()?>index.php/appointment/uploadfiles/<?= $curr_patient['patient_id'] ?>/<?= $appointment['appointment_id'] ?>",
+						type: 'POST',
+						data: "images="+data,
+						cache: false,
+						//dataType: 'json',
+						//processData: false, // Не обрабатываем файлы (Don't process the files)
+						//contentType: false, // Так jQuery скажет серверу что это строковой запрос
+						success: function( respond, textStatus, jqXHR ){
+							// Если все ОК
+							if( typeof respond.error === 'undefined' ){
+								// Файлы успешно загружены, делаем что нибудь здесьвыведем пути к загруженным файлам в блок '.ajax-respond'
+								var files_path = respond.files;
+								var html = '';
+								//$.each( files_path, function( key, val ){ html += val +'<br>'; } )
+								//$('.ajax-respond').html( html );
+							}
+							else{console.log('ОШИБКИ ОТВЕТА сервера: ' + respond.error );}
+						},
+						error: function( jqXHR, textStatus, errorThrown ){console.log('ОШИБКИ AJAX запроса: ' + textStatus );}
+					});					
+				}
 			}
-			else{
-				console.log('ОШИБКИ ОТВЕТА сервера: ' + respond.error );
-			}
-		},
-		error: function( jqXHR, textStatus, errorThrown ){
-			console.log('ОШИБКИ AJAX запроса: ' + textStatus );
-		}
+			reader.readAsDataURL(value);		
+		});
 	});
-	
-});
 })(jQuery)
+
+
 <?php } ?>
 //END UPLOAD	
 	
@@ -529,14 +550,14 @@ function openReason(onof) {
 					</div>
 					
 					<?php if(isset($appointment)) {?>
-						<div>
+						<div class="panel-body">
 							<div class="wrapper">
-								<input type="file" class="fileUpload" multiple="multiple" accept="image/*">
-								<a href="#" class="submit button">Завантажити фото</a>
+								<input type="file" class="fileUpload" multiple="multiple" accept="image/*" style="display:inline">
+								<a href="#" class="submit button btn btn-info">Завантажити фото</a>
 								<div class="ajax-respond"></div>
 								<div id="filelist"></div>
 							</div>
-							<button class="btn btn-info" onclick=showimages()>Показати фото</button>
+							<button class="btn btn-info" onclick=showimages() >Показати фото</button>
 						</div>
 					<?php } ?>
 				</div>
