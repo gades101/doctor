@@ -507,7 +507,6 @@ class Appointment extends CI_Controller {
 						$data = base64_decode($i);
 						$this->resize($data,$uploaddir. mt_rand() . '.jpg',75);
 						//$file = $uploaddir . mt_rand() . '.jpg';
-						//$success = file_put_contents($file, $data);
 					}
 					$j=1;
 			}
@@ -532,10 +531,7 @@ class Appointment extends CI_Controller {
 		$error = false;
 		if(file_exists($uploaddir)){
 			$data=scandir($uploaddir);
-<<<<<<< HEAD
-=======
 			$data=array_slice($data,2);
->>>>>>> 3b7f518305629eda9cc78f842c446fd676428b13
 			echo json_encode( $data );
 		}
 	}
