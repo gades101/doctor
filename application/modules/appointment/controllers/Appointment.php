@@ -532,6 +532,10 @@ class Appointment extends CI_Controller {
 		$error = false;
 		if(file_exists($uploaddir)){
 			$data=scandir($uploaddir);
+<<<<<<< HEAD
+=======
+			$data=array_slice($data,2);
+>>>>>>> 3b7f518305629eda9cc78f842c446fd676428b13
 			echo json_encode( $data );
 		}
 	}

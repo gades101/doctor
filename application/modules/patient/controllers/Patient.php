@@ -56,6 +56,19 @@ class Patient extends CI_Controller {
     
     public function patient_ajax_info($patient_id,$page_num=NULL){
 		$appointments=$this->appointment_model->get_all_appointments_by_patient($patient_id);
+		foreach($appointments as $key => $app){
+			$uploaddir="patient_media/".$patient_id."/".$app['appointment_id']."/foto/";
+			if(file_exists($uploaddir)){
+				$foto_num=count(scandir($uploaddir))-2;
+			}
+			else $foto_num=0;
+			$appointments[$key]['foto_num']=$foto_num;
+		}
+		//$uploaddir="patient_images/";
+		file_put_contents('t1.txt',print_r($appointments,true));
+
+		
+		
 		echo json_encode($appointments);
     }
 	/** File Upload for Patient Profile Image */

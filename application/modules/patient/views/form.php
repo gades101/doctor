@@ -141,6 +141,7 @@ function displayPage(page_num){
 				url: "<?php echo base_url(); ?>index.php/patient/patient_ajax_info/<?php echo $patient_id; ?>/"+page_num,
 				dataType: "json",		
 				success: function(data){
+					console.log(data);
 					page_build(page_num,data);
 				}
 			});		
@@ -172,7 +173,7 @@ function page_build(page_num,data){
 			}
 			var row=$('<tr></tr>').append($('<td></td>').text(i)).append($('<td></td>').addClass(field_class).append($('<a></a>').text(item.treatment).attr("href",link)))
 			.append($('<td></td>').text(item.appointment_date))
-			.append($('<td></td>').text(item.start_time)).append($('<td></td>').text(item.name)).append($('<td></td>'));
+			.append($('<td></td>').text(item.start_time)).append($('<td></td>').text(item.name)).append($('<td></td>').text(item.foto_num)).append($('<td></td>'));
 			tab.append(row);
 			i++;
 		});
@@ -181,6 +182,9 @@ function page_build(page_num,data){
 		});	
 	}
 }
+
+
+
 function goToApp(link){
 	window.open(link);
 	//document.location.href=link;
@@ -394,6 +398,7 @@ function goToApp(link){
 								<th class='' >Дата прийому</th>
 								<th class='' >Час прийому</th>
 								<th class=''>Терапевт</th>
+								<th class=''>Фото</th>
 								<th class=''>Оплата</th>
 
 							</tr>
