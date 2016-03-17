@@ -13,7 +13,7 @@ class Appointment extends CI_Controller {
 		$this->load->model('module/module_model');
 		$this->load->model('menu_model');
 		$this->load->model('treatment/treatment_model');
-		
+
         $this->load->helper('url');
         $this->load->helper('form');
 		$this->load->helper('currency_helper');
@@ -23,7 +23,6 @@ class Appointment extends CI_Controller {
 
 		$this->lang->load('main');
         $this->load->library('form_validation');
-		//$this->load->library('user_agent');
 		if ( $this->is_session_started() === FALSE ){
 			session_start();
 		}
@@ -486,171 +485,56 @@ class Appointment extends CI_Controller {
         $this->index();
     }
 
-
-
-//rez	
-	public function uploadOthDetPhoto()
-    {
-        $this->isDformSet();
-        $config['upload_path'] = 'patient_images/';
-        $config['allowed_types'] = 'gif|jpg|png';
-        $config['max_size'] = '10240';
-        $config['encrypt_name'] = true;
-        $this->load->library('upload', $config);
-        $this->upload->initialize($config);
-        $this->upload->do_upload('photo');
-        $arrErrors = $this->upload->display_errors();
-        if (!empty($arrErrors) > 0){
-            echo 'error';
-        }else{
-            $arrPhotoData = $this->upload->data();
-            $strFileName = $arrPhotoData['file_name'];
-            echo $strFileName;
-            $intMaxWidth = 800;
-            if ($arrPhotoData['image_width'] > $intMaxWidth){
-                unset($config);
-                $config['image_library'] = 'gd2';
-                $config['source_image']	= $arrPhotoData['full_path'];
-                $config['width'] = $intMaxWidth;
-                $config['height'] = $intMaxWidth*$arrPhotoData['image_height']/$arrPhotoData['image_width'];
-                $config['maintain_ratio'] = TRUE;
-                $this->load->library('image_lib', $config); 
-                $this->image_lib->resize();
-            }
-        }
-    }
-//end rez
-	function uploadfiles($patient_id=NULL,$app_id){
+	function uploadfiles($patient_id=NULL,$app_id=NULL){
 		$data = array();$error = false;$files = array();
 		$uploaddir="patient_media/".$patient_id."/".$app_id."/foto/";
-		//if( ! is_dir( $uploaddir ) ) {mkdir( $uploaddir, 0777 );				}
 		if( ! is_dir("patient_media/".$patient_id."/" ) ) {mkdir( "patient_media/".$patient_id."/", 0777 );}
-		if( ! is_dir( "patient_media/".$patient_id."/".$app_id."/") ){ mkdir( "patient_media/".$patient_id."/".$app_id."/", 0777 );	
+		if( ! is_dir( "patient_media/".$patient_id."/".$app_id."/") ){ mkdir( "patient_media/".$patient_id."/".$app_id."/", 0777 );
 				if( ! is_dir( $uploaddir ) ) mkdir( $uploaddir, 0777 );
-		}	
-		/*
-		foreach( $_FILES as $file ){
-		   if($file == "image/gif" || $file['type'] == "image/png" ||
-			$file['type'] == "image/jpg" || $file['type'] == "image/jpeg")
-			{
-				$blacklist = array(".php", ".phtml", ".php3", ".php4");
-				foreach ($blacklist as $item)
-				{
-					if(preg_match("/$item\$/i", $file['name']))
-					{
-					  $error = true;
-					  exit;
+		}
+		//$uploaddir="patient_images/";
+		if( ! is_dir( $uploaddir ) ) mkdir( $uploaddir, 0777 );
+
+		if ($_POST) {
+			$pdata = $_POST['images'];
+			$pdata = str_replace('data:image/jpeg;base64,', '|', $pdata);
+			$pdata = str_replace(' ', '+', $pdata);
+			$imgs=explode("|",$pdata);
+			$j=0;
+			foreach ($imgs as $i){
+					if ($j!=0){
+						$file = mt_rand() . '.jpg';
+						$data = base64_decode($i);
+						$this->resize($data,$uploaddir. mt_rand() . '.jpg',75);
+						//$file = $uploaddir . mt_rand() . '.jpg';
+						//$success = file_put_contents($file, $data);
 					}
-				}
-			   //$files[] = $this->resize($file, $uploaddir);
-				if( move_uploaded_file( $file['tmp_name'], $uploaddir . basename($file['name']) ) ){
-					$files[] = realpath( $uploaddir . $file['name'] );
-				}
-				else{
-					$error = true;
-				}
+					$j=1;
 			}
+			//print $success ? $file : 'Unable to save the file.';
+			echo "11";
 		}
-		$data = $error ? array('error' => 'error...') : array('files' => $files );
-	*/
-	if ($_POST) {
-		$img = $_POST['images'];
-		$img = str_replace('data:image/jpeg;base64,', '', $img);
-		$img = str_replace(' ', '+', $img);
-		$data = base64_decode($img);
-		$file = $uploaddir . uniqid() . '.jpg';
-		$success = file_put_contents($file, $data);
-		print $success ? $file : 'Unable to save the file.';
-		echo "11";
+		//echo json_encode( $data );
 	}
-		
-		echo json_encode( $data );	
-	}
-	// Функция изменения размера
-	// Изменяет размер изображения в зависимости от type:
-	//	type = 1 - эскиз
-	// 	type = 2 - большое изображение
-	//	rotate - поворот на количество градусов (желательно использовать значение 90, 180, 270)
-	//	quality - качество изображения (по умолчанию 75%)
-	function resize($file, $uploaddir, $type = 2, $quality = null, $rotate = null)
+
+	function resize($file, $filepath, $quality = 75, $type = 2, $rotate = null)
 	{
-		global $tmp_path;
-
-		// Ограничение по ширине в пикселях
-		$max_thumb_size = 120;
-		$max_size = 1000;
-
-		// Качество изображения по умолчанию
-		if ($quality == null)
-			$quality = 75;
-						//file_put_contents('t1',print_r($file,true));
-
-		// Cоздаём исходное изображение на основе исходного файла
-		if ($file['type'] == 'image/jpeg')
-			$source = imagecreatefromjpeg($file['tmp_name']);
-		elseif ($file['type'] == 'image/png')
-			$source = imagecreatefrompng($file['tmp_name']);
-		elseif ($file['type'] == 'image/gif')
-			$source = imagecreatefromgif($file['tmp_name']);
-		else
-			return false;
-
-		// Поворачиваем изображение
-		if ($rotate != null)
-			$src = imagerotate($source, $rotate, 0);
-		else
-			$src = $source;
-
-		// Определяем ширину и высоту изображения
-		$w_src = imagesx($src);
-		$h_src = imagesy($src);
-
-		// В зависимости от типа (эскиз или большое изображение) устанавливаем ограничение по ширине.
-		if ($type == 1)
-			$h = $max_thumb_size;
-		elseif ($type == 2)
-			$h = $max_size;
-
-		// Если высота больше заданной
-		if ($h_src > $w)
-		{
-			// Вычисление пропорций
-			$ratio = $h_src/$h;
-			$w_dest = round($w_src/$ratio);
-			$h_dest = round($h_src/$ratio);
-
-			// Создаём пустую картинку
-			$dest = imagecreatetruecolor($w_dest, $h_dest);
-
-			// Копируем старое изображение в новое с изменением параметров
-			imagecopyresampled($dest, $src, 0, 0, 0, 0, $w_dest, $h_dest, $w_src, $h_src);
-
-			// Вывод картинки и очистка памяти
-
-			imagejpeg($dest, $uploaddir . $file['name'], $quality);
-			//imagejpeg($dest, $tmp_path . $file['name'], $quality);
-			imagedestroy($dest);
-			imagedestroy($src);
-
-			return $file['name'];
-		}
-		else
-		{
-			// Вывод картинки и очистка памяти
-			imagejpeg($src, $uploaddir . $file['name'], $quality);
-			imagedestroy($src);
-
-			return $file['name'];
-		}
+			//file_put_contents('t1.txt',print_r($file,true),FILE_APPEND);
+			$file=imagecreatefromstring($file);
+			imagejpeg($file, $filepath, $quality);
+			imagedestroy($file);
+		//	return $file['name'];
 	}
+
 	public function showmedia($patient_id,$app_id){
 		$uploaddir="patient_media/".$patient_id."/".$app_id."/foto/";
+		//$uploaddir="patient_images/";
 		$error = false;
-		$data=scandir($uploaddir);
-	//file_put_contents('t1',(print_r(json_encode( $data ),true)));
-
-		echo json_encode( $data );	
+		if(file_exists($uploaddir)){
+			$data=scandir($uploaddir);
+			$data=array_slice($data,2);
+			echo json_encode( $data );
+		}
 	}
-		
 }
 ?>
