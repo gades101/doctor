@@ -2,8 +2,8 @@
 <script src="<?= base_url() ?>assets/js/fliplightbox.min.js"></script>
 <script type="text/javascript">
 <?php if (isset($appointment)){ ?>
-var img_path="<?= base_url() ?>patient_media/<?= $curr_patient['patient_id'] ?>/<?= $appointment['appointment_id'] ?>/foto/";
-function showimages(){
+	var img_path="<?= base_url() ?>patient_media/<?= $curr_patient['patient_id'] ?>/<?= $appointment['appointment_id'] ?>/foto/";
+	var showimages=function (){
 	$.ajax({
 		url: "<?= base_url() ?>index.php/appointment/showmedia/<?= $curr_patient['patient_id'] ?>/<?= $appointment['appointment_id'] ?>/",
 		type: 'POST',
@@ -17,112 +17,117 @@ function showimages(){
 				// выведем пути к загруженным файлам в блок '.ajax-respond'
 				var html = '',filelist=$('#filelist'),elem;
 				$('#filelist').html('');
-				respond.forEach(function(item){
-					if (item!="." && item!=".."){
-						elem=$('<a></a>').addClass('flipLightBox').attr('href',img_path+item).append($('<img>').attr({src:img_path+item, width:'120px',height:'120px',alt:'img'})).append('<span>'+item+'</span>');
-						filelist.append(elem);
-					}
-				});
+					respond.forEach(function(item){
+						if (item!="." && item!=".."){
+							elem=$('<a></a>').addClass('flipLightBox').attr('href',img_path+item).append($('<img>').attr({src:img_path+item, width:'120px',height:'120px',alt:'img'})).append('<span>'+item+'</span>');
+							filelist.append(elem);
+						}
+					});
+			
 			$('body').flipLightBox();
 			}
-			else{console.log('ОШИБКИ ОТВЕТА сервера: ' + respond.error );}
+			//else{console.log('ОШИБКИ ОТВЕТА сервера: ' + respond.error );}
 		},
-		error: function( jqXHR, textStatus, errorThrown ){
+		/*error: function( jqXHR, textStatus, errorThrown ){
 			console.log('ОШИБКИ AJAX запроса: ' + textStatus );
-		}
+		}*/
 	});
 }
 <?php } ?>
 $(window).load(function(){
-	
+
 //UPLOAD
 <?php if (isset($appointment)){ ?>
+showimages();
+var file_count,aj;
+if (window.File && window.FileReader && window.FileList && window.Blob) {
+    document.getElementById('filesToUp').onchange = function(){
+        var files = document.getElementById('filesToUp').files;
+	         if(files) {document.getElementById('uploadStatus').innerHTML = 'Йде завантаження';}
+        for(file_count = 0,aj=1; file_count < files.length; file_count++) {
+            resizeAndUpload(files[file_count]);
+        }
+    };
+} else {
+    alert('The File APIs are not fully supported in this browser.');
+}
+function resizeAndUpload(file) {
+var reader = new FileReader();
+    reader.onloadend = function() {
 
-(function($){
-// Глобальная переменная куда будут располагаться данные файлов. С не будем работать
-var files;
-//var data = new FormData();
-var data="";
-// Вешаем функцию на событие
-// Получим данные файлов и добавим их в переменную
-$('input[type=file]').change(function(){
-	files = this.files;
-});
-// Вешаем функцию ан событие click и отправляем AJAX запрос с данными файлов
-$('.submit.button').click(function( event ){
-	event.stopPropagation(); // Остановка происходящего
-	event.preventDefault();  // Полная остановка происходящего
-	// Содадим данные формы и добавим в них данные файлов из files
-	$.each( files, function( key, value ){
-			var reader = new FileReader(),
-			canvas = document.createElement('canvas'),
-			//canvas =document.getElementById('test2'),
-			max_height=1000,max_width=1000,
-			ctx= canvas.getContext("2d");		
-			reader.onloadend =function(){
-				tempImg  = document.createElement("img"),
-				tempImg.src=this.result;	
-				tempImg.onload=function(){
-					var width = tempImg.width;
-					var height = tempImg.height;
-					if (width > height) {
-						if (width > max_width) {
-							height *= max_width / width;
-							width = max_width;
-						}
-					} else {
-						if (height > max_height) {
-							width *= max_height / height;
-							height = max_height;
-						}
-					}							
-						ctx.clearRect(0,0,width,height);
-						canvas.width=width;
-						canvas.height=height;
-						ctx.drawImage(tempImg, 0, 0, width, height);
-						val = canvas.toDataURL('image/jpeg');
-						data=val;
-					$.ajax({
-						url: "<?=base_url()?>index.php/appointment/uploadfiles/<?= $curr_patient['patient_id'] ?>/<?= $appointment['appointment_id'] ?>",
-						type: 'POST',
-						data: "images="+data,
-						cache: false,
-						//dataType: 'json',
-						//processData: false, // Не обрабатываем файлы (Don't process the files)
-						//contentType: false, // Так jQuery скажет серверу что это строковой запрос
-						success: function( respond, textStatus, jqXHR ){
-							// Если все ОК
-							if( typeof respond.error === 'undefined' ){
-								// Файлы успешно загружены, делаем что нибудь здесьвыведем пути к загруженным файлам в блок '.ajax-respond'
-								var files_path = respond.files;
-								var html = '';
-								//$.each( files_path, function( key, val ){ html += val +'<br>'; } )
-								//$('.ajax-respond').html( html );
-							}
-							else{console.log('ОШИБКИ ОТВЕТА сервера: ' + respond.error );}
-						},
-						error: function( jqXHR, textStatus, errorThrown ){console.log('ОШИБКИ AJAX запроса: ' + textStatus );}
-					});					
-				}
+    var tempImg = new Image();
+    tempImg.src = reader.result;
+    tempImg.onload = function() {
+
+        var MAX_WIDTH = 1000;
+        var MAX_HEIGHT = 1000;
+        var tempW = tempImg.width;
+        var tempH = tempImg.height;
+        if (tempW > tempH) {
+            if (tempW > MAX_WIDTH) {
+               tempH *= MAX_WIDTH / tempW;
+               tempW = MAX_WIDTH;
+            }
+        } else {
+            if (tempH > MAX_HEIGHT) {
+               tempW *= MAX_HEIGHT / tempH;
+               tempH = MAX_HEIGHT;
+            }
+        }
+
+        var canvas = document.createElement('canvas');
+        canvas.width = tempW;
+        canvas.height = tempH;
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(this, 0, 0, tempW, tempH);
+        var dataURL = canvas.toDataURL("image/jpeg");
+		//console.log(dataURL);
+        var xhr = new XMLHttpRequest();
+		//xhr.upload.addEventListener("progress", uploadProgress, false);
+        xhr.addEventListener("load", uploadComplete, false);
+        xhr.onreadystatechange = function(ev){
+            //document.getElementById('progressNumber').innerHTML = aj;
+        };
+        xhr.open('POST', "<?=base_url()?>index.php/appointment/uploadfiles/<?= $curr_patient['patient_id'] ?>/<?= $appointment['appointment_id'] ?>", true);
+        xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        var data = 'images=' + dataURL;
+        xhr.send(data);
+
+      }
+   }
+   reader.readAsDataURL(file);
+}
+
+      function uploadProgress(evt) {
+        if (evt.lengthComputable) {
+          var percentComplete = Math.round(evt.loaded * 100 / evt.total);
+          var progress=document.createElement('div');
+          var bar=document.getElementById('progressNumber');
+          bar.appendChild(progress);
+         // console.log('progress: '+file_count);
+          progress.innerHTML = percentComplete.toString() + '%';
+        }
+        else {
+          document.getElementById('progressNumber').innerHTML = 'unable to compute';
+        }
+      }
+
+      function uploadComplete(evt) {
+			if(aj==file_count){
+         document.getElementById('uploadStatus').innerHTML = 'Завантаження завершено';
+		 showimages();
 			}
-			reader.readAsDataURL(value);		
-		});
-	});
-})(jQuery)
-
-
+        aj++;
+		}
 <?php } ?>
-//END UPLOAD	
-	
-	
-	
-	
+//END UPLOAD
+
 		var searchtreatment=[<?php $i = 0;
 		foreach ($treatments as $treatment) {
 			if ($i > 0) { echo ",";}
 			echo '{value:"' . $treatment['treatment'] . '",id:"' . $treatment['id'] . '"}';
 			$i++;
-		}		
+		}
 		?>];
 		$("#treatment").autocomplete({
 			autoFocus: true,
@@ -150,21 +155,17 @@ $('.submit.button').click(function( event ){
 			}
 		});
 
-	
-		
-	
-	
-	
+
 		var searcharrpatient=[<?php $i = 0;
 		foreach ($patients as $patient) {
 			if ($i > 0) { echo ",";}
 
 			echo '{value:"' . $patient['first_name'] . " " . $patient['middle_name'] . " " . $patient['last_name'] . '",id:"' . $patient['patient_id'] . '",display:"' . $patient['display_id'] . '",num:"' . $patient['phone_number'] . '"}';
 			$i++;
-			
+
 		}
 		?>];
-		
+
 		$("#patient_name").autocomplete({
 			autoFocus: true,
 			source: searcharrpatient,
@@ -473,14 +474,14 @@ function openReason(onof) {
 							<?php echo form_error('end_time','<div class="alert alert-danger">','</div>'); ?>
 						</div>
 					</div>
-					
+
 					<div class="col-md-3">
 						<div class="form-group">
 							<label for="treatment">Процедура</label>
 							<input type="text" name="treatment" value="<?=$curr_treatment_name;?>" id="treatment" class="form-control "/>
 						</div>
-					</div>					
-					
+					</div>
+
 					<br/>
 					<?php if (isset($appointment)){?>
 					<div class="col-md-12" id='mform_details'  <?php if ($status!='Cancel'){echo "style='display: none'";}?> >
@@ -548,16 +549,19 @@ function openReason(onof) {
 
 						</div>
 					</div>
-					
+
 					<?php if(isset($appointment)) {?>
 						<div class="panel-body">
 							<div class="wrapper">
-								<input type="file" class="fileUpload" multiple="multiple" accept="image/*" style="display:inline">
-								<a href="#" class="submit button btn btn-info">Завантажити фото</a>
+								<label for="filesToUp">Завантажити фото</label>
+								<input type="file" id="filesToUp" class="fileUpload" multiple="multiple" accept="image/*" style="display:inline">
+								<!--<a href="#" class="submit button btn btn-info">Завантажити фото</a>-->
 								<div class="ajax-respond"></div>
 								<div id="filelist"></div>
+								<div id="uploadStatus" style="font-size:30px"></div>
+								<div id="progressNumber"></div>
 							</div>
-							<button class="btn btn-info" onclick=showimages() >Показати фото</button>
+							<!--<button class="btn btn-info" onclick=showimages() >Показати фото</button>-->
 						</div>
 					<?php } ?>
 				</div>
