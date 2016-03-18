@@ -6364,6 +6364,8 @@ button.close {
 .tbl-cancel {background-color: RGBA(121, 121, 122, 0.2);}
 .tbl-now {background-color: RGBA(66, 139, 202, 0.2);}
 .tbl-future {background-color: RGBA(66, 202, 101, 0.2);}
+.foto-btn{max-width: 150px;font-size: 14px;text-align:center;vertical-align:middle;
+	cursor:pointer;color:#fff;background-color: #d9534f;}
 #patient_apps a{color: black;}
 /*.dataTables_empty {display:none;}*/
 /*# sourceMappingURL=bootstrap.css.map */
