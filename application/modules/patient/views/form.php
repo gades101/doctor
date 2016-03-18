@@ -141,7 +141,6 @@ function displayPage(page_num){
 				url: "<?php echo base_url(); ?>index.php/patient/patient_ajax_info/<?php echo $patient_id; ?>/"+page_num,
 				dataType: "json",		
 				success: function(data){
-					console.log(data);
 					page_build(page_num,data);
 				}
 			});		
