@@ -64,8 +64,6 @@ class Patient extends CI_Controller {
 			else $foto_num=0;
 			$appointments[$key]['foto_num']=$foto_num;
 		}
-		//$uploaddir="patient_images/";
-		file_put_contents('t1.txt',print_r($appointments,true));
 
 		
 		

@@ -1,5 +1,42 @@
+<script src="<?= base_url() ?>assets/js/fliplightbox.min.js"></script>
 <script type="text/javascript">
 var page_2=false;
+function closeImage(){$('#filelist').html('');$('.close_image').html('');}
+	function showimages (appointment_id){
+	$.ajax({
+		url: "<?= base_url() ?>index.php/appointment/showmedia/<?= $patient_id?>/"+appointment_id+"/",
+		type: 'POST',
+		cache: false,
+		dataType: 'json',
+		processData: false, // Не обрабатываем файлы (Don't process the files)
+		contentType: false, // Так jQuery скажет серверу что это строковой запрос
+		success: function( respond, textStatus, jqXHR ){
+			if( typeof respond.error === 'undefined' ){
+				// Файлы успешно загружены, делаем что нибудь здесь
+				// выведем пути к загруженным файлам в блок '.ajax-respond'
+				var html = '',filelist=$('#filelist'),elem;
+				var img_path="<?= base_url() ?>patient_media/<?= $patient_id ?>/"+appointment_id+"/foto/";
+				$('#filelist').html('');$('#close_image').html('');
+				$('.wrapper').append($('<div></div>').text('Закрити').addClass('close_image btn').click(closeImage));
+					respond.forEach(function(item){
+						if (item!="." && item!=".."){
+							elem=$('<a></a>').addClass('flipLightBox').attr('href',img_path+item).append($('<img>').attr({src:img_path+item, width:'200px',height:'200px',alt:'img'})).append('<span>'+item+'</span>');
+							filelist.append(elem);
+						}
+					});
+			
+			$('body').flipLightBox();
+			}
+			//else{console.log('ОШИБКИ ОТВЕТА сервера: ' + respond.error );}
+		},
+		/*error: function( jqXHR, textStatus, errorThrown ){
+			console.log('ОШИБКИ AJAX запроса: ' + textStatus );
+		}*/
+	});
+}
+
+
+
 function readURL(input) {
 	if (input.files && input.files[0]) {//Check if input has files.
 		var reader = new FileReader(); //Initialize FileReader.
@@ -141,6 +178,10 @@ function displayPage(page_num){
 				url: "<?php echo base_url(); ?>index.php/patient/patient_ajax_info/<?php echo $patient_id; ?>/"+page_num,
 				dataType: "json",		
 				success: function(data){
+<<<<<<< HEAD
+=======
+					//console.log(data);
+>>>>>>> fa216abfe77611353ed90caa26eb27304607555f
 					page_build(page_num,data);
 				}
 			});		
@@ -172,8 +213,11 @@ function page_build(page_num,data){
 			}
 			var row=$('<tr></tr>').append($('<td></td>').text(i)).append($('<td></td>').addClass(field_class).append($('<a></a>').text(item.treatment).attr("href",link)))
 			.append($('<td></td>').text(item.appointment_date))
-			.append($('<td></td>').text(item.start_time)).append($('<td></td>').text(item.name)).append($('<td></td>').text(item.foto_num)).append($('<td></td>'));
+			.append($('<td></td>').text(item.start_time)).append($('<td></td>').text(item.name)).append($('<td></td>').addClass('fotos').text(item.foto_num)).append($('<td></td>'));
 			tab.append(row);
+			if (item.foto_num!=0){
+				$(row).find('.fotos').click(function(){showimages(item.appointment_id)});
+			}
 			i++;
 		});
 		$("#patient_apps").dataTable({
@@ -412,8 +456,9 @@ function goToApp(link){
 						</tbody>
 					</table>
 				</div>
-				
-				
+				<div class="wrapper" style="position:fixed;bottom:0">
+					<div id="filelist"></div>
+				</div>				
 			</div>
 		</div>
 
