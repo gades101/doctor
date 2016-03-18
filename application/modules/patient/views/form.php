@@ -16,11 +16,13 @@ function closeImage(){$('#filelist').html('');$('.close_image').html('');}
 				// выведем пути к загруженным файлам в блок '.ajax-respond'
 				var html = '',filelist=$('#filelist'),elem;
 				var img_path="<?= base_url() ?>patient_media/<?= $patient_id ?>/"+appointment_id+"/foto/";
-				$('#filelist').html('');$('#close_image').html('');
-				$('.wrapper').append($('<div></div>').text('Закрити').addClass('close_image btn').click(closeImage));
+				$('#filelist').html('');
+				if ($('.close_image').text()==''){
+					$('.wrapper').append($('<div></div>').text('Закрити').addClass('close_image foto-btn').click(closeImage));
+				}
 					respond.forEach(function(item){
 						if (item!="." && item!=".."){
-							elem=$('<a></a>').addClass('flipLightBox').attr('href',img_path+item).append($('<img>').attr({src:img_path+item, width:'200px',height:'200px',alt:'img'})).append('<span>'+item+'</span>');
+							elem=$('<a></a>').addClass('flipLightBox').attr('href',img_path+item).append($('<img>').attr({src:img_path+item, width:'150px',height:'150',alt:'img'})).append('<span>'+item+'</span>');
 							filelist.append(elem);
 						}
 					});
@@ -178,10 +180,6 @@ function displayPage(page_num){
 				url: "<?php echo base_url(); ?>index.php/patient/patient_ajax_info/<?php echo $patient_id; ?>/"+page_num,
 				dataType: "json",		
 				success: function(data){
-<<<<<<< HEAD
-=======
-					//console.log(data);
->>>>>>> fa216abfe77611353ed90caa26eb27304607555f
 					page_build(page_num,data);
 				}
 			});		
@@ -205,7 +203,7 @@ function page_build(page_num,data){
 			}
 			else {
 				if (item.appointment_date < curr_date || (item.appointment_date == curr_date && item.start_time < curr_time)){
-					field_class = "tbl-past";					
+					field_class = "tbl-past";
 				}
 				else {
 					field_class = "tbl-future";	
@@ -216,7 +214,7 @@ function page_build(page_num,data){
 			.append($('<td></td>').text(item.start_time)).append($('<td></td>').text(item.name)).append($('<td></td>').addClass('fotos').text(item.foto_num)).append($('<td></td>'));
 			tab.append(row);
 			if (item.foto_num!=0){
-				$(row).find('.fotos').click(function(){showimages(item.appointment_id)});
+				$(row).find('.fotos').addClass('foto-btn').click(function(){showimages(item.appointment_id)});
 			}
 			i++;
 		});
