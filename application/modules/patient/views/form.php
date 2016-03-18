@@ -214,11 +214,8 @@ function page_build(page_num,data){
 			.append($('<td></td>').text(item.start_time)).append($('<td></td>').text(item.name)).append($('<td></td>').addClass('fotos').text(item.foto_num)).append($('<td></td>'));
 			tab.append(row);
 			if (item.foto_num!=0){
-<<<<<<< HEAD
-				$(row).find('.fotos').addClass('btn-danger').click(function(){showimages(item.appointment_id)});
-=======
+
 				$(row).find('.fotos').addClass('foto-btn').click(function(){showimages(item.appointment_id)});
->>>>>>> 3ceff850252a0dea63294008879cf1bb3e5eb749
 			}
 			i++;
 		});
@@ -298,8 +295,8 @@ function goToApp(link){
 		<div class="col-md-12">
 			<div class="panel panel-primary">
 				<div class="panel-heading">
-					<span class="tblHead" onclick=displayPage(1) style="min-width:20%"/>Особисті дані пацієнта</span>
-					<span class="tblHead" onclick=displayPage(2) />Прийоми</span>					
+					<span class="tblHead btn-danger" onclick=displayPage(1) style="min-width:20%"/>Особисті дані пацієнта</span>
+					<span class="tblHead btn-danger" onclick=displayPage(2) />Прийоми</span>					
 
 				</div>
 				<div id="page_1" class="panel-body">
