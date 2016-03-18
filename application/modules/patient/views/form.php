@@ -213,7 +213,7 @@ function page_build(page_num,data){
 			.append($('<td></td>').text(item.start_time)).append($('<td></td>').text(item.name)).append($('<td></td>').addClass('fotos').text(item.foto_num)).append($('<td></td>'));
 			tab.append(row);
 			if (item.foto_num!=0){
-				$(row).find('.fotos').click(function(){showimages(item.appointment_id)});
+				$(row).find('.fotos').addClass('btn-danger').click(function(){showimages(item.appointment_id)});
 			}
 			i++;
 		});
