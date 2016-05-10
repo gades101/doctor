@@ -46,6 +46,7 @@ class Doctor extends CI_Controller {
 			}else{
 				$data['doctors'] = $this->doctor_model->find_doctor();
 			}
+
 			//print_r($data['doctors']);
 			$data['departments'] = $this->doctor_model->get_all_departments();
             $this->load->view('templates/header');
@@ -144,8 +145,8 @@ class Doctor extends CI_Controller {
 					$file_upload = $this->do_upload($contact_id);
 					//print_r($file_upload);
 					//echo "<br/>";
-					
-					
+
+
 					if(isset($file_upload['file_name'])){
 						$file_name = $file_upload['file_name'];
 					}else{
@@ -155,8 +156,8 @@ class Doctor extends CI_Controller {
 					$this->contact_model->update_address();
 					$this->doctor_model->update_doctors();
 					$this->index();
-					
-					
+
+
 					/*if(isset($file_upload['error']) && $file_upload['error']=='<p>Ви не вибрали файл для завантаження.</p>'){
 						$this->contact_model->update_contact();
 						$this->contact_model->update_address();
@@ -185,7 +186,7 @@ class Doctor extends CI_Controller {
 						$this->doctor_model->update_doctors();
 						$this->index();
 					}*/
-					
+
 				}
 			}
 		}

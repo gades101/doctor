@@ -23,7 +23,7 @@
 							filelist.append(elem);
 						}
 					});
-			
+
 			$('body').flipLightBox();
 			}
 			//else{console.log('ОШИБКИ ОТВЕТА сервера: ' + respond.error );}
@@ -524,6 +524,7 @@ function openReason(onof) {
 
 					<div class="col-md-12" id="button_panel">
 						<div class="form-group">
+
 							<a class="btn btn-primary" href="<?=base_url() . "index.php/appointment/index/".$dep;?>"><?=$this->lang->line('back_to_app');?></a>
 					<?php if(isset($appointment)){ ?>
 						<a class="btn btn-primary" href="<?php echo site_url("patient/edit/" . $curr_patient['patient_id']."/patient"); ?>">Редагувати пацієнта</a>
@@ -536,14 +537,15 @@ function openReason(onof) {
 						<?php } ?>
 						<?php if ($status != 'Waiting') { ?>
 							<a class="btn btn-primary" href="<?=base_url() . "index.php/appointment/change_status/" . $appointment_id . "/Waiting";?>"><?php echo $this->lang->line('waiting');?></a>
-						<?php } ?>
+						<?php } ?>-->
 						<?php if ($status != 'Consultation') { ?>
 							<a class="btn btn-primary" href="<?=base_url() . "index.php/appointment/change_status/" . $appointment_id . "/Consultation";?>">Консультація</a>
-						<?php } ?>-->
+						<?php } ?>
 						<?php if (!isset($doctor)) { ?>
 							<a class="btn btn-danger" href="<?=base_url() . "index.php/appointment/del/" . $appointment_id;?>">Видалити запис</a>
 						<?php } ?>
 					<?php } ?>
+
 						</div>
 					</div>
 

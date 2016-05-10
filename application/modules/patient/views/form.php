@@ -26,7 +26,7 @@ function closeImage(){$('#filelist').html('');$('.close_image').html('');}
 							filelist.append(elem);
 						}
 					});
-			
+
 			$('body').flipLightBox();
 			}
 			//else{console.log('ОШИБКИ ОТВЕТА сервера: ' + respond.error );}
@@ -62,7 +62,7 @@ $(window).load(function(){
 			format: '<?=$def_dateformate; ?>',
 
 	});
-		
+
 	function convertDateFormat(dateString){
 		if('<?=$def_dateformate; ?>' == 'd-m-Y'){
 			var dateArray = dateString.split("-");
@@ -162,7 +162,7 @@ $(window).load(function(){
 	});
 
 
-	
+
 });
 
 function displayPage(page_num){
@@ -178,13 +178,13 @@ function displayPage(page_num){
 			$.ajax({
 				type: "POST",
 				url: "<?php echo base_url(); ?>index.php/patient/patient_ajax_info/<?php echo $patient_id; ?>/"+page_num,
-				dataType: "json",		
+				dataType: "json",
 				success: function(data){
 					page_build(page_num,data);
 				}
-			});		
+			});
 		}
-	}	
+	}
 
 }
 function page_build(page_num,data){
@@ -206,22 +206,21 @@ function page_build(page_num,data){
 					field_class = "tbl-past";
 				}
 				else {
-					field_class = "tbl-future";	
-				}		
+					field_class = "tbl-future";
+				}
 			}
 			var row=$('<tr></tr>').append($('<td></td>').text(i)).append($('<td></td>').addClass(field_class).append($('<a></a>').text(item.treatment).attr("href",link)))
 			.append($('<td></td>').text(item.appointment_date))
 			.append($('<td></td>').text(item.start_time)).append($('<td></td>').text(item.name)).append($('<td></td>').addClass('fotos').text(item.foto_num)).append($('<td></td>'));
 			tab.append(row);
 			if (item.foto_num!=0){
-
 				$(row).find('.fotos').addClass('foto-btn').click(function(){showimages(item.appointment_id)});
 			}
 			i++;
 		});
 		$("#patient_apps").dataTable({
 			"pageLength": 50
-		});	
+		});
 	}
 }
 
@@ -296,7 +295,7 @@ function goToApp(link){
 			<div class="panel panel-primary">
 				<div class="panel-heading">
 					<span class="tblHead btn-danger" onclick=displayPage(1) style="min-width:20%"/>Особисті дані пацієнта</span>
-					<span class="tblHead btn-danger" onclick=displayPage(2) />Прийоми</span>					
+					<span class="tblHead btn-danger" onclick=displayPage(2) />Прийоми</span>
 
 				</div>
 				<div id="page_1" class="panel-body">
@@ -395,7 +394,7 @@ function goToApp(link){
 								<input type="hidden" id="src" name="src" value="<?php echo $contact_contact_image; ?>" />
 								<?php echo form_error('userfile','<div class="alert alert-danger">','</div>'); ?>
 							</div>
-							
+
 							<div class="form-group">
 								<label for="type"><?php echo $this->lang->line('address');?></label>
 								<input type="input"  class="form-control" name="address_line_1" value="<?php echo $contact_address_line_1; ?>"/>
@@ -430,7 +429,7 @@ function goToApp(link){
 					</div>
 					<?php echo form_close(); ?>
 				</div>
-				
+
 				<div id="page_2" class="table-responsive"  style='position:relative;display:none;'>
 					<table id="patient_apps" class="table table-condensed table-striped table-bordered table-hover dataTable no-footer"  >
 						<thead>
@@ -457,7 +456,7 @@ function goToApp(link){
 				</div>
 				<div class="wrapper" style="position:fixed;bottom:0">
 					<div id="filelist"></div>
-				</div>				
+				</div>
 			</div>
 		</div>
 
