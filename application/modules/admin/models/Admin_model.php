@@ -42,13 +42,13 @@ class Admin_model extends CI_Model {
 	function get_doctor2($dep=NULL){
 		if ($dep=='cl') $dep='all';
 		if ($dep==NULL or $dep=="all"){
-         $query = $this->db->get_where('users', array('level' => 'Doctor'));
+         $query = $this->db->get_where('users', array('level' => 'Doctor','is_active' => '1'));
          return $query->result_array();
 
 		}
 		elseif (is_numeric($dep)) {
 
-			$query = $this->db->query("select ck_users.* from ck_users, ck_doctor where ck_users.userid=ck_doctor.userid and ck_doctor.department_id=$dep");
+			$query = $this->db->query("select ck_users.* from ck_users, ck_doctor where ck_users.userid=ck_doctor.userid and ck_doctor.department_id=$dep and ck_users.is_active=1");
 
 			return $query->result_array();
 

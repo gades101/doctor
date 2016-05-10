@@ -44,7 +44,6 @@ class Patient extends CI_Controller {
 		if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
             redirect('login/index');
         } else {
-          // $this->patient_model->update_pat_ids();
             $data['patients'] = $this->patient_model->find_patient();
             $this->load->view('templates/header');
             $this->load->view('templates/menu');
@@ -52,8 +51,7 @@ class Patient extends CI_Controller {
             $this->load->view('templates/footer');
         }
     }
-    
-    
+
     public function patient_ajax_info($patient_id,$page_num=NULL){
 		$appointments=$this->appointment_model->get_all_appointments_by_patient($patient_id);
 		foreach($appointments as $key => $app){
@@ -64,9 +62,6 @@ class Patient extends CI_Controller {
 			else $foto_num=0;
 			$appointments[$key]['foto_num']=$foto_num;
 		}
-
-		
-		
 		echo json_encode($appointments);
     }
 	/** File Upload for Patient Profile Image */
@@ -109,6 +104,7 @@ class Patient extends CI_Controller {
 				//$data['address'] = $this->contact_model->get_contact_address($contact_id);
 				$data['emails'] = $this->contact_model->get_contact_email($contact_id);
 				$data['def_dateformate'] = $this->settings_model->get_date_formate();
+				//file_put_contents('t1',print_r($data,true));
 				$this->load->view('templates/header');
 				$this->load->view('templates/menu');
 				$this->load->view('form', $data);
@@ -822,6 +818,6 @@ class Patient extends CI_Controller {
 			$this->load->view('new_inquiries', $data);
 			$this->load->view('templates/footer');
 		}
-    }	
+    }
 }
 ?>
