@@ -231,6 +231,10 @@ class Settings extends CI_Controller {
 			return $data['upload_data'];
 		}
     }
+    
+    public function events(){
+    
+    }
 
 	public function restore_backup(){
 		if ( $this->is_session_started() === FALSE ){
