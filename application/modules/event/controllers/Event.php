@@ -40,7 +40,6 @@ class Event extends CI_Controller {
             //$this->form_validation->set_rules('event_price', 'Treatment Price', 'trim|required|xss_clean');
             //$data['currency_postfix'] = $this->settings_model->get_currency_postfix();
             if ($this->form_validation->run() === FALSE) {
-                file_put_contents('t1.txt',print_r('no',true));
                 $data['events'] = $this->event_model->get_events();                
                 $this->load->view('templates/header');
                 $this->load->view('templates/menu');
@@ -48,7 +47,6 @@ class Event extends CI_Controller {
                 $this->load->view('templates/footer');
             } else {
                 $this->event_model->add_event();
-                //file_put_contents('t1.txt',print_r('add',true));
                 $data['events'] = $this->event_model->get_events();
                 $this->load->view('templates/header');
                 $this->load->view('templates/menu');

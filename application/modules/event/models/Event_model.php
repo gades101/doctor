@@ -11,8 +11,6 @@ class Event_model extends CI_Model {
 	}
 
    public function add_event() {
-       file_put_contents('t1.txt',print_r($this->input->post('title'),true));
-
       $data['title'] = $this->input->post('title');
       $data['date'] = $this->input->post('date');
       if($this->input->post('year')){
