@@ -1,12 +1,12 @@
 <?php
 
-class Treatment extends CI_Controller {
+class Event extends CI_Controller {
 
     function __construct() {
         parent::__construct();
 		
 		$this->load->model('menu_model');
-		$this->load->model('treatment_model');
+		$this->load->model('event_model');
 		$this->load->model('settings/settings_model');
 		
 		$this->lang->load('main');
@@ -28,7 +28,7 @@ class Treatment extends CI_Controller {
 		}
 		return FALSE;
 	}
-	/**Treatments*/
+	/**Events*/
     public function index() {
 		if ( $this->is_session_started() === FALSE ){
 			session_start();
@@ -36,64 +36,66 @@ class Treatment extends CI_Controller {
         if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
             redirect('login/index');
         } else {
-            $this->form_validation->set_rules('treatment', 'Treatment Name', 'trim|required|xss_clean|is_unique[treatments.treatment]');
-            $this->form_validation->set_rules('treatment_price', 'Treatment Price', 'trim|required|xss_clean');
-            $data['currency_postfix'] = $this->settings_model->get_currency_postfix();
+            $this->form_validation->set_rules('title', 'title', 'trim|required|xss_clean|is_unique[events.title]');
+            //$this->form_validation->set_rules('event_price', 'Treatment Price', 'trim|required|xss_clean');
+            //$data['currency_postfix'] = $this->settings_model->get_currency_postfix();
             if ($this->form_validation->run() === FALSE) {
-                $data['treatments'] = $this->treatment_model->get_treatments();                
+                file_put_contents('t1.txt',print_r('no',true));
+                $data['events'] = $this->event_model->get_events();                
                 $this->load->view('templates/header');
                 $this->load->view('templates/menu');
-                $this->load->view('treatments_list', $data);
+                $this->load->view('events_list', $data);
                 $this->load->view('templates/footer');
             } else {
-                $this->treatment_model->add_treatment();
-                $data['treatments'] = $this->treatment_model->get_treatments();
+                $this->event_model->add_event();
+                //file_put_contents('t1.txt',print_r('add',true));
+                $data['events'] = $this->event_model->get_events();
                 $this->load->view('templates/header');
                 $this->load->view('templates/menu');
-                $this->load->view('treatments_list', $data);
+                $this->load->view('events_list', $data);
                 $this->load->view('templates/footer');
             }
         }
     }
-	public function edit_treatment($id) {
+	public function edit_event($id) {
         if ( $this->is_session_started() === FALSE ){
 			session_start();
 		}
         if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
             redirect('login/index');
         } else {
-			$this->form_validation->set_rules('treatment', 'Treatment Name', 'trim|required|xss_clean');
-            $this->form_validation->set_rules('treatment_price', 'Treatment Price', 'trim|required|xss_clean');
+			$this->form_validation->set_rules('event', 'title', 'trim|required|xss_clean');
+            //$this->form_validation->set_rules('event_price', 'Treatment Price', 'trim|required|xss_clean');
 			$data['currency_postfix'] = $this->settings_model->get_currency_postfix();
 			if ($this->form_validation->run() === FALSE) {
-				$data['treatment'] = $this->treatment_model->get_edit_treatment($id);
+				$data['event'] = $this->event_model->get_edit_event($id);
 				$this->load->view('templates/header');
 				$this->load->view('templates/menu');
-				$this->load->view('edit_treatment', $data);
+				$this->load->view('edit_event', $data);
 				$this->load->view('templates/footer');
 			} else {
-				$treatment_id = $this->input->post('treatment_id');
-                $this->treatment_model->edit_treatment($treatment_id);
-				$data['treatments'] = $this->treatment_model->get_treatments();                
+				$event_id = $this->input->post('event_id');
+                $this->event_model->edit_event($event_id);
+				$data['events'] = $this->event_model->get_events();                
                 $this->load->view('templates/header');
                 $this->load->view('templates/menu');
-                $this->load->view('treatments_list', $data);
+                $this->load->view('events_list', $data);
                 $this->load->view('templates/footer');
             }
         }
     }
-	public function delete_treatment($id) {
+	public function delete_event($id) {
         if ( $this->is_session_started() === FALSE ){
 			session_start();
 		}
         if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
             redirect('login/index');
         } else {
-            $this->treatment_model->delete_treatment($id);
+            $this->event_model->delete_event($id);
             $this->index();
         }
     }
-}
+
 	public function events(){
 		if ( $this->is_session_started() === FALSE ){
 			session_start();
@@ -107,5 +109,5 @@ class Treatment extends CI_Controller {
 			$this->load->view('templates/footer');
 		}
 	}	
-	
+}	
 ?>

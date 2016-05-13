@@ -19,13 +19,13 @@ $( window ).load(function() {
 				<div class="panel-body">
 					<?php echo form_open('event/index'); ?>
 						<div class="form-group input-group">
-							<label for="event">Подія</label>
-							<input type="text" class="form-control" name="event" id="event" value=""/>
-							<?php echo form_error('event','<div class="alert alert-danger">','</div>'); ?>
+							<label for="title">Подія</label>
+							<input type="text" class="form-control" name="title" id="title" value=""/>
+							<?php echo form_error('title','<div class="alert alert-danger">','</div>'); ?>
 						</div>
 						<div class="form-group input-group">
-							<label for="event_date"><?php echo $this->lang->line('charges_fees');?></label>
-							<input type="text" class="form-control"  name="event_date" id="event_date" value=""/>
+							<label for="event_date">Дата</label>
+							<input type="text" class="form-control"  name="date" id="event_date" value=""/>
 							<?php echo form_error('event_date','<div class="alert alert-danger">','</div>'); ?>
 						</div>
 						<div class="form-group input-group">
@@ -39,7 +39,7 @@ $( window ).load(function() {
 					<?php echo $this->lang->line('events');?>
 				</div>
 				<div class="panel-body">
-					<?php if ($events) { ?>
+					<?php if (isset($events)) { ?>
 						<table class="table table-striped table-bordered table-hover dataTable no-footer" id="events" >
 						<thead>
 							<tr>
@@ -56,7 +56,9 @@ $( window ).load(function() {
 						<tr <?php if ($i%2 == 0) { echo "class='even'"; } else {echo "class='odd'";}?> >
 							<td><?php echo $j; ?></td>
 							<td><?php echo $event['title']; ?></td>
-						</tr>
+							<td></td>
+							<td></td>
+							</tr>
             <?php $i++; $j++;?>
             <?php endforeach ?>
         </tbody>
