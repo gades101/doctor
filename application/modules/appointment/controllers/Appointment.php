@@ -13,6 +13,7 @@ class Appointment extends CI_Controller {
 		$this->load->model('module/module_model');
 		$this->load->model('menu_model');
 		$this->load->model('treatment/treatment_model');
+		$this->load->model('event/event_model');
 
         $this->load->helper('url');
         $this->load->helper('form');
@@ -83,9 +84,13 @@ class Appointment extends CI_Controller {
             $data['todos'] = $this->appointment_model->get_todos();
 
 			//Display Followups for next 8 days
-			$followup_date = date('Y-m-d', strtotime("+8 days"));
-			$data['followups'] = $this->appointment_model->get_followup($followup_date);
+			/*$followup_date = date('Y-m-d', strtotime("+8 days"));
+			$data['followups'] = $this->appointment_model->get_followup($followup_date);*/
 
+			//Display Events
+			$data['events'] = $this->event_model->get_events();			
+			
+			
 			//Fetch all patient details
 			$data['patients'] = $this->patient_model->get_patient();
 			//Fetch Doctor Schedules

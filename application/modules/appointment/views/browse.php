@@ -211,33 +211,28 @@ function check_doctor_availability($i,$doctor_id){
 				</div>
 			</div>
 			<div class="col-md-4">
-				<!--------------------------- Display Follow-Up  ------------------------------->
+				<!--------------------------- Display Event  ------------------------------->
 				<div class="panel panel-primary">
                     <div class="panel-heading"><?=$this->lang->line('follow_ups');?></div>
 					<div class="panel-body"  style="overflow:scroll;height:250px;padding:0;">
-						<?php if ($followups) { ?>
+						<?php if ($events) { ?>
 							<table class="table table-condensed table-striped table-bordered table-hover dataTable no-footer" id="followup_table">
 								<thead>
-									<th><?= $this->lang->line('date') .' '. $this->lang->line('follow_up');?></th>
-									<th><?= $this->lang->line('patient');?></th>
+									<th><?= $this->lang->line('date');?></th>
+									<th>Подія</th>
 								</thead>
 								<tbody>
 								<?php
 									$i = 0;
-									foreach ($followups as $followup) {
-										foreach ($patients as $patient) {
-											if ($followup['patient_id'] == $patient['patient_id']) {
-												$followup_data['followup_date'] = $followup['followup_date'];
-												$followup_data['patient_name'] = $patient['first_name'] . " " . $patient['middle_name'] . " " . $patient['last_name'];
-												?>
-												<tr>
-													<td> <?= date('d.m.y', strtotime($followup_data['followup_date']));?></td>
-													<td><a href='<?= base_url() . "index.php/patient/followup/" . $patient['patient_id'] ;?>' ><?=$followup_data['patient_name'];?></a></td>
-												</tr>
-												<?php break;
-											}
-										}
-									} ?>
+									foreach ($events as $event) {
+								?>
+										<tr>
+											<td> <?= date('d.m.y', strtotime($event['date']));?></td>
+											<td><a href='<?= base_url() . "index.php/event" ;?>' ><?=$event['title'];?></a></td>
+										</tr>
+								<?php 
+									} 
+								?>
 								</tbody>
 							</table>
 						<?php }	?>
