@@ -6,6 +6,10 @@ $( window ).load(function() {
 		});
 		
     $('#events').dataTable();	
+	$('#date').datetimepicker({
+		timepicker:false,
+		format: 'd/m',
+	});
 	
 } )
 </script>
@@ -24,16 +28,16 @@ $( window ).load(function() {
 							<?php echo form_error('title','<div class="alert alert-danger">','</div>'); ?>
 						</div>
 						<div class="form-group input-group">
-							<label for="day">День</label>
-							<input type="text" class="form-control"  name="day" id="day" value=""/>
-							<?php echo form_error('day','<div class="alert alert-danger">','</div>'); ?>
+							<label for="date">Дата</label>
+							<input type="text" class="form-control"  name="date" id="date" value=""/>
+							<!--<?php echo form_error('date','<div class="alert alert-danger">','</div>'); ?>-->
 						</div>
 						
-						<div class="form-group input-group">
+						<!--<div class="form-group input-group">
 							<label for="event_month">Місяць</label>
 							<input type="text" class="form-control"  name="month" id="event_month" value=""/>
 							<?php echo form_error('event_month','<div class="alert alert-danger">','</div>'); ?>
-						</div>
+						</div>-->
 						<div class="form-group input-group">
 							<label for="event_date">Рік</label>
 							<input type="text" class="form-control"  name="year" id="event_year" value=""/>
@@ -67,7 +71,7 @@ $( window ).load(function() {
 						<?php foreach ($events as $event):  ?>
 						<tr <?php if ($i%2 == 0) { echo "class='even'"; } else {echo "class='odd'";}?> >
 							<td><?php echo $event['title']; ?></td>
-							<td><?php echo $event['day']."-".$event['month']; ?></td>
+							<td><?php echo $event['date']; ?></td>
 							<td><?php echo $event['year']; ?></td>
 							<td><a class="btn btn-primary btn-sm" title="" href="<?php echo site_url("event/edit_event/" . $event['id']); ?>"><?php echo $this->lang->line('edit');?></a></td>
 							<td><a class="btn btn-danger btn-sm confirmDelete" title="" href="<?php echo site_url("event/delete_event/" . $event['id']); ?>"><?php echo $this->lang->line('delete');?></a></td>

@@ -37,7 +37,7 @@ class Event extends CI_Controller {
             redirect('login/index');
         } else {
             $this->form_validation->set_rules('title', 'Подія', 'trim|required|xss_clean');
-            $this->form_validation->set_rules('day', 'День', 'trim|required|integer');
+            $this->form_validation->set_rules('date', 'День', 'trim|required');
             //$this->form_validation->set_rules('event_price', 'Treatment Price', 'trim|required|xss_clean');
             //$data['currency_postfix'] = $this->settings_model->get_currency_postfix();
             if ($this->form_validation->run() === FALSE) {
