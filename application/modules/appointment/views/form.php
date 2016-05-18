@@ -275,6 +275,7 @@ var reader = new FileReader();
 		$('#appointment_date').datetimepicker({
 			timepicker:false,
 			format: '<?=$def_dateformate; ?>',
+			
 		});
 		$('#start_time').datetimepicker({
 			datepicker:false,
