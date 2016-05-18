@@ -12,7 +12,8 @@ class Event_model extends CI_Model {
 
    public function add_event() {
       $data['title'] = $this->input->post('title');
-      $data['date'] = $this->input->post('date');
+      $data['day'] = $this->input->post('day');
+      $data['month'] = $this->input->post('month');
       if($this->input->post('year')){
 			$data['year'] = $this->input->post('year');      
       }

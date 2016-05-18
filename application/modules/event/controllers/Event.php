@@ -36,7 +36,8 @@ class Event extends CI_Controller {
         if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
             redirect('login/index');
         } else {
-            $this->form_validation->set_rules('title', 'title', 'trim|required|xss_clean|is_unique[events.title]');
+            $this->form_validation->set_rules('title', 'Подія', 'trim|required|xss_clean');
+            $this->form_validation->set_rules('day', 'День', 'trim|required|integer');
             //$this->form_validation->set_rules('event_price', 'Treatment Price', 'trim|required|xss_clean');
             //$data['currency_postfix'] = $this->settings_model->get_currency_postfix();
             if ($this->form_validation->run() === FALSE) {
