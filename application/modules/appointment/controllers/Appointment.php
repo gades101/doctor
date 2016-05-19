@@ -69,7 +69,7 @@ class Appointment extends CI_Controller {
 			$_SESSION['dep'] = $dep;
 
 			//Fetch Time Interval from settings
-            $data['time_interval'] = $this->settings_model->get_time_interval();
+         $data['time_interval'] = $this->settings_model->get_time_interval();
 			$data['time_format'] = 'H:i';//$this->settings_model->get_time_formate();
 
 			//Generate display date in YYYY-MM-DD formate
@@ -88,8 +88,30 @@ class Appointment extends CI_Controller {
 			$data['followups'] = $this->appointment_model->get_followup($followup_date);*/
 
 			//Display Events
-			$data['events'] = $this->event_model->get_events();			
+			$events = $this->event_model->get_events();
+			foreach($events as $event){
+				if ($event['year']==""){
+					if ($event['month']>$month){
+						$event['year']=$year;
+					}
+					elseif ($event['month']<$month){
+						$event['year']=$year+1;
+					}
+					elseif ($event['month']==$month){
+						if ($event['day']>=$day){
+							$event['year']=$year;			
+						}
+						else $event['year']=$year+1;
+					}
+				}
+				if($event['year']>=$year){
+				
+					
+				}
+			}
 			
+			
+			//$data['events']=
 			
 			//Fetch all patient details
 			$data['patients'] = $this->patient_model->get_patient();
