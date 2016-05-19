@@ -71,7 +71,7 @@ $( window ).load(function() {
 						<?php foreach ($events as $event):  ?>
 						<tr <?php if ($i%2 == 0) { echo "class='even'"; } else {echo "class='odd'";}?> >
 							<td><?php echo $event['title']; ?></td>
-							<td><?php echo $event['date']; ?></td>
+							<td><?php echo $event['day'].'/'.$event['month']; ?></td>
 							<td><?php echo $event['year']; ?></td>
 							<td><a class="btn btn-primary btn-sm" title="" href="<?php echo site_url("event/edit_event/" . $event['id']); ?>"><?php echo $this->lang->line('edit');?></a></td>
 							<td><a class="btn btn-danger btn-sm confirmDelete" title="" href="<?php echo site_url("event/delete_event/" . $event['id']); ?>"><?php echo $this->lang->line('delete');?></a></td>

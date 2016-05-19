@@ -89,6 +89,8 @@ class Appointment extends CI_Controller {
 
 			//Display Events
 			$events = $this->event_model->get_events();
+			$ymd=$year.$month.$day;
+			$data['events']=array();
 			foreach($events as $event){
 				if ($event['year']==""){
 					if ($event['month']>$month){
@@ -105,10 +107,19 @@ class Appointment extends CI_Controller {
 					}
 				}
 				if($event['year']>=$year){
-				
-					
+					$event['ymd']=$event['year'].$event['month'].$event['day'];
+											file_put_contents('t1.txt',print_r($event,true),FILE_APPEND);
+
+					if($event['ymd']>=$ymd){
+						$data['events'][]=$event;
+					}			
 				}
 			}
+			$ymd_array=array();
+			foreach($data['events'] as $key=>$val){
+				$ymd_array[$key]=$val['ymd'];
+			}
+			array_multisort($ymd_array,SORT_NUMERIC,$data['events']);
 			
 			
 			//$data['events']=

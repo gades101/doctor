@@ -213,7 +213,7 @@ function check_doctor_availability($i,$doctor_id){
 			<div class="col-md-4">
 				<!--------------------------- Display Event  ------------------------------->
 				<div class="panel panel-primary">
-                    <div class="panel-heading"><?=$this->lang->line('follow_ups');?></div>
+                    <div class="panel-heading">Події</div>
 					<div class="panel-body"  style="overflow:scroll;height:250px;padding:0;">
 						<?php if ($events) { ?>
 							<table class="table table-condensed table-striped table-bordered table-hover dataTable no-footer" id="followup_table">
@@ -224,10 +224,11 @@ function check_doctor_availability($i,$doctor_id){
 								<tbody>
 								<?php
 									$i = 0;
+									//file_put_contents('t1.txt',print_r($events,true));
 									foreach ($events as $event) {
 								?>
 										<tr>
-											<td> <?= date('d.m.y', strtotime($event['date']));?></td>
+											<td> <?= $event['day'].'/'.$event['month'].'/'.$event['year'];?></td>
 											<td><a href='<?= base_url() . "index.php/event" ;?>' ><?=$event['title'];?></a></td>
 										</tr>
 								<?php 

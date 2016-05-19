@@ -12,7 +12,9 @@ class Event_model extends CI_Model {
 
    public function add_event() {
       $data['title'] = $this->input->post('title');
-      $data['date'] = $this->input->post('date');
+	  $date=$this->input->post('date');
+      $data['day'] = substr($date,0,2);
+      $data['month'] = substr($date,3,5);
       if($this->input->post('year')){
 			$data['year'] = $this->input->post('year');      
       }
