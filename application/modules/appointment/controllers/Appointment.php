@@ -57,15 +57,13 @@ class Appointment extends CI_Controller {
 				date_default_timezone_set($timezone);
 
 			//Default to today's date if date is not mentioned
-            if ($year == NULL) { $year = date("Y"); }
-            if ($month == NULL) { $month = date("m"); }
-            if ($day == NULL) { $day = date("d");}
-
-            $data['year'] = $year;
-            $data['month'] = $month;
-            $data['day'] = $day;
+         if ($year == NULL) { $year = date("Y"); }
+         if ($month == NULL) { $month = date("m"); }
+         if ($day == NULL) { $day = date("d");}
+         $data['year'] = $year;
+         $data['month'] = $month;
+         $data['day'] = $day;
 			$data['dep'] = $dep;
-
 			$_SESSION['dep'] = $dep;
 
 			//Fetch Time Interval from settings
@@ -73,15 +71,15 @@ class Appointment extends CI_Controller {
 			$data['time_format'] = 'H:i';//$this->settings_model->get_time_formate();
 
 			//Generate display date in YYYY-MM-DD formate
-            $appointment_date = date("Y-n-d", gmmktime(0, 0, 0, $month, $day, $year));
+         $appointment_date = date("Y-n-d", gmmktime(0, 0, 0, $month, $day, $year));
 			$data['appointment_date']= $appointment_date;
 
 			//Fetch Clinic Start Time and Clinic End Time
-            $data['start_time'] = $this->settings_model->get_clinic_start_time();
-            $data['end_time'] = $this->settings_model->get_clinic_end_time();
+         $data['start_time'] = $this->settings_model->get_clinic_start_time();
+         $data['end_time'] = $this->settings_model->get_clinic_end_time();
 
 			//Fetch Task Details
-            $data['todos'] = $this->appointment_model->get_todos();
+         $data['todos'] = $this->appointment_model->get_todos();
 
 			//Display Followups for next 8 days
 			/*$followup_date = date('Y-m-d', strtotime("+8 days"));
@@ -108,8 +106,6 @@ class Appointment extends CI_Controller {
 				}
 				if($event['year']>=$year){
 					$event['ymd']=$event['year'].$event['month'].$event['day'];
-											file_put_contents('t1.txt',print_r($event,true),FILE_APPEND);
-
 					if($event['ymd']>=$ymd){
 						$data['events'][]=$event;
 					}			
