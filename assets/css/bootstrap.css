@@ -6368,6 +6368,9 @@ button.close {
 .foto-btn{max-width: 150px;font-size: 14px;text-align:center;vertical-align:middle;
 	cursor:pointer;color:#fff;background-color: #d9534f;}
 #patient_apps a{color: black;}
+.event_three{background-color: rgb(248, 200, 196) !important;}
+.event_week{background-color: rgb(205, 248, 196) !important;}
+.event_month{background-color: rgb(248, 246, 196) !important;}
 /*.dataTables_empty {display:none;}*/
 /*# sourceMappingURL=bootstrap.css.map */
 /*# sourceMappingURL=bootstrap.css.map */

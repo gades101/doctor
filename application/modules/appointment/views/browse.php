@@ -224,12 +224,28 @@ function check_doctor_availability($i,$doctor_id){
 								<tbody>
 								<?php
 									$i = 0;
+									$time_now=time();
 									//file_put_contents('t1.txt',print_r($events,true));
 									foreach ($events as $event) {
+										$event_class="";
+										if ($i==0){
+											$time_event=mktime(24,0,0,$event['month'],$event['day'],$event['year']);
+											$difference=$time_event-$time_now;
+											if ($difference<=2592000){
+												if($difference<=604800){
+													if($difference<=259200){
+														$event_class="event_three";
+													}
+													else $event_class="event_week";
+												}
+												else $event_class="event_month";											
+											}
+											else $i=1;
+										}
 								?>
 										<tr>
-											<td> <?= $event['day'].'/'.$event['month'].'/'.$event['year'];?></td>
-											<td><a href='<?= base_url() . "index.php/event" ;?>' ><?=$event['title'];?></a></td>
+											<td class='<?= $event_class; ?>'> <?= $event['day'].'/'.$event['month'].'/'.$event['year'];?></td>
+											<td><?=$event['title'];?></td>
 										</tr>
 								<?php 
 									} 

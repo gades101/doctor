@@ -98,16 +98,10 @@
 			<?php  }else{ ?>
 			<?php echo form_open('payment/edit/'.$payment_id) ?>
 			<?php  } ?>
-			<?php print_r($this->input->post('visit_id'));
-				if(isset($payment)){
-					$payment_date = date($def_dateformate,strtotime($payment->pay_date));
-				}else{
-					$payment_date = date($def_dateformate);
-				}
-			?>
+
 			<input type="hidden" name="payment_type" value="bill_payment" />
-			<input type="hidden" name="visit_id" value="<?=$visit_id;?>" />
 			<input type="hidden" name="called_from" value="<?=$called_from;?>" />
+			<input type="hidden" name="treatment_id" id="treatment_id" value="<?php if(isset($curr_treatment)){echo $curr_treatment['id']; } ?>"/>
 			<div class="col-md-12">
 				<label for="patient_name"><?php echo "ПІБ Пацієнта";?></label>
 				<?php if(isset($patient_id) && $patient_id != NULL) { ?>
@@ -120,25 +114,16 @@
 					<?php echo form_error('patient_id','<div class="alert alert-danger">','</div>'); ?>
 				<?php } ?>
 			</div>
-			<div class="col-md-12">
-				<label for="bill_id"><?php echo $this->lang->line('bill')." (id)";?></label>
-				<?php if(isset($bill_id) && $bill_id != 0) { ?>
-					<input name="bill_id" id="bill_id" type="text" readonly="readonly" class="form-control" value="<?= $bill_id; ?>"/><br />
-				<?php }else{ ?>
-					<select name="bill_id" id="bill_id" class="form-control" >
-					</select>
-				<?php } ?>
-				<?php echo form_error('bill_id','<div class="alert alert-danger">','</div>'); ?>
-			</div>
+
 			<div class="col-md-12">
 				<label for="balance_amount"><?php echo $this->lang->line('balance_amount');?></label>
 				<input name="balance_amount" id="balance_amount" type="text" readonly="readonly" class="form-control" value="<?php echo currency_format($due_amount);if($currency_postfix) echo $currency_postfix['currency_postfix']; ?>"/><br />
 				<input name="due_amount" id="due_amount" type="hidden" class="form-control" value="<?php echo $due_amount; ?>"/>
 			</div>
-			<div class="col-md-12">
+			<div class="col-md-1">
 				<div class="form-group">
-					<label for="title"><?php echo $this->lang->line('payment_amount');?></label>
-					<input type="text" name="payment_amount" id="payment_amount" class="form-control" value="<?=$payment_pay_amount;?>" />
+					<label for="title">Знижка</label>
+					<input type="text" name="discount" id="discount" class="form-control" value="" />
 				</div>
 			</div>
 			<div class="col-md-12">
