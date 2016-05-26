@@ -116,9 +116,9 @@
 			</div>
 
 			<div class="col-md-12">
-				<label for="balance_amount"><?php echo $this->lang->line('balance_amount');?></label>
-				<input name="balance_amount" id="balance_amount" type="text" readonly="readonly" class="form-control" value="<?php echo currency_format($due_amount);if($currency_postfix) echo $currency_postfix['currency_postfix']; ?>"/><br />
-				<input name="due_amount" id="due_amount" type="hidden" class="form-control" value="<?php echo $due_amount; ?>"/>
+				<label for="pay_amount"><?php echo $this->lang->line('balance_amount');?></label>
+				<input name="pay_amount" id="pay_amount" type="text" readonly="readonly" class="form-control" value="<?php echo currency_format($pay_amount);if($currency_postfix) echo $currency_postfix['currency_postfix']; ?>"/><br />
+				<input name="due_amount" id="due_amount" type="hidden" class="form-control" value="<?php echo $pay_amount; ?>"/>
 			</div>
 			<div class="col-md-1">
 				<div class="form-group">
@@ -139,12 +139,6 @@
 						<option value="cash" <?php if ($payment_pay_mode =='cash') {echo "selected";} ?>>Готівка</option>
 						<option value="cheque" <?php if ($payment_pay_mode =='cheque') {echo "selected";} ?>>Чек</option>
 					</select>
-				</div>
-			</div>
-			<div class="col-md-12">
-				<div class="form-group">
-					<label for="title"><?php echo $this->lang->line('cheque_number');?></label>
-					<input type="text" name="cheque_number" id="cheque_number" class="form-control" value="<?=$payment_cheque_no;?>" />
 				</div>
 			</div>
 			<div class="col-md-6">

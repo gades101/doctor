@@ -10,6 +10,11 @@ class Patient_model extends CI_Model {
         $query = $this->db->get('view_patient');
         return $query->result_array();
     }
+   /* public function get_patient_by_id($patient_id) {
+        $query = $this->db->get_where('patient', array('patient_id' => $patient_id));
+        return $query->result_array();
+    }*/
+	
     public function find_patient() {
         $this->db->order_by("first_name", "asc");
         $this->db->group_by('patient_id');
@@ -528,6 +533,7 @@ class Patient_model extends CI_Model {
         $query = $this->db->get_where('payment', array('bill_id' => $bill_id));
         return $query->result_array();
     }
+	
     public function insert_payment() {
         $data['bill_id'] = $this->input->post('bill_id');
         $data['pay_date'] = $this->input->post('pay_date');

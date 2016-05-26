@@ -22,7 +22,6 @@
 								<tr>
 									<th><?php echo $this->lang->line("id");?></th>
 									<th><?php echo $this->lang->line("date");?></th>
-									<th><?php echo $this->lang->line("bill");?></th>
 									<th><?php echo $this->lang->line("patient");?></th>
 									<th><?php echo $this->lang->line("amount");?></th>
 									<th><?php echo $this->lang->line("payment_mode");?></th>
@@ -41,8 +40,7 @@
 								<tr <?php if ($i%2 == 0) { echo "class='even'"; } else { echo "class='odd'"; }?> >
 									<td><?php echo $payment['payment_id']; ?></td>
 									<td><?php echo $payment_date; ?></td>
-									<td><?php echo $payment['bill_id']; ?></td>
-									<td><?php echo $payment['first_name'] . ' ' . $payment['middle_name'] . ' ' . $payment['last_name']; ?></td>
+									<td><?php echo $payment['patient_id']; ?></td>
 									<td><?php echo currency_format($payment['pay_amount']); ?><?php if($currency_postfix) echo $currency_postfix['currency_postfix']; ?></td>
 									<td><?php echo ucfirst($payment['pay_mode']); ?><?php if($payment['pay_mode'] == "cheque") {echo "  ( ".$payment['cheque_no']." )";} ?></td>
 									<td><a href="<?= site_url('payment/edit/'.$payment['payment_id']);?>" class="btn btn-sm btn-primary square-btn-adjust"><?php echo $this->lang->line("edit");?></a></td>
