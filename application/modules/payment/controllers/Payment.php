@@ -6,6 +6,7 @@ class Payment extends CI_Controller {
         parent::__construct();
 		$this->load->model('payment_model');
 		$this->load->model('patient/patient_model');
+		$this->load->model('treatment/treatment_model');
 		$this->load->model('settings/settings_model');
 		$this->load->model('menu_model');
 
@@ -55,6 +56,7 @@ class Payment extends CI_Controller {
             $this->form_validation->set_rules('bill_id', 'Bill Id', 'required');
 
 			if ($this->form_validation->run() === FALSE) {
+				$data['treatments'] = $this->treatment_model->get_treatments();				
 				$data['patients'] = $this->patient_model->get_patient();
 				$data['bills'] = $this->patient_model->get_pending_bills();
 				$data['currency_postfix'] = $this->settings_model->get_currency_postfix();
@@ -93,8 +95,8 @@ class Payment extends CI_Controller {
         } else {
 			$this->form_validation->set_rules('patient_id', 'Patient', 'required');
             $this->form_validation->set_rules('bill_id', 'Bill Id', 'required');
-			$this->form_validation->set_rules('payment_amount', 'Payment Amount', 'required');
-			$this->form_validation->set_rules('payment_date', 'Payment Date', 'required');
+			$this->form_validation->set_rules('pay_amount', 'Payment Amount', 'required');
+			$this->form_validation->set_rules('pay_date', 'Payment Date', 'required');
 			$this->form_validation->set_rules('pay_mode', 'Payment Mode', 'required');
 
 			if ($this->form_validation->run() === FALSE) {
@@ -105,7 +107,7 @@ class Payment extends CI_Controller {
 				//$patient_id = $this->patient_model->get_patient_id_from_bill_id($bill_id);
 				$data['patient_id'] = $payment->patient_id;
 				$data['patient'] = $this->patient_model->get_patient_detail($data['patient_id']);
-				$data['payment_date'] = $payment->pay_date;
+				$data['pay_date'] = $payment->pay_date;
 				//$data['def_dateformate'] = $this->settings_model->get_date_formate();
 				//25-12-15
 				$data['called_from'] = "";

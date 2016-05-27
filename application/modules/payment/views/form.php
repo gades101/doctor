@@ -4,9 +4,13 @@
 		$payment_pay_amount = $payment->pay_amount;
 		$payment_pay_mode = $payment->pay_mode;
 	} else {
-		$payment_cheque_no = "";
-		$payment_pay_amount = 0;
+		//$payment_cheque_no = "";
+		//$payment_pay_amount = 0;
 		$payment_pay_mode = "";
+		$pay_date="";
+		$pay_amount=0;
+		//$pay_mode ='cash';
+		$curr_treatment_name="";
 	}
 ?>
 <script>
@@ -69,7 +73,44 @@
 				}
 			}
 		});
-		$('#payment_date').datetimepicker({
+		
+		
+		var searchtreatment=[<?php $i = 0;
+		foreach ($treatments as $treatment) {
+			if ($i > 0) { echo ",";}
+			echo '{value:"' . $treatment['treatment'] . '",id:"' . $treatment['id'] . '",price:"' . $treatment['price'] . '"}';
+			$i++;
+		}
+		?>];
+		$("#treatment").autocomplete({
+			autoFocus: true,
+			source: searchtreatment,
+			minLength: 1,//search after one characters
+
+			select: function(event,ui){
+				//do something
+				$("#treatment_id").val(ui.item ? ui.item.id : '');
+				$("#treatment").val(ui.item ? ui.item.treatment : '');
+
+			},
+			change: function(event, ui) {
+				 if (ui.item == null) {
+					$("#treatment_id").val('');
+					$("#treatment").val('');
+					}
+			},
+			response: function(event, ui) {
+				if (ui.content.length === 0)
+				{
+					$("#treatment_id").val('');
+					$("#treatment").val('');
+				}
+			}
+		});		
+		
+		
+		
+		$('#pay_date').datetimepicker({
 			timepicker:false,
 			format: '<?=$def_dateformate;?>',
 		});
@@ -93,7 +134,9 @@
 				Форма оплати
 			</div>
 			<div class="panel-body">
-			<?php if(!isset($payment)){ ?>
+			<?php if(!isset($payment)){ 
+				$pay_amount="";
+			?>
 			<?php echo form_open('payment/insert/'.$bill_id) ?>
 			<?php  }else{ ?>
 			<?php echo form_open('payment/edit/'.$payment_id) ?>
@@ -114,10 +157,13 @@
 					<?php echo form_error('patient_id','<div class="alert alert-danger">','</div>'); ?>
 				<?php } ?>
 			</div>
-
+			<div class="col-md-12">
+				<label for="treatment"><?php echo $this->lang->line('treatment');?></label>
+				<input name="treatment" id="treatment" type="text" class="form-control" value="<?= $curr_treatment_name; ?>"/><br />
+			</div>
 			<div class="col-md-12">
 				<label for="pay_amount"><?php echo $this->lang->line('balance_amount');?></label>
-				<input name="pay_amount" id="pay_amount" type="text" readonly="readonly" class="form-control" value="<?php echo currency_format($pay_amount);if($currency_postfix) echo $currency_postfix['currency_postfix']; ?>"/><br />
+				<input name="pay_amount" id="pay_amount" type="text" readonly="readonly" class="form-control" value="<?php echo $pay_amount;if($currency_postfix) echo $currency_postfix['currency_postfix']; ?>"/><br />
 				<input name="due_amount" id="due_amount" type="hidden" class="form-control" value="<?php echo $pay_amount; ?>"/>
 			</div>
 			<div class="col-md-1">
@@ -129,15 +175,15 @@
 			<div class="col-md-12">
 				<div class="form-group">
 					<label for="title"><?php echo $this->lang->line('payment_date');?></label>
-					<input type="text" name="payment_date" id="payment_date" class="form-control" value="<?=$payment_date;?>" />
+					<input type="text" name="pay_date" id="pay_date" class="form-control" value="<?=$pay_date;?>" />
 				</div>
 			</div>
 			<div class="col-md-12">
 				<div class="form-group">
 					<label for="title"><?php echo $this->lang->line('payment_mode');?></label>
 					<select name="pay_mode" id="pay_mode" class="form-control">
-						<option value="cash" <?php if ($payment_pay_mode =='cash') {echo "selected";} ?>>Готівка</option>
-						<option value="cheque" <?php if ($payment_pay_mode =='cheque') {echo "selected";} ?>>Чек</option>
+						<option value="cash" <?php if ($pay_mode =='cash') {echo "selected";} ?>>Готівка</option>
+						<option value="cheque" <?php if ($pay_mode =='cheque') {echo "selected";} ?>>Чек</option>
 					</select>
 				</div>
 			</div>
