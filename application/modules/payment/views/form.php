@@ -2,11 +2,11 @@
 	if(isset($payment)){
 		$payment_cheque_no = $payment->cheque_no;
 		$payment_pay_amount = $payment->pay_amount;
-		$payment_pay_mode = $payment->pay_mode;
+		$pay_mode = $payment->pay_mode;
 	} else {
 		//$payment_cheque_no = "";
 		//$payment_pay_amount = 0;
-		$payment_pay_mode = "";
+		$pay_mode = "cash";
 		$pay_date="";
 		$pay_amount=0;
 		//$pay_mode ='cash';
@@ -30,34 +30,6 @@
 				//do something
 				$("#patient_id").val(ui.item ? ui.item.id : '');
 				var this_patient_id = ui.item.id;
-				var billArray = [
-				<?php foreach($bills as $bill){
-					echo '["'.$bill['bill_id'].'", "'.$bill['patient_id'].'","'.$bill['due_amount'].'"],';
-				} ?>
-				];
-				var bill_id;
-				var patient_id;
-				var due_amount;
-				$("#bill_id").empty();
-
-				$.each(billArray, function(i,val) {
-					$.each(val, function(index,value) {
-						if(index == 0){	//bill id
-							bill_id = value;
-						}
-						if(index == 1){	//patient id
-							patient_id = value;
-						}
-						if(index == 2){	//due amount
-							due_amount = value;
-						}
-
-					})
-					if(this_patient_id == patient_id){
-						$("#bill_id").append($("<option></option>").attr("value", bill_id).text(bill_id));
-						$("#balance_amount").val(due_amount);
-					}
-				});
 			},
 			change: function(event, ui) {
 				 if (ui.item == null) {
@@ -91,7 +63,8 @@
 				//do something
 				$("#treatment_id").val(ui.item ? ui.item.id : '');
 				$("#treatment").val(ui.item ? ui.item.treatment : '');
-
+				$("#pay_amount").val(ui.item ? ui.item.value : '');
+				$("#pay_amount").val(ui.item ? ui.item.price : '');
 			},
 			change: function(event, ui) {
 				 if (ui.item == null) {
@@ -108,8 +81,6 @@
 			}
 		});		
 		
-		
-		
 		$('#pay_date').datetimepicker({
 			timepicker:false,
 			format: '<?=$def_dateformate;?>',
@@ -121,7 +92,7 @@
 				$( "#cheque_number" ).parent().parent().hide();
 			}
 		});
-		<?php if ($payment_pay_mode !='cheque') { ?>
+		<?php if ($pay_mode !='cheque') { ?>
 		$( "#cheque_number" ).parent().parent().hide();
 		<?php } ?>
 	});
@@ -137,13 +108,12 @@
 			<?php if(!isset($payment)){ 
 				$pay_amount="";
 			?>
-			<?php echo form_open('payment/insert/'.$bill_id) ?>
+			<?php echo form_open('payment/insert/') ?>
 			<?php  }else{ ?>
 			<?php echo form_open('payment/edit/'.$payment_id) ?>
 			<?php  } ?>
 
 			<input type="hidden" name="payment_type" value="bill_payment" />
-			<input type="hidden" name="called_from" value="<?=$called_from;?>" />
 			<input type="hidden" name="treatment_id" id="treatment_id" value="<?php if(isset($curr_treatment)){echo $curr_treatment['id']; } ?>"/>
 			<div class="col-md-12">
 				<label for="patient_name"><?php echo "ПІБ Пацієнта";?></label>
@@ -153,7 +123,7 @@
 					<?php echo form_error('patient_id','<div class="alert alert-danger">','</div>'); ?>
 				<?php }else{ ?>
 					<input name="patient_name" id="patient_name" type="text" class="form-control" value=""/><br />
-					<input type="hidden" name="patient_id" id="patient_id" value="<?= $patient_id; ?>" />
+					<input type="hidden" name="patient_id" id="patient_id" value="" />
 					<?php echo form_error('patient_id','<div class="alert alert-danger">','</div>'); ?>
 				<?php } ?>
 			</div>
@@ -162,7 +132,7 @@
 				<input name="treatment" id="treatment" type="text" class="form-control" value="<?= $curr_treatment_name; ?>"/><br />
 			</div>
 			<div class="col-md-12">
-				<label for="pay_amount"><?php echo $this->lang->line('balance_amount');?></label>
+				<label for="pay_amount">Ціна</label>
 				<input name="pay_amount" id="pay_amount" type="text" readonly="readonly" class="form-control" value="<?php echo $pay_amount;if($currency_postfix) echo $currency_postfix['currency_postfix']; ?>"/><br />
 				<input name="due_amount" id="due_amount" type="hidden" class="form-control" value="<?php echo $pay_amount; ?>"/>
 			</div>
@@ -201,7 +171,7 @@
 			?>
 			<div class="col-md-6">
 				<div class="form-group">
-					<a href="<?=site_url("appointment/index/all"); ?>" class="btn btn-primary" ><?php echo $this->lang->line('back_to_app');?></a>
+					<a href="<?=site_url("appointment/index/all"); ?>" class="btn btn-primary" ><?php echo $this->lang->line('back');?></a>
 				</div>
 			</div>
 			<?php

@@ -46,27 +46,26 @@ class Payment extends CI_Controller {
         }
     }
 
-	public function insert($bill_id,$called_from = 'bill') {
+	public function insert($called_from = 'bill') {
         session_start();
 		//Check if user has logged in
 		if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
             redirect('login/index');
         } else {
 			$this->form_validation->set_rules('patient_id', 'Patient', 'required');
-            $this->form_validation->set_rules('bill_id', 'Bill Id', 'required');
+            //$this->form_validation->set_rules('bill_id', 'Bill Id', 'required');
 
 			if ($this->form_validation->run() === FALSE) {
 				$data['treatments'] = $this->treatment_model->get_treatments();				
 				$data['patients'] = $this->patient_model->get_patient();
-				$data['bills'] = $this->patient_model->get_pending_bills();
 				$data['currency_postfix'] = $this->settings_model->get_currency_postfix();
-				$data['due_amount'] = $this->patient_model->get_due_amount($bill_id);
+				/*$data['due_amount'] = $this->patient_model->get_due_amount($bill_id);
 				$data['visit_id'] = $this->patient_model->get_visit_id($bill_id);
 				$patient_id =  $this->patient_model->get_patient_id_from_bill_id($bill_id);
 				$data['patient_id'] =$patient_id;
 				$data['bill_id'] = $bill_id;
 				$data['patient'] = $this->patient_model->get_patient_detail($patient_id);
-				$data['called_from'] = $called_from;
+				$data['called_from'] = $called_from;*/
 				$data['def_dateformate'] = $this->settings_model->get_date_formate();
 				$this->load->view('templates/header');
 				$this->load->view('templates/menu');

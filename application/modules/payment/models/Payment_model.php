@@ -13,20 +13,13 @@ class Payment_model extends CI_Model {
     }
 	function insert_payment() {
 		$data = array();
-		$data['bill_id'] = $this->input->post('bill_id');
-		$bill_id = $data['bill_id'];
-		$data['pay_amount'] = $this->input->post('payment_amount');
-		$pay_amount = $data['pay_amount'];
-		$data['pay_date'] = date('Y-m-d',strtotime($this->input->post('payment_date')));
+		$data['patient_id'] = $this->input->post('patient_id');
+		$data['treatment_id'] = $this->input->post('treatment_id');
+		$data['pay_amount'] = $this->input->post('pay_amount');
+	//	$data['pay_date'] = date('Y-m-d',strtotime($this->input->post('pay_date')));
 		$data['pay_mode'] = $this->input->post('pay_mode');
-		$data['cheque_no'] = $this->input->post('cheque_number');
+	//	$data['cheque_no'] = $this->input->post('cheque_number');
 		$this->db->insert('payment', $data);
-		
-		$data = array();
-		$due_amount = $this->input->post('due_amount');
-		$data['due_amount'] = $due_amount - $pay_amount;
-		$this->db->where('bill_id', $bill_id);
-		$this->db->update('bill', $data);
     }
 	function get_paid_amount($bill_id){
 		$this->db->select_sum('pay_amount', 'pay_total');
