@@ -526,7 +526,6 @@ class Appointment extends CI_Controller {
 		if( ! is_dir( "patient_media/".$patient_id."/".$app_id."/") ){ mkdir( "patient_media/".$patient_id."/".$app_id."/", 0777 );
 				if( ! is_dir( $uploaddir ) ) mkdir( $uploaddir, 0777 );
 		}
-		//$uploaddir="patient_images/";
 		if( ! is_dir( $uploaddir ) ) mkdir( $uploaddir, 0777 );
 
 		if ($_POST) {
@@ -545,19 +544,15 @@ class Appointment extends CI_Controller {
 					}
 					$j=1;
 			}
-			//print $success ? $file : 'Unable to save the file.';
-			echo "11";
+			//echo "11";
 		}
-		//echo json_encode( $data );
 	}
 
 	function resize($file, $filepath, $quality = 75, $type = 2, $rotate = null)
 	{
-			//file_put_contents('t1.txt',print_r($file,true),FILE_APPEND);
 			$file=imagecreatefromstring($file);
 			imagejpeg($file, $filepath, $quality);
 			imagedestroy($file);
-		//	return $file['name'];
 	}
 
 	public function showmedia($patient_id,$app_id){
