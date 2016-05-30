@@ -139,7 +139,7 @@
 			<div class="col-md-1">
 				<div class="form-group">
 					<label for="title">Знижка</label>
-					<input type="text" name="discount" id="discount" class="form-control" value="" />
+					<input type="text" pattern="[0-9]{,2}" name="discount" id="discount" class="form-control" value="" />
 				</div>
 			</div>
 			<div class="col-md-12">
