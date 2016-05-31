@@ -41,7 +41,7 @@ $( window ).load(function() {
 						<div class="form-group input-group">
 							<label for="event_date">Рік</label>
 							<input type="text" class="form-control"  name="year" id="event_year" value=""/>
-							<?php echo form_error('event_year','<div class="alert alert-danger">','</div>'); ?>
+							<?php echo form_error('year','<div class="alert alert-danger">','</div>'); ?>
 						</div>
 						<div class="form-group input-group">
 							<button type="submit" name="submit" class="btn btn-primary"><?php echo $this->lang->line('add');?></button>

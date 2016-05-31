@@ -38,6 +38,7 @@ class Event extends CI_Controller {
         } else {
             $this->form_validation->set_rules('title', 'Подія', 'trim|required|xss_clean');
             $this->form_validation->set_rules('date', 'День', 'trim|required');
+            $this->form_validation->set_rules('year', 'Рік', 'integer');
             //$this->form_validation->set_rules('event_price', 'Treatment Price', 'trim|required|xss_clean');
             //$data['currency_postfix'] = $this->settings_model->get_currency_postfix();
             if ($this->form_validation->run() === FALSE) {
@@ -62,9 +63,10 @@ class Event extends CI_Controller {
 		}
         if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
             redirect('login/index');
-        } else {
-			$this->form_validation->set_rules('event', 'title', 'trim|required|xss_clean');
-            //$this->form_validation->set_rules('event_price', 'Treatment Price', 'trim|required|xss_clean');
+        } else {     
+            $this->form_validation->set_rules('title', 'Подія', 'trim|required|xss_clean');
+            $this->form_validation->set_rules('date', 'День', 'trim|required');
+            $this->form_validation->set_rules('year', 'Рік', 'integer');
 			$data['currency_postfix'] = $this->settings_model->get_currency_postfix();
 			if ($this->form_validation->run() === FALSE) {
 				$data['event'] = $this->event_model->get_edit_event($id);
@@ -73,7 +75,8 @@ class Event extends CI_Controller {
 				$this->load->view('edit_event', $data);
 				$this->load->view('templates/footer');
 			} else {
-				$event_id = $this->input->post('event_id');
+
+				$event_id = $this->input->post('id');
                 $this->event_model->edit_event($event_id);
 				$data['events'] = $this->event_model->get_events();                
                 $this->load->view('templates/header');

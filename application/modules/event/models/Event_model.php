@@ -27,12 +27,13 @@ class Event_model extends CI_Model {
    }
    public function edit_event($id){
       $data['title'] = $this->input->post('title');
-      $data['date'] = $this->input->post('date');
-      if($this->input->post('year')){
+		$date=$this->input->post('date');
+      $data['day'] = substr($date,0,2);
+      $data['month'] = substr($date,3,5);      if($this->input->post('year')){
 			$data['year'] = $this->input->post('year');      
-      }
+      }    
       $this->db->where('id', $id);
-      $this->db->update('treatments', $data);
+      $this->db->update('events', $data);
    }
     public function delete_event($id) {
         $this->db->delete('events', array('id' => $id));

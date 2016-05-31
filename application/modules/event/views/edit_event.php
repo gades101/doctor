@@ -1,28 +1,57 @@
+<script type="text/javascript" charset="utf-8">
+
+$( window ).load(function() {
+	$('.confirmDelete').click(function(){
+			return confirm("Are you sure you want to delete?");
+		});
+		
+   $('#events').dataTable();	
+	$('#date').datetimepicker({
+		timepicker:false,
+		format: 'd/m',
+	});
+	
+} )
+</script>
+
 <div id="page-inner">
 	<div class="row">
 		<div class="col-md-12">
 			<div class="panel panel-primary">
 			<div class="panel-heading">
-				<?php echo $this->lang->line('edit_treatment');?>
+				Редагувати подію
 			</div>
+			
 			<div class="panel-body">
-				<?php echo form_open('treatment/edit_treatment/'.$treatment['id']) ?>
-					<input type="hidden" name="treatment_id" id="treatment_id" value="<?php echo $treatment['id']; ?>" class="form-control"/>	
-					<div class="form-group">
-						<label for="treatment"><?php echo $this->lang->line('treatment');?></label> 
-						<input type="text" name="treatment" id="treatment" value="<?php echo $treatment['treatment']; ?>" class="form-control"/>
-						<?php echo form_error('treatment','<div class="alert alert-danger">','</div>'); ?>
+				<?php echo form_open('event/edit_event/'.$event['id']); ?>
+					<input type="hidden" name="id" id="id" value="<?php echo $event['id']; ?>" class="form-control"/>	
+					<div class="form-group input-group">
+						<label for="title">Подія</label>
+						<input type="text" class="form-control" name="title" id="title" value="<?php echo $event['title']; ?>"/>
+						<?php echo form_error('title','<div class="alert alert-danger">','</div>'); ?>
 					</div>
-					<div class="form-group">
-						<label for="treatment_price"><?php echo $this->lang->line('charges_fees');?></label>
-						<input type="text" name="treatment_price" id="treatment_price" value="<?php echo $treatment['price']; ?>" class="form-control"/>
-						<?php echo form_error('treatment_price','<div class="alert alert-danger">','</div>'); ?>
+					<div class="form-group input-group">
+						<label for="date">Дата</label>
+						<input type="text" class="form-control"  name="date" id="date" value="<?= $event['day'].'/'.$event['month']; ?>"/>
+						<!--<?php echo form_error('date','<div class="alert alert-danger">','</div>'); ?>-->
 					</div>
-					<div class="form-group">
-						<button type="submit" name="submit" class="btn btn-primary" /><?php echo $this->lang->line('save');?></button>
+					
+					<!--<div class="form-group input-group">
+						<label for="event_month">Місяць</label>
+						<input type="text" class="form-control"  name="month" id="event_month" value=""/>
+						<?php echo form_error('event_month','<div class="alert alert-danger">','</div>'); ?>
+					</div>-->
+					<div class="form-group input-group">
+						<label for="event_date">Рік</label>
+						<input type="text" class="form-control"  name="year" id="event_year" value="<?php echo $event['year']; ?>"/>
+						<?php echo form_error('year','<div class="alert alert-danger">','</div>'); ?>
 					</div>
-				<?php echo form_close(); ?>
-			</div>
+					<div class="form-group input-group">
+						<button type="submit" name="submit" class="btn btn-primary"><?php echo $this->lang->line('edit');?></button>
+					</div>
+				</form>
+			</div>			
+			
 		</div>
 	</div>
 </div>
