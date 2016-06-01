@@ -294,9 +294,12 @@ function goToApp(link){
 		<div class="col-md-12">
 			<div class="panel panel-primary">
 				<div class="panel-heading">
-					<span class="tblHead btn-danger" onclick=displayPage(1) style="min-width:20%"/>Особисті дані пацієнта</span>
-					<span class="tblHead btn-danger" onclick=displayPage(2) />Прийоми</span>
-
+					<?php if (isset($patient)) {?>
+						<span class="tblHead btn-danger" onclick=displayPage(1) style="min-width:20%"/>Особисті дані пацієнта</span>
+						<span class="tblHead btn-danger" onclick=displayPage(2) />Прийоми</span>
+					<?php } else { ?>
+						<span class="" style="min-width:20%"/>Особисті дані пацієнта</span>					
+					<?php } ?>				
 				</div>
 				<div id="page_1" class="panel-body">
 					<?php if (isset($patient_id)) {?>
