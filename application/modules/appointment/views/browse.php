@@ -244,8 +244,12 @@ function check_doctor_availability($i,$doctor_id){
 										}
 								?>
 										<tr>
-											<td class='<?= $event_class; ?>'> <?= $event['day'].'/'.$event['month'].'/'.$event['year'];?></td>
-											<td><?=$event['title'];?></td>
+											<td class='<?= $event_class; ?>'> <a href='<?= base_url() ."index.php/event/edit_event/".$event["id"] ?>'><?= $event['day'].'/'.$event['month'].'/'.$event['year'];?></a></td>
+											<?php if ($event['patient_id']) {?>
+												<td><a href='<?= base_url() ."index.php/patient/edit/".$event["patient_id"]."/patient" ?>'><?=$event['title'];?></a></td>											
+											<?php } else { ?>
+												<td><?=$event['title'];?></td>
+											<?php } ?>
 										</tr>
 								<?php 
 									} 

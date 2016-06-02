@@ -20,6 +20,22 @@ class Event_model extends CI_Model {
       }
       $this->db->insert('events',$data);
    }
+
+   public function add_patients_event() {
+		$this->db->select("p.patient_id, p.dob, c.first_name, c.middle_name",FALSE);
+		$this->db->from('ck_patient p,ck_contacts c');
+		$this->db->where(array('p.dob is not NULL', 'p.contact_id'=>'c.contact_id'),NULL,FALSE);
+		$query=$this->db->get();
+      $arr= $query->result_array();
+		foreach ($arr as $patient){
+			$data['title'] = $patient['first_name']." ".$patient['middle_name']." День Народження";
+			$data['day'] = substr($patient['dob'],8,10);
+			$data['month'] = substr($patient['dob'],5,7);
+			$data['patient_id'] = $patient['patient_id'];		
+			$this->db->insert('events',$data);         
+     }
+   }   
+   
    public function get_edit_event($id) {    
       $this->db->where("id", $id);
       $query = $this->db->get("events");
