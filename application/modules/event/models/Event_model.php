@@ -70,19 +70,7 @@ class Event_model extends CI_Model {
 			}
 		}	
 	}
-	public function new_patient_event($patient_id){
-		$this->db->select("p.dob, c.first_name, c.middle_name",FALSE);
-		$this->db->from('ck_patient p,ck_contacts c');
-		$this->db->where(array('p.dob is not NULL', 'p.patient_id'=>$patient_id),NULL,FALSE);
-		$query=$this->db->get();
-        $row = $query->row();
-        if ($row){
-		file_put_contents('t1.txt',print_r($row,true));
-		
-		}
-        else
-            return 0;	
-	}
+
 	
 }
 
