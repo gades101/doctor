@@ -12,6 +12,7 @@ class Patient extends CI_Controller {
 		$this->load->model('module/module_model');
 		$this->load->model('payment/payment_model');
 		$this->load->model('menu_model');
+		$this->load->model('event/event_model');
 
         $this->load->helper('url');
         $this->load->helper('form');
@@ -98,7 +99,7 @@ class Patient extends CI_Controller {
 
 			if ($this->form_validation->run() === FALSE) {
 				$contact_id = $this->patient_model->get_contact_id($patient_id);
-				//$data['is_dob_event']=$this->patient_model->check_patient_event($patient_id);
+				$data['is_dob_event']=$this->patient_model->check_patient_event($patient_id);
 				$data['called_from']=$called_from;
 				$data['patient_id'] = $patient_id;
 				$data['patient'] = $this->patient_model->get_patient_detail($patient_id);
@@ -139,6 +140,7 @@ class Patient extends CI_Controller {
 						$this->contact_model->update_address();
 						$this->patient_model->update_reference_by($patient_id);
 						$this->patient_model->update_patient_data($patient_id);
+						$this->event_model->change_patient_event($patient_id);
 						//$this->patient_model->update_display_id();
 						$this->patient_model->update_diagnosis();
 						if($called_from =="patient"){
@@ -149,6 +151,7 @@ class Patient extends CI_Controller {
 					}else{
 						$contact_id = $this->contact_model->insert_contact();
 						$patient_id = $this->patient_model->insert_patient($contact_id);
+						$this->event_model->change_patient_event($patient_id);
 						$this->contact_model->update_profile_image($file_name,$contact_id);
 						$this->index();
 					}

@@ -249,15 +249,13 @@ function goToApp(link){
 		$gender=$patient['gender'];
 		$reference_by = $patient['reference_by'];
 		$diagnosis = $patient['diagnosis'];
-		$is_dob_event=$patient['$is_dob_event'];
-
 	}else{
 		$dob = "";
 		$display_id = generate_id();
 		$gender= "";
 		$reference_by = "";
 		$diagnosis = "";
-		$is_dob_event="2";
+		$is_dob_event=0;
 	}
 	if(isset($contacts)){
 		$contact_id = $contacts['contact_id'];

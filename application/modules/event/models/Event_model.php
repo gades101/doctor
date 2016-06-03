@@ -53,7 +53,37 @@ class Event_model extends CI_Model {
    }
     public function delete_event($id) {
         $this->db->delete('events', array('id' => $id));
-    }	
+    }
+	public function change_patient_event($patient_id){
+	$origin_dob_event=$this->input->post('original_dob_event');
+	$dob_event=$this->input->post('dob_event');
+		if($origin_dob_event!=$dob_event){
+			if($dob_event==0){
+				$this->db->delete('events', array('patient_id' => $patient_id));		
+			}
+			elseif($dob_event==1){
+				$data['title'] = $this->input->post('first_name')." ".$this->input->post('middle_name')." День Народження";
+				$data['day'] = substr($this->input->post('dob'),0,2);
+				$data['month'] = substr($this->input->post('dob'),3,2);
+				$data['patient_id'] = $patient_id;
+				$this->db->insert('events',$data);
+			}
+		}	
+	}
+	public function new_patient_event($patient_id){
+		$this->db->select("p.dob, c.first_name, c.middle_name",FALSE);
+		$this->db->from('ck_patient p,ck_contacts c');
+		$this->db->where(array('p.dob is not NULL', 'p.patient_id'=>$patient_id),NULL,FALSE);
+		$query=$this->db->get();
+        $row = $query->row();
+        if ($row){
+		file_put_contents('t1.txt',print_r($row,true));
+		
+		}
+        else
+            return 0;	
+	}
+	
 }
 
 ?>

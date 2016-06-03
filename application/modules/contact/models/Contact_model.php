@@ -57,8 +57,9 @@ class Contact_model extends CI_Model {
 			$data['country'] = $this->input->post('country');
 		}
 		$this->db->insert('contacts', $data);
+
 		$contact_id = $this->db->insert_id();
-		
+	
         return $contact_id;
     }
         
