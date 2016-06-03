@@ -48,6 +48,8 @@ $( window ).load(function() {
 					</div>
 					<div class="form-group input-group">
 						<button type="submit" name="submit" class="btn btn-primary"><?php echo $this->lang->line('edit');?></button>
+						<a class="btn btn-danger" title="" href="<?php echo site_url("event/delete_event/" . $event['id']); ?>"><?php echo $this->lang->line('delete');?></a>
+
 					</div>
 				</form>
 			</div>			

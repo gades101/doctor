@@ -14,7 +14,7 @@ class Event_model extends CI_Model {
       $data['title'] = $this->input->post('title');
 	  $date=$this->input->post('date');
       $data['day'] = substr($date,0,2);
-      $data['month'] = substr($date,3,5);
+      $data['month'] = substr($date,3,2);
       if($this->input->post('year')){
 			$data['year'] = $this->input->post('year');      
       }
@@ -26,14 +26,14 @@ class Event_model extends CI_Model {
 		$this->db->from('ck_patient p,ck_contacts c');
 		$this->db->where(array('p.dob is not NULL', 'p.contact_id'=>'c.contact_id'),NULL,FALSE);
 		$query=$this->db->get();
-      $arr= $query->result_array();
+		$arr= $query->result_array();
 		foreach ($arr as $patient){
 			$data['title'] = $patient['first_name']." ".$patient['middle_name']." День Народження";
-			$data['day'] = substr($patient['dob'],8,10);
-			$data['month'] = substr($patient['dob'],5,7);
+			$data['day'] = substr($patient['dob'],8,2);
+			$data['month'] = substr($patient['dob'],5,2);
 			$data['patient_id'] = $patient['patient_id'];		
-			$this->db->insert('events',$data);         
-     }
+			$this->db->insert('events',$data);			
+		}
    }   
    
    public function get_edit_event($id) {    

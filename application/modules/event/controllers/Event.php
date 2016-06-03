@@ -47,7 +47,7 @@ class Event extends CI_Controller {
                 $this->load->view('templates/menu');
                 $this->load->view('events_list', $data);
                 $this->load->view('templates/footer');
-               // $this->event_model->add_patients_event();
+                //$this->event_model->add_patients_event();
 
             } else {
                 $this->event_model->add_event();
