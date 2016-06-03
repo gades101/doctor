@@ -721,5 +721,14 @@ class Patient_model extends CI_Model {
         $row = $query->row_array();
 		return $row;
 	}
+	function check_patient_event($patient_id){
+		$query=$this->db->det_where('events',array('patient_id'=>$patient_id));
+		$row = $query->num_rows();
+		if ($row > 0) {
+			return 1;
+		} else {
+         return 0;
+		}
+	}
 }
 ?>

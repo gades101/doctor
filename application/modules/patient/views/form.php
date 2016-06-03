@@ -1,42 +1,43 @@
 <script src="<?= base_url() ?>assets/js/fliplightbox.min.js"></script>
 <script type="text/javascript">
 var page_2=false;
-function closeImage(){$('#filelist').html('');$('.close_image').html('');}
+<?php if (isset($patient_id)) { ?>
+	function closeImage(){$('#filelist').html('');$('.close_image').html('');}
 	function showimages (appointment_id){
-	$.ajax({
-		url: "<?= base_url() ?>index.php/appointment/showmedia/<?= $patient_id?>/"+appointment_id+"/",
-		type: 'POST',
-		cache: false,
-		dataType: 'json',
-		processData: false, // Не обрабатываем файлы (Don't process the files)
-		contentType: false, // Так jQuery скажет серверу что это строковой запрос
-		success: function( respond, textStatus, jqXHR ){
-			if( typeof respond.error === 'undefined' ){
-				// Файлы успешно загружены, делаем что нибудь здесь
-				// выведем пути к загруженным файлам в блок '.ajax-respond'
-				var html = '',filelist=$('#filelist'),elem;
-				var img_path="<?= base_url() ?>patient_media/<?= $patient_id ?>/"+appointment_id+"/foto/";
-				$('#filelist').html('');
-				if ($('.close_image').text()==''){
-					$('.wrapper').append($('<div></div>').text('Закрити').addClass('close_image foto-btn').click(closeImage));
+		$.ajax({
+			url: "<?= base_url() ?>index.php/appointment/showmedia/<?= $patient_id?>/"+appointment_id+"/",
+			type: 'POST',
+			cache: false,
+			dataType: 'json',
+			processData: false, // Не обрабатываем файлы (Don't process the files)
+			contentType: false, // Так jQuery скажет серверу что это строковой запрос
+			success: function( respond, textStatus, jqXHR ){
+				if( typeof respond.error === 'undefined' ){
+					// Файлы успешно загружены, делаем что нибудь здесь
+					// выведем пути к загруженным файлам в блок '.ajax-respond'
+					var html = '',filelist=$('#filelist'),elem;
+					var img_path="<?= base_url() ?>patient_media/<?= $patient_id ?>/"+appointment_id+"/foto/";
+					$('#filelist').html('');
+					if ($('.close_image').text()==''){
+						$('.wrapper').append($('<div></div>').text('Закрити').addClass('close_image foto-btn').click(closeImage));
+					}
+						respond.forEach(function(item){
+							if (item!="." && item!=".."){
+								elem=$('<a></a>').addClass('flipLightBox').attr('href',img_path+item).append($('<img>').attr({src:img_path+item, width:'150px',height:'150',alt:'img'})).append('<span>'+item+'</span>');
+								filelist.append(elem);
+							}
+						});
+
+				$('body').flipLightBox();
 				}
-					respond.forEach(function(item){
-						if (item!="." && item!=".."){
-							elem=$('<a></a>').addClass('flipLightBox').attr('href',img_path+item).append($('<img>').attr({src:img_path+item, width:'150px',height:'150',alt:'img'})).append('<span>'+item+'</span>');
-							filelist.append(elem);
-						}
-					});
-
-			$('body').flipLightBox();
-			}
-			//else{console.log('ОШИБКИ ОТВЕТА сервера: ' + respond.error );}
-		},
-		/*error: function( jqXHR, textStatus, errorThrown ){
-			console.log('ОШИБКИ AJAX запроса: ' + textStatus );
-		}*/
-	});
-}
-
+				//else{console.log('ОШИБКИ ОТВЕТА сервера: ' + respond.error );}
+			},
+			/*error: function( jqXHR, textStatus, errorThrown ){
+				console.log('ОШИБКИ AJAX запроса: ' + textStatus );
+			}*/
+		});
+	}
+<?php } ?>
 
 
 function readURL(input) {
@@ -164,66 +165,65 @@ $(window).load(function(){
 
 
 });
-
-function displayPage(page_num){
-	if (page_num==1){
-		$("#page_1").show();
-		$("#page_2").hide();
+<?php if (isset($patient_id)) { ?>
+	function displayPage(page_num){
+		if (page_num==1){
+			$("#page_1").show();
+			$("#page_2").hide();
+		}
+		if (page_num==2){
+			$("#page_2").show();
+			$("#page_1").hide();
+			if(page_2!=true){
+				page_2=true;
+				$.ajax({
+					type: "POST",
+					url: "<?php echo base_url(); ?>index.php/patient/patient_ajax_info/<?php echo $patient_id; ?>/"+page_num,
+					dataType: "json",
+					success: function(data){
+						page_build(page_num,data);
+					}
+				});
+			}
+		}
 	}
-	if (page_num==2){
-		$("#page_2").show();
-		$("#page_1").hide();
-		if(page_2!=true){
-			page_2=true;
-			$.ajax({
-				type: "POST",
-				url: "<?php echo base_url(); ?>index.php/patient/patient_ajax_info/<?php echo $patient_id; ?>/"+page_num,
-				dataType: "json",
-				success: function(data){
-					page_build(page_num,data);
+	function page_build(page_num,data){
+		if (page_num==2){
+			var tab=$('#page_2_tbody'),field_class,curr_date="<?=date('Y-m-d')?>",curr_time="<?=date('H:i')?>";
+			var i=1;
+			data.forEach(function(item){
+				if (item.treatment==null){
+					item.treatment="Процедура не визначена"
 				}
+				item.start_time=item.start_time.substr(0,5);
+				item.end_time=item.end_time.substr(0,5);
+				var link="<?=base_url();?>"+"index.php/appointment/edit_appointment/"+item.appointment_id;
+				if (item.status=='Cancel'){
+					field_class = "tbl-cancel";
+				}
+				else {
+					if (item.appointment_date < curr_date || (item.appointment_date == curr_date && item.start_time < curr_time)){
+						field_class = "tbl-past";
+					}
+					else {
+						field_class = "tbl-future";
+					}
+				}
+				var row=$('<tr></tr>').append($('<td></td>').text(i)).append($('<td></td>').addClass(field_class).append($('<a></a>').text(item.treatment).attr("href",link)))
+				.append($('<td></td>').text(item.appointment_date))
+				.append($('<td></td>').text(item.start_time)).append($('<td></td>').text(item.name)).append($('<td></td>').addClass('fotos').text(item.foto_num)).append($('<td></td>'));
+				tab.append(row);
+				if (item.foto_num!=0){
+					$(row).find('.fotos').addClass('foto-btn').click(function(){showimages(item.appointment_id)});
+				}
+				i++;
+			});
+			$("#patient_apps").dataTable({
+				"pageLength": 50
 			});
 		}
 	}
-
-}
-function page_build(page_num,data){
-	if (page_num==2){
-		var tab=$('#page_2_tbody'),field_class,curr_date="<?=date('Y-m-d')?>",curr_time="<?=date('H:i')?>";
-		var i=1;
-		data.forEach(function(item){
-			if (item.treatment==null){
-				item.treatment="Процедура не визначена"
-			}
-			item.start_time=item.start_time.substr(0,5);
-			item.end_time=item.end_time.substr(0,5);
-			var link="<?=base_url();?>"+"index.php/appointment/edit_appointment/"+item.appointment_id;
-			if (item.status=='Cancel'){
-				field_class = "tbl-cancel";
-			}
-			else {
-				if (item.appointment_date < curr_date || (item.appointment_date == curr_date && item.start_time < curr_time)){
-					field_class = "tbl-past";
-				}
-				else {
-					field_class = "tbl-future";
-				}
-			}
-			var row=$('<tr></tr>').append($('<td></td>').text(i)).append($('<td></td>').addClass(field_class).append($('<a></a>').text(item.treatment).attr("href",link)))
-			.append($('<td></td>').text(item.appointment_date))
-			.append($('<td></td>').text(item.start_time)).append($('<td></td>').text(item.name)).append($('<td></td>').addClass('fotos').text(item.foto_num)).append($('<td></td>'));
-			tab.append(row);
-			if (item.foto_num!=0){
-				$(row).find('.fotos').addClass('foto-btn').click(function(){showimages(item.appointment_id)});
-			}
-			i++;
-		});
-		$("#patient_apps").dataTable({
-			"pageLength": 50
-		});
-	}
-}
-
+<?php } ?>
 
 
 function goToApp(link){
@@ -249,6 +249,7 @@ function goToApp(link){
 		$gender=$patient['gender'];
 		$reference_by = $patient['reference_by'];
 		$diagnosis = $patient['diagnosis'];
+		$is_dob_event=$patient['$is_dob_event'];
 
 	}else{
 		$dob = "";
@@ -256,6 +257,7 @@ function goToApp(link){
 		$gender= "";
 		$reference_by = "";
 		$diagnosis = "";
+		$is_dob_event="2";
 	}
 	if(isset($contacts)){
 		$contact_id = $contacts['contact_id'];
@@ -346,7 +348,7 @@ function goToApp(link){
 								<?php echo form_error('display_name','<div class="alert alert-danger">','</div>'); ?>
 							</div>-->
 							<div class="form-group">
-								<label for="gender"><?php echo "Стать";?></label>
+								<label for="gender">Стать</label>
 								<input type="radio" name="gender" value="male" <?php if($gender == 'male'){echo "checked='checked'";}?>/>Чоловік
 								<input type="radio" name="gender" value="female" <?php if($gender == 'female'){echo "checked='checked'";}?>/>Жінка
 								<?php echo form_error('gender','<div class="alert alert-danger">','</div>'); ?>
@@ -354,6 +356,10 @@ function goToApp(link){
 							<div class="form-group">
 								<label for="dob"><?php echo $this->lang->line('dob');?></label>
 								<input type="text" name="dob" id="dob" class="form-control"  value="<?php  echo $dob; ?>"/>
+								<label for="dob_event">Відображати у списку подій</label>
+								<input type="radio" name="dob_event" value='1' <?php if($is_dob_event==1){echo "checked='checked'";}?>/>так
+								<input type="radio" name="dob_event" value='0' <?php if($is_dob_event==0){echo "checked='checked'";}?>/>ні
+								<input type="hidden" name="origin_dob_event" value="<?= $is_dob_event;?>" />
 								<?php echo form_error('dob','<div class="alert alert-danger">','</div>'); ?>
 							</div>
 							<div class="form-group">

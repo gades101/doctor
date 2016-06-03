@@ -94,17 +94,17 @@ class Patient extends CI_Controller {
 			$this->form_validation->set_rules('first_name', 'Прізвище', 'required');
             $this->form_validation->set_rules('middle_name', 'Ім\'я', 'required');
 			//$this->form_validation->set_rules('email', 'Email', 'valid_email');
+			
 
 			if ($this->form_validation->run() === FALSE) {
 				$contact_id = $this->patient_model->get_contact_id($patient_id);
+				//$data['is_dob_event']=$this->patient_model->check_patient_event($patient_id);
 				$data['called_from']=$called_from;
 				$data['patient_id'] = $patient_id;
 				$data['patient'] = $this->patient_model->get_patient_detail($patient_id);
 				$data['contacts'] = $this->contact_model->get_contacts($contact_id);
-				//$data['address'] = $this->contact_model->get_contact_address($contact_id);
 				$data['emails'] = $this->contact_model->get_contact_email($contact_id);
 				$data['def_dateformate'] = $this->settings_model->get_date_formate();
-				//file_put_contents('t1',print_r($data,true));
 				$this->load->view('templates/header');
 				$this->load->view('templates/menu');
 				$this->load->view('form', $data);
