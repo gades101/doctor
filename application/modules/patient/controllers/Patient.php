@@ -142,7 +142,7 @@ class Patient extends CI_Controller {
 						$this->patient_model->update_patient_data($patient_id);
 						$this->event_model->change_patient_event($patient_id);
 						//$this->patient_model->update_display_id();
-						$this->patient_model->update_diagnosis();
+						//$this->patient_model->update_diagnosis();
 						if($called_from =="patient"){
 							$this->index();
 						}else{

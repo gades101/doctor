@@ -18,9 +18,10 @@
 		var searcharrpatient=[<?php $i = 0;
 		foreach ($patients as $p) {
 			if ($i > 0) { echo ",";}
-			echo '{value:"' . $p['first_name'] . " " . $p['middle_name'] . " " . $p['last_name'] . '",id:"' . $p['patient_id'] . '",display:"' . $p['display_id'] . '",num:"' . $p['phone_number'] . '"}';
+			echo '{value:"' . $p['first_name'] . " " . $p['middle_name'] . " " . $p['last_name'] . '",id:"' . $p['patient_id'] . '",discount:"' . $p['discount'] . '"}';
 			$i++;
 		}?>];
+		//console.log(searcharrpatient);
 		$("#patient_name").autocomplete({
 			autoFocus: true,
 			source: searcharrpatient,
@@ -28,6 +29,7 @@
 
 			select: function(event,ui){
 				//do something
+				$("#discount").val(ui.item ? ui.item.discount : '');
 				$("#patient_id").val(ui.item ? ui.item.id : '');
 				var this_patient_id = ui.item.id;
 			},
@@ -63,7 +65,7 @@
 				//do something
 				$("#treatment_id").val(ui.item ? ui.item.id : '');
 				$("#treatment").val(ui.item ? ui.item.treatment : '');
-				$("#pay_amount").val(ui.item ? ui.item.value : '');
+				//$("#pay_amount").val(ui.item ? ui.item.value : '');
 				$("#pay_amount").val(ui.item ? ui.item.price : '');
 			},
 			change: function(event, ui) {

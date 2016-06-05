@@ -249,6 +249,7 @@ function goToApp(link){
 		$gender=$patient['gender'];
 		$reference_by = $patient['reference_by'];
 		$diagnosis = $patient['diagnosis'];
+		$discount=$patient['discount'];
 	}else{
 		$dob = "";
 		$display_id = generate_id();
@@ -256,6 +257,7 @@ function goToApp(link){
 		$reference_by = "";
 		$diagnosis = "";
 		$is_dob_event=0;
+		$discount="";
 	}
 	if(isset($contacts)){
 		$contact_id = $contacts['contact_id'];
@@ -369,6 +371,11 @@ function goToApp(link){
 								<label for="reference_by">Джерело інформації</label>
 								<input type="input" name="reference_by" class="form-control" value="<?php echo $reference_by; ?>"/>
 								<?php echo form_error('reference_by','<div class="alert alert-danger">','</div>'); ?>
+							</div>
+							<div class="form-group">
+								<label for="discount">Знижка %</label>
+								<input type="input" name="discount" class="form-control" value="<?php echo $discount; ?>"/>
+								<?php echo form_error('discount','<div class="alert alert-danger">','</div>'); ?>
 							</div>
 							<div class="form-group">
 								<label for="phone_number"><?php echo $this->lang->line('phone_number');?></label>

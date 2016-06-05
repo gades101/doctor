@@ -28,6 +28,8 @@ class Patient_model extends CI_Model {
         $data['reference_by'] = $this->input->post('reference_by');
 		$data['gender'] = $this->input->post('gender');
 		$data['diagnosis']= $this->input->post('diagnosis');
+		$data['diagnosis']= $this->input->post('discount');
+
 		if($this->input->post('dob')){
 			$data['dob'] = date('Y-m-d',strtotime($this->input->post('dob')));
 		}
@@ -657,12 +659,14 @@ class Patient_model extends CI_Model {
     }
 	 public function update_patient_data($patient_id){
         $data['gender'] = $this->input->post('gender');
+        $data['diagnosis'] = $this->input->post('diagnosis');
+        $data['discount'] = $this->input->post('discount');
 		if($this->input->post('dob')){
 			$data['dob'] = date('Y-m-d',strtotime($this->input->post('dob')));
 		}
         $this->db->update('patient', $data, array('patient_id' => $patient_id));
     }
-	public function update_display_id(){
+	/*public function update_display_id(){
 		$patient_id = $this->input->post('patient_id');
         $data['display_id'] = $this->input->post('display_id');
         $this->db->update('patient', $data, array('patient_id' => $patient_id));
@@ -671,7 +675,7 @@ class Patient_model extends CI_Model {
 		$patient_id = $this->input->post('patient_id');
         $data['diagnosis'] = $this->input->post('diagnosis');
         $this->db->update('patient', $data, array('patient_id' => $patient_id));
-    }
+    }*/
 	function get_balance_amount($bill_id) {
 		//Fetch Patient ID from bill id
 		$query = $this->db->get_where('bill', array('bill_id' => $bill_id));
