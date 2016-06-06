@@ -20,6 +20,7 @@ class Payment_model extends CI_Model {
 		$data['pay_mode'] = $this->input->post('pay_mode');
 	//	$data['cheque_no'] = $this->input->post('cheque_number');
 		$this->db->insert('payment', $data);
+//file_put_contents('t1.txt',print_r($this->db->error(),true));
     }
 	function get_paid_amount($bill_id){
 		$this->db->select_sum('pay_amount', 'pay_total');

@@ -15,6 +15,7 @@
 ?>
 <script>
 	$(window).load(function(){
+		var price;
 		var searcharrpatient=[<?php $i = 0;
 		foreach ($patients as $p) {
 			if ($i > 0) { echo ",";}
@@ -32,6 +33,7 @@
 				$("#discount").val(ui.item ? ui.item.discount : '');
 				$("#patient_id").val(ui.item ? ui.item.id : '');
 				var this_patient_id = ui.item.id;
+				$("#pay_amount").val(price ? price*((100-ui.item.discount)/100) : '');
 			},
 			change: function(event, ui) {
 				 if (ui.item == null) {
@@ -65,8 +67,8 @@
 				//do something
 				$("#treatment_id").val(ui.item ? ui.item.id : '');
 				$("#treatment").val(ui.item ? ui.item.treatment : '');
-				//$("#pay_amount").val(ui.item ? ui.item.value : '');
-				$("#pay_amount").val(ui.item ? ui.item.price : '');
+				$("#pay_amount").val(ui.item ? ui.item.price*((100-$("#discount").val())/100) : '');
+				price=ui.item ? ui.item.price : '';
 			},
 			change: function(event, ui) {
 				 if (ui.item == null) {
@@ -95,8 +97,15 @@
 			}
 		});
 		<?php if ($pay_mode !='cheque') { ?>
-		$( "#cheque_number" ).parent().parent().hide();
+			$( "#cheque_number" ).parent().parent().hide();
 		<?php } ?>
+		
+		$('#discount').on('input', function(){
+			var item=$(this),value=(100-item.val())/100;
+			$('#pay_amount').val(price*value);
+		})
+		
+		
 	});
 </script>
 <div id="page-inner">
@@ -141,7 +150,7 @@
 			<div class="col-md-1">
 				<div class="form-group">
 					<label for="title">Знижка</label>
-					<input type="text" pattern="[0-9]{,2}" name="discount" id="discount" class="form-control" value="" />
+					<input type="number" pattern="[0-9]{0-2}" name="discount" id="discount" class="form-control" value="" />
 				</div>
 			</div>
 			<div class="col-md-12">
