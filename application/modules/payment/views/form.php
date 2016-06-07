@@ -7,7 +7,7 @@
 		//$payment_cheque_no = "";
 		//$payment_pay_amount = 0;
 		$pay_mode = "cash";
-		$pay_date="";
+		$pay_date=date("d-m-Y");
 		$pay_amount=0;
 		//$pay_mode ='cash';
 		$curr_treatment_name="";
