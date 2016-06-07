@@ -100,20 +100,16 @@ class Payment extends CI_Controller {
 
 			if ($this->form_validation->run() === FALSE) {
 				$data['patients'] = $this->patient_model->get_patient();
+				$data['treatments'] = $this->treatment_model->get_treatments();				
 				$payment = $this->payment_model->get_payment($payment_id);
 				$data['payment'] = $payment;
 				$data['payment_id'] = $payment->payment_id;
-				//$patient_id = $this->patient_model->get_patient_id_from_bill_id($bill_id);
 				$data['patient_id'] = $payment->patient_id;
 				$data['patient'] = $this->patient_model->get_patient_detail($data['patient_id']);
-				$data['pay_date'] = $payment->pay_date;
-				//$data['def_dateformate'] = $this->settings_model->get_date_formate();
+				$data['def_dateformate'] = $this->settings_model->get_date_formate();
 				//25-12-15
 				$data['called_from'] = "";
-				$data['currency_postfix'] = $this->settings_model->get_currency_postfix();
-				$data['pay_amount'] = $payment->pay_amount;
-				//$data['visit_id'] = $this->patient_model->get_visit_id($payment->bill_id);
-				
+				$data['curr_treatment']=$this->treatment_model->get_edit_treatment($payment->treatment_id);				
 				$this->load->view('templates/header');
 				$this->load->view('templates/menu');
 				$this->load->view('form',$data);

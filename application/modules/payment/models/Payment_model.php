@@ -17,10 +17,10 @@ class Payment_model extends CI_Model {
 		$data['treatment_id'] = $this->input->post('treatment_id');
 		$data['pay_amount'] = $this->input->post('pay_amount');
 	//	$data['pay_date'] = date('Y-m-d',strtotime($this->input->post('pay_date')));
+		$data['pay_date'] = date('Y-m-d',strtotime($this->input->post('pay_date')));
 		$data['pay_mode'] = $this->input->post('pay_mode');
 	//	$data['cheque_no'] = $this->input->post('cheque_number');
 		$this->db->insert('payment', $data);
-//file_put_contents('t1.txt',print_r($this->db->error(),true));
     }
 	function get_paid_amount($bill_id){
 		$this->db->select_sum('pay_amount', 'pay_total');

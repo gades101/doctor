@@ -3,12 +3,18 @@
 		$payment_cheque_no = $payment->cheque_no;
 		$payment_pay_amount = $payment->pay_amount;
 		$pay_mode = $payment->pay_mode;
+		$pay_date=$payment->pay_date;
+		$curr_treatment_name=$curr_treatment['treatment'];
+		$pay_amount=$payment->pay_amount;
+		$discount=$patient['discount'];
+		file_put_contents('t1.txt',print_r($payment,true));
 	} else {
 		//$payment_cheque_no = "";
 		//$payment_pay_amount = 0;
 		$pay_mode = "cash";
 		$pay_date=date("d-m-Y");
 		$pay_amount=0;
+		$discount="";
 		//$pay_mode ='cash';
 		$curr_treatment_name="";
 	}
@@ -16,13 +22,15 @@
 <script>
 	$(window).load(function(){
 		var price;
+		<?php if(isset($payment)){?>
+			price=<?= $curr_treatment['price']; ?>;
+		<?php } ?>
 		var searcharrpatient=[<?php $i = 0;
 		foreach ($patients as $p) {
 			if ($i > 0) { echo ",";}
 			echo '{value:"' . $p['first_name'] . " " . $p['middle_name'] . " " . $p['last_name'] . '",id:"' . $p['patient_id'] . '",discount:"' . $p['discount'] . '"}';
 			$i++;
 		}?>];
-		//console.log(searcharrpatient);
 		$("#patient_name").autocomplete({
 			autoFocus: true,
 			source: searcharrpatient,
@@ -49,8 +57,7 @@
 				}
 			}
 		});
-		
-		
+			
 		var searchtreatment=[<?php $i = 0;
 		foreach ($treatments as $treatment) {
 			if ($i > 0) { echo ",";}
@@ -101,11 +108,11 @@
 		<?php } ?>
 		
 		$('#discount').on('input', function(){
-			var item=$(this),value=(100-item.val())/100;
-			$('#pay_amount').val(price*value);
+			if(price){
+				var item=$(this),value=(100-item.val())/100;
+				$('#pay_amount').val(price*value);
+			}
 		})
-		
-		
 	});
 </script>
 <div id="page-inner">
@@ -116,9 +123,7 @@
 				Форма оплати
 			</div>
 			<div class="panel-body">
-			<?php if(!isset($payment)){ 
-				$pay_amount="";
-			?>
+			<?php if(isset($payment)) { ?>	
 			<?php echo form_open('payment/insert/') ?>
 			<?php  }else{ ?>
 			<?php echo form_open('payment/edit/'.$payment_id) ?>
@@ -143,14 +148,14 @@
 				<input name="treatment" id="treatment" type="text" class="form-control" value="<?= $curr_treatment_name; ?>"/><br />
 			</div>
 			<div class="col-md-12">
-				<label for="pay_amount">Ціна</label>
-				<input name="pay_amount" id="pay_amount" type="text" readonly="readonly" class="form-control" value="<?php echo $pay_amount;if($currency_postfix) echo $currency_postfix['currency_postfix']; ?>"/><br />
-				<input name="due_amount" id="due_amount" type="hidden" class="form-control" value="<?php echo $pay_amount; ?>"/>
+				<label for="pay_amount">Ціна(грн.)</label>
+				<input name="pay_amount" id="pay_amount" type="text" readonly="readonly" class="form-control" value="<?php echo $pay_amount; ?>"/><br />
+				<input name="due_amount" id="due_amount" type="hidden" class="form-control" value="<?= $pay_amount; ?>"/>
 			</div>
-			<div class="col-md-1">
+			<div class="col-md-2">
 				<div class="form-group">
-					<label for="title">Знижка</label>
-					<input type="number" pattern="[0-9]{0-2}" name="discount" id="discount" class="form-control" value="" />
+					<label for="title">Знижка %</label>
+					<input type="number" pattern="[0-9]{0-2}" name="discount" id="discount" class="form-control" value="<?= $discount ?>" />
 				</div>
 			</div>
 			<div class="col-md-12">
