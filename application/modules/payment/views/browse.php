@@ -9,10 +9,9 @@
 					Платежі
 				</div>
 				<div class="panel-body">
-					<a 	title="<?php echo $this->lang->line("add")." ".$this->lang->line("payment");?>"
+					<a title="<?php echo $this->lang->line("add")." ".$this->lang->line("payment");?>"
 						href="<?php echo base_url()."index.php/payment/insert/0/payment" ?>"
-						class="btn btn-primary square-btn-adjust"
-					>
+						class="btn btn-primary square-btn-adjust"/>
 							<?php echo $this->lang->line("add")." ".$this->lang->line("payment");?>
 					</a>
 					<p></p>
@@ -23,7 +22,7 @@
 									<th><?php echo $this->lang->line("id");?></th>
 									<th><?php echo $this->lang->line("date");?></th>
 									<th><?php echo $this->lang->line("patient");?></th>
-									<th><?php echo $this->lang->line("amount");?></th>
+									<th><?php echo $this->lang->line("amount")." Грн.";?></th>
 									<th><?php echo $this->lang->line("payment_mode");?></th>
 									<th><?php echo $this->lang->line("edit");?></th>
 								</tr>
@@ -31,21 +30,21 @@
 							<tbody>
 								<?php $i=1; ?>
 								<?php foreach ($payments as $payment):  ?>
-								<?php if(isset($payment['pay_date']) && $payment['pay_date'] != '0000-00-00'){?>
-								<?php $payment_date = $payment['pay_date']; ?>
-								<?php $payment_date = date('d-m-Y',strtotime($payment['pay_date'])); ?>
-								<?php }else{ ?>
-								<?php $payment_date = "--"; ?>
-								<?php } ?>
-								<tr <?php if ($i%2 == 0) { echo "class='even'"; } else { echo "class='odd'"; }?> >
-									<td><?php echo $payment['payment_id']; ?></td>
-									<td><?php echo $payment_date; ?></td>
-									<td><?php echo $payment['patient_id']; ?></td>
-									<td><?php echo currency_format($payment['pay_amount']); ?><?php if($currency_postfix) echo $currency_postfix['currency_postfix']; ?></td>
-									<td><?php echo ucfirst($payment['pay_mode']); ?><?php if($payment['pay_mode'] == "cheque") {echo "  ( ".$payment['cheque_no']." )";} ?></td>
-									<td><a href="<?= site_url('payment/edit/'.$payment['payment_id']);?>" class="btn btn-sm btn-primary square-btn-adjust"><?php echo $this->lang->line("edit");?></a></td>
-								</tr>
-								<?php $i++; ?>
+									<?php if(isset($payment['pay_date']) && $payment['pay_date'] != '0000-00-00'){?>
+									<?php $payment_date = $payment['pay_date']; ?>
+									<?php /*$payment_date = date('d-m-Y',strtotime($payment['pay_date']));*/ ?>
+									<?php }else{ ?>
+									<?php $payment_date = "--"; ?>
+									<?php } ?>
+									<tr <?php if ($i%2 == 0) { echo "class='even'"; } else { echo "class='odd'"; }?> >
+										<td><?php echo $payment['payment_id']; ?></td>
+										<td><?php echo $payment_date; ?></td>
+										<td><?php echo $payment['first_name'].' '.$payment['middle_name']; ?></td>
+										<td><?php echo $payment['pay_amount']; ?></td>
+										<td><?php if($payment['pay_mode'] == "cheque") {echo "Безготівковий розрах.";} else echo "Готівка"?></td>
+										<td><a href="<?= site_url('payment/edit/'.$payment['payment_id']);?>" class="btn btn-sm btn-primary square-btn-adjust"><?php echo $this->lang->line("edit");?></a></td>
+									</tr>
+									<?php $i++; ?>
 								<?php endforeach?>
 							</tbody>
 						</table>

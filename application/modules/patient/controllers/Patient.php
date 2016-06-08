@@ -54,17 +54,24 @@ class Patient extends CI_Controller {
     }
 
     public function patient_ajax_info($patient_id,$page_num=NULL){
-		$appointments=$this->appointment_model->get_all_appointments_by_patient($patient_id);
-		foreach($appointments as $key => $app){
-			$uploaddir="patient_media/".$patient_id."/".$app['appointment_id']."/foto/";
-			if(file_exists($uploaddir)){
-				$foto_num=count(scandir($uploaddir))-2;
+		if ($page_num==2){
+			$appointments=$this->appointment_model->get_all_appointments_by_patient($patient_id);
+			foreach($appointments as $key => $app){
+				$uploaddir="patient_media/".$patient_id."/".$app['appointment_id']."/foto/";
+				if(file_exists($uploaddir)){
+					$foto_num=count(scandir($uploaddir))-2;
+				}
+				else $foto_num=0;
+				$appointments[$key]['foto_num']=$foto_num;
 			}
-			else $foto_num=0;
-			$appointments[$key]['foto_num']=$foto_num;
+			echo json_encode($appointments);
 		}
-		echo json_encode($appointments);
+		if ($page_num==3){
+			$payments=$this->payment_model->get_all_payments_by_patient($patient_id);
+			echo json_encode($payments);
+		}
     }
+
 	/** File Upload for Patient Profile Image */
 	function do_upload() {
         $config['upload_path'] = './profile_picture/';

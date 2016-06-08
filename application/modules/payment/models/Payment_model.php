@@ -8,7 +8,7 @@ class Payment_model extends CI_Model {
 
     public function list_payments() {
         $this->db->order_by("pay_date");
-        $query = $this->db->get('payment');
+        $query = $this->db->get('view_payment');
         return $query->result_array();
     }
 	function insert_payment() {
@@ -55,5 +55,14 @@ class Payment_model extends CI_Model {
 		$this->db->where('bill_id', $bill_id);
 		$this->db->update('bill', $data);
 	}
+	 function get_all_payments_by_patient($patient_id){
+		$query = $this->db->get_where('payment',array('patient_id'=>$patient_id));
+		$row = $query->num_rows();
+		if ($row > 0) {
+        return $query->result_array();
+		} else {
+        return FALSE;
+		}
+	 }
 }
 ?>

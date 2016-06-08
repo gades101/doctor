@@ -110,7 +110,7 @@
 		$('#discount').on('input', function(){
 			if(price){
 				var item=$(this),value=(100-item.val())/100;
-				$('#pay_amount').val(price*value);
+				$('#pay_amount').val((price*value).toFixed(2));
 			}
 		})
 	});
@@ -124,9 +124,9 @@
 			</div>
 			<div class="panel-body">
 			<?php if(isset($payment)) { ?>	
-			<?php echo form_open('payment/insert/') ?>
+			<?php echo form_open('payment/edit/'.$payment['payment_id']) ?>
 			<?php  }else{ ?>
-			<?php echo form_open('payment/edit/'.$payment_id) ?>
+			<?php echo form_open('payment/insert/') ?>
 			<?php  } ?>
 
 			<input type="hidden" name="payment_type" value="bill_payment" />
@@ -169,7 +169,7 @@
 					<label for="title"><?php echo $this->lang->line('payment_mode');?></label>
 					<select name="pay_mode" id="pay_mode" class="form-control">
 						<option value="cash" <?php if ($pay_mode =='cash') {echo "selected";} ?>>Готівка</option>
-						<option value="cheque" <?php if ($pay_mode =='cheque') {echo "selected";} ?>>Чек</option>
+						<option value="cheque" <?php if ($pay_mode =='cheque') {echo "selected";} ?>>Безготівковий розрах.</option>
 					</select>
 				</div>
 			</div>

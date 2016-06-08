@@ -1,6 +1,6 @@
 <script src="<?= base_url() ?>assets/js/fliplightbox.min.js"></script>
 <script type="text/javascript">
-var page_2=false;
+var page_2=false,page_3=false;
 <?php if (isset($patient_id)) { ?>
 	function closeImage(){$('#filelist').html('');$('.close_image').html('');}
 	function showimages (appointment_id){
@@ -170,12 +170,30 @@ $(window).load(function(){
 		if (page_num==1){
 			$("#page_1").show();
 			$("#page_2").hide();
+			$("#page_3").hide();
 		}
 		if (page_num==2){
 			$("#page_2").show();
 			$("#page_1").hide();
+			$("#page_3").hide();
 			if(page_2!=true){
 				page_2=true;
+				$.ajax({
+					type: "POST",
+					url: "<?php echo base_url(); ?>index.php/patient/patient_ajax_info/<?php echo $patient_id; ?>/"+page_num,
+					dataType: "json",
+					success: function(data){
+						page_build(page_num,data);
+					}
+				});
+			}
+		}
+		if (page_num==3){
+			$("#page_3").show();
+			$("#page_1").hide();
+			$("#page_2").hide();
+			if(page_3!=true){
+				page_3=true;
 				$.ajax({
 					type: "POST",
 					url: "<?php echo base_url(); ?>index.php/patient/patient_ajax_info/<?php echo $patient_id; ?>/"+page_num,
@@ -222,6 +240,23 @@ $(window).load(function(){
 				"pageLength": 50
 			});
 		}
+		if (page_num==3){
+			var tab=$('#page_3_tbody'),field_class,curr_date="<?=date('Y-m-d')?>",curr_time="<?=date('H:i')?>";
+			var i=1;
+			data.forEach(function(item){
+				var link="<?=base_url();?>"+"index.php/payment/edit/"+item.payment_id;
+				var row=$('<tr></tr>').append($('<td></td>').text(i))
+				.append($('<td></td>').text(item.pay_date))
+				.append($('<td></td>').text(item.pay_amount));
+				tab.append(row);
+				i++;
+			});
+			$("#patient_payments").dataTable({
+				"pageLength": 50
+			});
+		}		
+		
+		patient_payments
 	}
 <?php } ?>
 
@@ -299,6 +334,7 @@ function goToApp(link){
 					<?php if (isset($patient)) {?>
 						<span class="tblHead btn-danger" onclick=displayPage(1) style="min-width:20%"/>Особисті дані пацієнта</span>
 						<span class="tblHead btn-danger" onclick=displayPage(2) />Прийоми</span>
+						<span class="tblHead btn-danger" onclick=displayPage(3) />Оплати</span>
 					<?php } else { ?>
 						<span class="" style="min-width:20%"/>Особисті дані пацієнта</span>					
 					<?php } ?>				
@@ -455,19 +491,26 @@ function goToApp(link){
 								<th class=''>Терапевт</th>
 								<th class=''>Фото</th>
 								<th class=''>Оплата</th>
-
 							</tr>
 						</thead>
 						<tbody id="page_2_tbody">
-							<?php /*{
-								foreach ($appointments as $appointment) {
-										echo '<tr>'.'<td>'.$appointment['name'].'</td>'.'<td>'.$appointment['appointment_date'].'</td>'.'</tr>';
-								}
-							}*/
-							?>
 						</tbody>
 					</table>
 				</div>
+
+				<div id="page_3" class="table-responsive"  style='position:relative;display:none;'>
+					<table id="patient_payments" class="table table-condensed table-striped table-bordered table-hover dataTable no-footer"  >
+						<thead>
+							<tr>
+								<th class='appTime'>№</th>
+								<th class='' >Дата оплати</th>
+								<th class=''>Сума оплати</th>
+							</tr>
+						</thead>
+						<tbody id="page_3_tbody"></tbody>
+					</table>
+				</div>
+				
 				<div class="wrapper" style="position:fixed;bottom:0">
 					<div id="filelist"></div>
 				</div>
