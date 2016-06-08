@@ -35,25 +35,21 @@ class Payment_model extends CI_Model {
 	}
 	function edit_payment($payment_id){
 		//Get previous details
-		$payment = $this->get_payment($payment_id);
-		$bill_id = $payment->bill_id;
-		$query = $this->db->get_where('bill', array('bill_id' => $bill_id));
-		$bill = $query->row();
-		$previous_due_amount = $bill->due_amount;
-		$previous_payment_amount = $payment->pay_amount;
-		
-		$data['pay_amount'] = $this->input->post('payment_amount');
-		$pay_amount = $data['pay_amount'];
+		//$payment = $this->get_payment($payment_id);
+		//$previous_payment_amount = $payment->pay_amount;	
+		//$pay_amount = $data['pay_amount'];
+		$data['patient_id'] = $this->input->post('patient_id');
+		$data['treatment_id'] = $this->input->post('treatment_id');
+		$data['pay_amount'] = $this->input->post('pay_amount');
 		$data['pay_mode'] = $this->input->post('pay_mode');
-		$data['pay_date'] = date('Y-m-d',strtotime($this->input->post('payment_date')));
+		$data['pay_date'] = $this->input->post('pay_date');
 		$this->db->where('payment_id', $payment_id);
 		$this->db->update('payment', $data);
-		
-		$data = array();
+		/*$data = array();
 		$due_amount = $this->input->post('due_amount');
 		$data['due_amount'] = $previous_due_amount + ( $previous_payment_amount - $pay_amount);
 		$this->db->where('bill_id', $bill_id);
-		$this->db->update('bill', $data);
+		$this->db->update('bill', $data);*/
 	}
 	 function get_all_payments_by_patient($patient_id){
 		$query = $this->db->get_where('payment',array('patient_id'=>$patient_id));

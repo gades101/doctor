@@ -88,12 +88,12 @@ class Payment extends CI_Controller {
 
 	public function edit($payment_id){
 		session_start();
+
 		//Check if user has logged in
 		if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
             redirect('login/index');
         } else {
 			$this->form_validation->set_rules('patient_id', 'Patient', 'required');
-            $this->form_validation->set_rules('bill_id', 'Bill Id', 'required');
 			$this->form_validation->set_rules('pay_amount', 'Payment Amount', 'required');
 			$this->form_validation->set_rules('pay_date', 'Payment Date', 'required');
 			$this->form_validation->set_rules('pay_mode', 'Payment Mode', 'required');
@@ -115,6 +115,8 @@ class Payment extends CI_Controller {
 				$this->load->view('form',$data);
 				$this->load->view('templates/footer');
 			}else{
+		file_put_contents('t1.txt',print_r($this->input->post(),true));	
+
 				$this->payment_model->edit_payment($payment_id);
 				$this->index();
 			}

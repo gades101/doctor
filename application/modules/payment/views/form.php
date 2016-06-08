@@ -7,7 +7,6 @@
 		$curr_treatment_name=$curr_treatment['treatment'];
 		$pay_amount=$payment->pay_amount;
 		$discount=$patient['discount'];
-		file_put_contents('t1.txt',print_r($payment,true));
 	} else {
 		//$payment_cheque_no = "";
 		//$payment_pay_amount = 0;
@@ -124,7 +123,7 @@
 			</div>
 			<div class="panel-body">
 			<?php if(isset($payment)) { ?>	
-			<?php echo form_open('payment/edit/'.$payment['payment_id']) ?>
+			<?php echo form_open('payment/edit/'.$payment->payment_id) ?>
 			<?php  }else{ ?>
 			<?php echo form_open('payment/insert/') ?>
 			<?php  } ?>
