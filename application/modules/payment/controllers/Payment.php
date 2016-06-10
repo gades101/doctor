@@ -46,7 +46,7 @@ class Payment extends CI_Controller {
         }
     }
 
-	public function insert($called_from = 'bill') {
+	public function insert($curr_patient_id=NULL,$called_from = 'bill') {
         session_start();
 		//Check if user has logged in
 		if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
@@ -56,8 +56,9 @@ class Payment extends CI_Controller {
             //$this->form_validation->set_rules('bill_id', 'Bill Id', 'required');
 
 			if ($this->form_validation->run() === FALSE) {
-				$data['treatments'] = $this->treatment_model->get_treatments();				
-				$data['patients'] = $this->patient_model->get_patient();
+				$data['treatments'] = $this->treatment_model->get_treatments();
+				if ($curr_patient_id) 	$data['curr_patient'] = $this->patient_model->get_patient_detail($curr_patient_id);
+				else $data['patients'] = $this->patient_model->get_patient();
 				$data['currency_postfix'] = $this->settings_model->get_currency_postfix();
 				/*$data['due_amount'] = $this->patient_model->get_due_amount($bill_id);
 				$data['visit_id'] = $this->patient_model->get_visit_id($bill_id);
@@ -73,15 +74,15 @@ class Payment extends CI_Controller {
 				$this->load->view('templates/footer');
 			}else{
 				$this->payment_model->insert_payment();
-
-				$called_from = $this->input->post('called_from');
+				$this->index();
+				/*$called_from = $this->input->post('called_from');
 				$visit_id = $this->input->post('visit_id');
 				$patient_id = $this->input->post('patient_id');
 				if($called_from == 'bill'){
 					redirect('patient/bill/'.$visit_id.'/'.$patient_id);
 				}else{
 					$this->index();
-				}
+				}*/
 			}
         }
     }

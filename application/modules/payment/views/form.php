@@ -17,6 +17,13 @@
 		//$pay_mode ='cash';
 		$curr_treatment_name="";
 	}
+	if (isset($curr_patient)){
+		$patient_id=$curr_patient['patient_id'];
+		$discount=$curr_patient['discount'];
+		$patient['first_name'] =$curr_patient['first_name'];
+		$patient['middle_name'] =$curr_patient['middle_name'];
+		$patient['last_name'] =$curr_patient['last_name'];
+	}
 ?>
 <script>
 	$(window).load(function(){
@@ -24,39 +31,40 @@
 		<?php if(isset($payment)){?>
 			price=<?= $curr_treatment['price']; ?>;
 		<?php } ?>
-		var searcharrpatient=[<?php $i = 0;
-		foreach ($patients as $p) {
-			if ($i > 0) { echo ",";}
-			echo '{value:"' . $p['first_name'] . " " . $p['middle_name'] . " " . $p['last_name'] . '",id:"' . $p['patient_id'] . '",discount:"' . $p['discount'] . '"}';
-			$i++;
-		}?>];
-		$("#patient_name").autocomplete({
-			autoFocus: true,
-			source: searcharrpatient,
-			minLength: 1,//search after one characters
+		<?php if (isset($patients)) { ?>
+			var searcharrpatient=[<?php $i = 0;
+			foreach ($patients as $p) {
+				if ($i > 0) { echo ",";}
+				echo '{value:"' . $p['first_name'] . " " . $p['middle_name'] . " " . $p['last_name'] . '",id:"' . $p['patient_id'] . '",discount:"' . $p['discount'] . '"}';
+				$i++;
+			}?>];
+			$("#patient_name").autocomplete({
+				autoFocus: true,
+				source: searcharrpatient,
+				minLength: 1,//search after one characters
 
-			select: function(event,ui){
-				//do something
-				$("#discount").val(ui.item ? ui.item.discount : '');
-				$("#patient_id").val(ui.item ? ui.item.id : '');
-				var this_patient_id = ui.item.id;
-				$("#pay_amount").val(price ? price*((100-ui.item.discount)/100) : '');
-			},
-			change: function(event, ui) {
-				 if (ui.item == null) {
-					$("#patient_id").val('');
-					$("#patient_name").val('');
+				select: function(event,ui){
+					//do something
+					$("#discount").val(ui.item ? ui.item.discount : '');
+					$("#patient_id").val(ui.item ? ui.item.id : '');
+					var this_patient_id = ui.item.id;
+					$("#pay_amount").val(price ? price*((100-ui.item.discount)/100) : '');
+				},
+				change: function(event, ui) {
+					if (ui.item == null) {
+						$("#patient_id").val('');
+						$("#patient_name").val('');
+						}
+				},
+				response: function(event, ui) {
+					if (ui.content.length === 0)
+					{
+						$("#patient_id").val('');
+						$("#patient_name").val('');
 					}
-			},
-			response: function(event, ui) {
-				if (ui.content.length === 0)
-				{
-					$("#patient_id").val('');
-					$("#patient_name").val('');
 				}
-			}
-		});
-			
+			});
+		<?php } ?>	
 		var searchtreatment=[<?php $i = 0;
 		foreach ($treatments as $treatment) {
 			if ($i > 0) { echo ",";}
@@ -107,10 +115,14 @@
 		<?php } ?>
 		
 		$('#discount').on('input', function(){
-			if(price){
-				var item=$(this),value=(100-item.val())/100;
-				$('#pay_amount').val((price*value).toFixed(2));
+			var tval=$(this).val(),re=new RegExp("^[0-9]{0,2}$");
+			if (re.test(tval)){
+				if(price){
+					value=(100-tval)/100;
+					$('#pay_amount').val((price*value).toFixed(2));
+				}
 			}
+			else $('#discount').val("");
 		})
 	});
 </script>
@@ -154,7 +166,7 @@
 			<div class="col-md-2">
 				<div class="form-group">
 					<label for="title">Знижка %</label>
-					<input type="number" pattern="[0-9]{0-2}" name="discount" id="discount" class="form-control" value="<?= $discount ?>" />
+					<input type="text"  name="discount" id="discount" class="form-control" value="<?= $discount ?>" />
 				</div>
 			</div>
 			<div class="col-md-12">

@@ -431,6 +431,9 @@ function goToApp(link){
 							<div class="form-group">
 								<button class="btn btn-primary" type="submit" name="submit" /><?php echo $this->lang->line('save');?></button>
 								<a class="btn btn-primary" href="<?= site_url('patient/index');?>"  /><?php echo $this->lang->line('back');?></a>
+								<?php if (isset($patient)) { ?>
+									<a class="btn btn-primary" href="<?= site_url('payment/insert/'.$patient_id);?>"  />Додати Платіж</a>
+								<?php } ?>
 							</div>
 						</div>
 						<div class="col-md-6">
