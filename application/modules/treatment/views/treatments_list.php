@@ -24,7 +24,7 @@ $( window ).load(function() {
 							<?php echo form_error('treatment','<div class="alert alert-danger">','</div>'); ?>
 						</div>
 						<div class="form-group input-group">
-							<label for="treatment_price"><?php echo $this->lang->line('charges_fees');?></label>
+							<label for="treatment_price">Сума</label>
 							<input type="text" class="form-control"  name="treatment_price" id="treatment_price" value=""/>
 							<?php echo form_error('treatment_price','<div class="alert alert-danger">','</div>'); ?>
 						</div>

@@ -16,7 +16,6 @@ class Payment_model extends CI_Model {
 		$data['patient_id'] = $this->input->post('patient_id');
 		$data['treatment_id'] = $this->input->post('treatment_id');
 		$data['pay_amount'] = $this->input->post('pay_amount');
-	//	$data['pay_date'] = date('Y-m-d',strtotime($this->input->post('pay_date')));
 		$data['pay_date'] = date('Y-m-d',strtotime($this->input->post('pay_date')));
 		$data['pay_mode'] = $this->input->post('pay_mode');
 	//	$data['cheque_no'] = $this->input->post('cheque_number');

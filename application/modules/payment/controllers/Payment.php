@@ -116,13 +116,17 @@ class Payment extends CI_Controller {
 				$this->load->view('form',$data);
 				$this->load->view('templates/footer');
 			}else{
-		file_put_contents('t1.txt',print_r($this->input->post(),true));	
-
 				$this->payment_model->edit_payment($payment_id);
 				$this->index();
 			}
 
 		}
+	}
+	
+	
+	public function payment_ajax_info ($patient_id){
+	//pay apps_remaining
+	//treat count
 	}
 }
 ?>

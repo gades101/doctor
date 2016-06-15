@@ -51,6 +51,17 @@ if (window.File && window.FileReader && window.FileList && window.Blob) {
 } else {
     alert('The File APIs are not fully supported in this browser.');
 }
+	function openPayments(){
+		$.ajax({
+			type: "POST",
+			url: "<?php echo base_url(); ?>index.php/payment/payment_ajax_info/<?php echo $patient_id; ?>/",
+			dataType: "json",
+			success: function(data){
+				page_build(page_num,data);
+			}
+		});
+	}
+
 function resizeAndUpload(file) {
 var reader = new FileReader();
     reader.onloadend = function() {
@@ -454,21 +465,21 @@ function openReason(onof) {
 						</div>
 					</div>
 					<?php }?>
-					<div class="col-md-4">
+					<div class="col-md-2">
 						<div class="form-group">
 							<label for="appointment_date"><?php echo $this->lang->line('date');?></label>
 							<input type="text" name="appointment_date" id="appointment_date" value="<?= $appointment_date; ?>" class="form-control"/>
 							<?php echo form_error('appointment_date','<div class="alert alert-danger">','</div>'); ?>
 						</div>
 					</div>
-					<div class="col-md-4">
+					<div class="col-md-2">
 						<div class="form-group">
 							<label for="start_time"><?php echo $this->lang->line('start_time');?></label>
 							<input type="text" name="start_time" id="start_time" value="<?=date($def_timeformate,strtotime($start_time)); ?>" class="form-control"/>
 							<?php echo form_error('start_time','<div class="alert alert-danger">','</div>'); ?>
 						</div>
 					</div>
-					<div class="col-md-4">
+					<div class="col-md-2">
 						<div class="form-group">
 							<label for="end_time"><?=$this->lang->line('end_time');?></label>
 							<input type="text" name="end_time" id="end_time" value="<?= date($def_timeformate,strtotime($end_time)); ?>" class="form-control"/>
@@ -482,7 +493,15 @@ function openReason(onof) {
 							<input type="text" name="treatment" value="<?=$curr_treatment_name;?>" id="treatment" class="form-control "/>
 						</div>
 					</div>
-
+					
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="openPayments">Платежі Пацієнта</label></br>
+							<?php echo form_dropdown('payments', array('default'=>'Пусто'), 'default','class="form-control", id="payments", style="width:auto;display:inline-block"'); ?>
+							<span id="openPayments" class="btn btn-primary" onclick=openPayments() >Завантажити</span>
+						</div>
+					</div>
+					
 					<br/>
 					<?php if (isset($appointment)){?>
 					<div class="col-md-12" id='mform_details'  <?php if ($status!='Cancel'){echo "style='display: none'";}?> >
@@ -551,17 +570,15 @@ function openReason(onof) {
 					</div>
 
 					<?php if(isset($appointment)) {?>
-						<div class="panel-body">
+						<div class="col-md-6">
 							<div class="wrapper">
 								<label for="filesToUp">Завантажити фото</label>
 								<input type="file" id="filesToUp" class="fileUpload" multiple="multiple" accept="image/*" style="display:inline">
-								<!--<a href="#" class="submit button btn btn-info">Завантажити фото</a>-->
 								<div class="ajax-respond"></div>
 								<div id="filelist"></div>
 								<div id="uploadStatus" style="font-size:30px"></div>
 								<div id="progressNumber"></div>
 							</div>
-							<!--<button class="btn btn-info" onclick=showimages() >Показати фото</button>-->
 						</div>
 					<?php } ?>
 				</div>

@@ -1,7 +1,6 @@
 <?php
 
 class Appointment extends CI_Controller {
-
     function __construct() {
         parent::__construct();
         $this->load->model('appointment_model');
@@ -14,14 +13,11 @@ class Appointment extends CI_Controller {
 		$this->load->model('menu_model');
 		$this->load->model('treatment/treatment_model');
 		$this->load->model('event/event_model');
-
         $this->load->helper('url');
         $this->load->helper('form');
 		$this->load->helper('currency_helper');
 		$this->load->helper('directory' );
 		$this->load->helper('inflector');
-		//$this->load->helper('my_string_helper');
-
 		$this->lang->load('main');
         $this->load->library('form_validation');
 		if ( $this->is_session_started() === FALSE ){
@@ -55,7 +51,6 @@ class Appointment extends CI_Controller {
 			$timezone = $this->settings_model->get_time_zone();
 			if (function_exists('date_default_timezone_set'))
 				date_default_timezone_set($timezone);
-
 			//Default to today's date if date is not mentioned
          if ($year == NULL) { $year = date("Y"); }
          if ($month == NULL) { $month = date("m"); }
@@ -116,10 +111,7 @@ class Appointment extends CI_Controller {
 				$ymd_array[$key]=$val['ymd'];
 			}
 			array_multisort($ymd_array,SORT_NUMERIC,$data['events']);
-			
-			
 			//$data['events']=
-			
 			//Fetch all patient details
 			$data['patients'] = $this->patient_model->get_patient();
 			//Fetch Doctor Schedules
