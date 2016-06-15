@@ -26,6 +26,7 @@ class Treatment_model extends CI_Model {
     public function edit_treatment($id){
         $data['treatment'] = $this->input->post('treatment');
         $data['price'] = $this->input->post('treatment_price');
+        $data['count'] = $this->input->post('treatment_count');
         $this->db->where('id', $id);
         $this->db->update('treatments', $data);
     }

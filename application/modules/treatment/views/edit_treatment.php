@@ -19,6 +19,11 @@
 						<?php echo form_error('treatment_price','<div class="alert alert-danger">','</div>'); ?>
 					</div>
 					<div class="form-group">
+						<label for="treatment_count">Кількість</label>
+						<input type="text" name="treatment_count" id="treatment_count" value="<?php echo $treatment['count']; ?>" class="form-control"/>
+						<?php echo form_error('treatment_count','<div class="alert alert-danger">','</div>'); ?>
+					</div>
+					<div class="form-group">
 						<button type="submit" name="submit" class="btn btn-primary" /><?php echo $this->lang->line('save');?></button>
 					</div>
 				<?php echo form_close(); ?>
