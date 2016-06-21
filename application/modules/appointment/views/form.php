@@ -497,7 +497,14 @@ function openReason(onof) {
 					<div class="col-md-6">
 						<div class="form-group">
 							<label for="openPayments">Платежі Пацієнта</label></br>
-							<?php echo form_dropdown('payments', array('default'=>'Пусто'), 'default','class="form-control", id="payments", style="width:auto;display:inline-block"'); ?>
+							<?php
+								$payments_data=array('default'=>'Вибрати');
+								foreach($curr_payments as $payment){
+									$payments_data[$payment['payment_id']]=$payment['treatment'].' '.$payment['pay_date'];
+								}
+								echo form_dropdown('payments', array('default'=>'Вибрати'), 'default','class="form-control", id="payments", style="width:auto;display:inline-block"'); 
+
+							?>
 							<span id="openPayments" class="btn btn-primary" onclick=openPayments() >Завантажити</span>
 						</div>
 					</div>

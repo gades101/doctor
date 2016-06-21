@@ -84,8 +84,11 @@ class Patient_model extends CI_Model {
         }
     }
     public function get_patient_detail($patient_id) {
-        $this->db->group_by('patient_id');
+        //$this->db->group_by('patient_id');
         $query = $this->db->get_where('view_patient', array('patient_id' => $patient_id));
+		//file_put_contents('t1.txt',print_r($this->db->error(),true));
+		//file_put_contents('t1.txt',print_r($patient_id,true));
+		
         return $query->row_array();
     }
     public function get_contact_id($patient_id) {

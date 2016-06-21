@@ -259,6 +259,7 @@ class Appointment extends CI_Controller {
 				$data['curr_treatment']=$this->treatment_model->get_edit_treatment($appointment['treatment_id']);
 				$patient_id = $appointment['patient_id'];
 				$data['curr_patient']=$this->patient_model->get_patient_detail($patient_id);
+				//$data['curr_payments']=$this->payment_model->get_curr_payments($patient_id);
 				$data['patients']=$this->patient_model->get_patient();
 				$doctor_id = $appointment['userid'];
 				$data['doctors'] = $this->admin_model->get_doctor();

@@ -110,7 +110,7 @@ class Payment extends CI_Controller {
 				$data['def_dateformate'] = $this->settings_model->get_date_formate();
 				//25-12-15
 				$data['called_from'] = "";
-				$data['curr_treatment']=$this->treatment_model->get_edit_treatment($payment->treatment_id);				
+				//$data['curr_treatment']=$this->treatment_model->get_edit_treatment($payment->treatment_id);				
 				$this->load->view('templates/header');
 				$this->load->view('templates/menu');
 				$this->load->view('form',$data);

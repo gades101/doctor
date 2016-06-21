@@ -32,6 +32,13 @@ class Payment_model extends CI_Model {
 		$query = $this->db->get_where('payment', array('payment_id' => $payment_id));
         return $query->row();
 	}
+	function get_curr_payments($patient_id){
+		$query = $this->db->get_where('payment', array('patient_id' => $patient_id, 'count > 0'));
+		$this->db->select("p.payment_id, p.patient_id, p.treatment_id, p.pay_date, p.pay_amount, p.apps_remaining, t.treatment",FALSE);
+		$this->db->from('ck_payment p, ck_treatments t');
+		$this->db->where(array('p.patient_id'=>$patient_id, 'p.treatment_id'=>'t.id','p.apps_remaining>0'),NULL,FALSE);
+		return $query->result_array();
+	}
 	function edit_payment($payment_id){
 		//Get previous details
 		//$payment = $this->get_payment($payment_id);
