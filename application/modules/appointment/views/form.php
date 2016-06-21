@@ -300,6 +300,12 @@ var reader = new FileReader();
 			format: '<?=$def_timeformate; ?>',
 			formatTime:'<?=$def_timeformate; ?>'
 		});
+		
+		$('payments option').on('click',function(){
+			
+		}
+		
+		)
 });
 
 function openReason(onof) {
@@ -422,6 +428,7 @@ function openReason(onof) {
 					<input type="hidden" name="appointment_id" value="<?= $appointment_id; ?>"/>
 					<input type="hidden" name="patient_id" id="patient_id" value="<?php if(isset($curr_patient)){echo $curr_patient['patient_id']; } ?>"/>
 					<input type="hidden" name="treatment_id" id="treatment_id" value="<?php if(isset($curr_treatment)){echo $curr_treatment['id']; } ?>"/>
+					<input type="hidden" name="payment_id" id="payment_id" value=""/>
 
 					<div class="panel panel-success">
 						<div class="panel-heading">
@@ -502,7 +509,7 @@ function openReason(onof) {
 								foreach($curr_payments as $payment){
 									$payments_data[$payment['payment_id']]=$payment['treatment'].' '.$payment['pay_date'];
 								}
-								echo form_dropdown('payments', array('default'=>'Вибрати'), 'default','class="form-control", id="payments", style="width:auto;display:inline-block"'); 
+								echo form_dropdown('curr_payment', $payments_data, 'default','class="form-control", id="payments", style="width:auto;display:inline-block"'); 
 
 							?>
 							<span id="openPayments" class="btn btn-primary" onclick=openPayments() >Завантажити</span>

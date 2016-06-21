@@ -259,7 +259,6 @@ class Appointment extends CI_Controller {
 				$data['curr_treatment']=$this->treatment_model->get_edit_treatment($appointment['treatment_id']);
 				$patient_id = $appointment['patient_id'];
 				$data['curr_patient']=$this->patient_model->get_patient_detail($patient_id);
-				//$data['curr_payments']=$this->payment_model->get_curr_payments($patient_id);
 				$data['patients']=$this->patient_model->get_patient();
 				$doctor_id = $appointment['userid'];
 				$data['doctors'] = $this->admin_model->get_doctor();
@@ -268,6 +267,7 @@ class Appointment extends CI_Controller {
 				$data['def_timeformate'] = $this->settings_model->get_time_formate();
 				$data['time_interval'] = $this->settings_model->get_time_interval();
 				$data['dep']=$dep;
+				$data['curr_payments']=$this->payment_model->get_curr_payments($patient_id);
 
 
 				$this->load->view('templates/header');
@@ -279,6 +279,7 @@ class Appointment extends CI_Controller {
 				$curr_patient = $this->patient_model->get_patient_detail($patient_id);
 				$title = $curr_patient['first_name']." " .$curr_patient['middle_name'].$curr_patient['last_name'];
 				$this->appointment_model->update_appointment($title);
+				if($this->input->post('curr_payment')!='default') $this->payment_model->edit_payment_count($this->input->post('curr_payment'));
 				$year = date('Y', strtotime($this->input->post('appointment_date')));
 				$month = date('m', strtotime($this->input->post('appointment_date')));
 				$day = date('d', strtotime($this->input->post('appointment_date')));

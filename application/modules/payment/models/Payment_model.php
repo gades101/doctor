@@ -32,18 +32,16 @@ class Payment_model extends CI_Model {
 		$query = $this->db->get_where('payment', array('payment_id' => $payment_id));
         return $query->row();
 	}
+
 	function get_curr_payments($patient_id){
-		$query = $this->db->get_where('payment', array('patient_id' => $patient_id, 'count > 0'));
+		//$query = $this->db->get_where('payment', array('patient_id' => $patient_id, 'count > 0'));
 		$this->db->select("p.payment_id, p.patient_id, p.treatment_id, p.pay_date, p.pay_amount, p.apps_remaining, t.treatment",FALSE);
 		$this->db->from('ck_payment p, ck_treatments t');
-		$this->db->where(array('p.patient_id'=>$patient_id, 'p.treatment_id'=>'t.id','p.apps_remaining>0'),NULL,FALSE);
+		$this->db->where(array('p.patient_id'=>$patient_id,'p.treatment_id'=>'t.id','p.apps_remaining >'=>0),NULL,FALSE);
+		$query=$this->db->get();
 		return $query->result_array();
 	}
 	function edit_payment($payment_id){
-		//Get previous details
-		//$payment = $this->get_payment($payment_id);
-		//$previous_payment_amount = $payment->pay_amount;	
-		//$pay_amount = $data['pay_amount'];
 		$data['patient_id'] = $this->input->post('patient_id');
 		$data['treatment_id'] = $this->input->post('treatment_id');
 		$data['pay_amount'] = $this->input->post('pay_amount');
@@ -51,11 +49,11 @@ class Payment_model extends CI_Model {
 		$data['pay_date'] = $this->input->post('pay_date');
 		$this->db->where('payment_id', $payment_id);
 		$this->db->update('payment', $data);
-		/*$data = array();
-		$due_amount = $this->input->post('due_amount');
-		$data['due_amount'] = $previous_due_amount + ( $previous_payment_amount - $pay_amount);
-		$this->db->where('bill_id', $bill_id);
-		$this->db->update('bill', $data);*/
+	}
+	function edit_payment_count($payment_id){
+		$this->db->set('apps_remaining','apps_remaining-1',false);
+		$this->db->where('payment_id', $payment_id);
+		$this->db->update('payment');
 	}
 	 function get_all_payments_by_patient($patient_id){
 		$query = $this->db->get_where('payment',array('patient_id'=>$patient_id));
