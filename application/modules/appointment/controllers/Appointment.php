@@ -268,18 +268,17 @@ class Appointment extends CI_Controller {
 				$data['time_interval'] = $this->settings_model->get_time_interval();
 				$data['dep']=$dep;
 				$data['curr_payments']=$this->payment_model->get_curr_payments($patient_id);
-
-
 				$this->load->view('templates/header');
 				$this->load->view('templates/menu');
 				$this->load->view('form', $data);
 				$this->load->view('templates/footer');
 			}else{
 				$patient_id = $this->input->post('patient_id');
+				$payment_id=$this->input->post('curr_payment_id');
 				$curr_patient = $this->patient_model->get_patient_detail($patient_id);
 				$title = $curr_patient['first_name']." " .$curr_patient['middle_name'].$curr_patient['last_name'];
 				$this->appointment_model->update_appointment($title);
-				if($this->input->post('curr_payment')!='default') $this->payment_model->edit_payment_count($this->input->post('curr_payment'));
+				$this->payment_model->edit_payment_count($this->input->post('payment_id'),$this->input->post('payment_id_orig'));
 				$year = date('Y', strtotime($this->input->post('appointment_date')));
 				$month = date('m', strtotime($this->input->post('appointment_date')));
 				$day = date('d', strtotime($this->input->post('appointment_date')));

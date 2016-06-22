@@ -102,6 +102,7 @@ class Appointment_model extends CI_Model {
 		$data['treatment_id'] = $this->input->post('treatment_id');
 		$data['app_note'] = $this->input->post('app_note');
 		$data['appointment_details'] = $this->input->post('appointment_details');
+		$data['payment_id'] = $this->input->post('payment_id');
 		$this->db->where('appointment_id', $appointment_id);
 		$this->db->update('appointments', $data);
 	}

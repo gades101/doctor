@@ -35,23 +35,39 @@
 }
 <?php } ?>
 $(window).load(function(){
-
+	function loadPayments(patient_id){
+		if(patient_id){
+			$.ajax({
+				type: "POST",
+				url: "<?php echo base_url(); ?>index.php/payment/payment_ajax_info/"+patient_id,
+				dataType: "json",
+				success: function(data){
+					paylist=$('#payment_id');
+					paylist.html('');
+					paylist.append($('<option>').val('0').text('Без оплати'));
+					data.forEach(function(item){
+						paylist.append($('<option>').val(item.payment_id).text(item.treatment+" "+item.pay_date));
+					});
+				}
+			});
+		}
+	}
 //UPLOAD
-<?php if (isset($appointment)){ ?>
-showimages();
-var file_count,aj;
-if (window.File && window.FileReader && window.FileList && window.Blob) {
-    document.getElementById('filesToUp').onchange = function(){
-        var files = document.getElementById('filesToUp').files;
-	         if(files) {document.getElementById('uploadStatus').innerHTML = 'Йде завантаження';}
-        for(file_count = 0,aj=1; file_count < files.length; file_count++) {
-            resizeAndUpload(files[file_count]);
-        }
-    };
-} else {
-    alert('The File APIs are not fully supported in this browser.');
-}
-	function openPayments(){
+	<?php if (isset($appointment)){ ?>
+	showimages();
+	var file_count,aj;
+	if (window.File && window.FileReader && window.FileList && window.Blob) {
+		document.getElementById('filesToUp').onchange = function(){
+			var files = document.getElementById('filesToUp').files;
+				 if(files) {document.getElementById('uploadStatus').innerHTML = 'Йде завантаження';}
+			for(file_count = 0,aj=1; file_count < files.length; file_count++) {
+				resizeAndUpload(files[file_count]);
+			}
+		};
+	} else {
+		alert('The File APIs are not fully supported in this browser.');
+	}
+	/*function openPayments(){
 		$.ajax({
 			type: "POST",
 			url: "<?php echo base_url(); ?>index.php/payment/payment_ajax_info/<?php echo $patient_id; ?>/",
@@ -60,54 +76,54 @@ if (window.File && window.FileReader && window.FileList && window.Blob) {
 				page_build(page_num,data);
 			}
 		});
+	}*/
+
+	function resizeAndUpload(file) {
+	var reader = new FileReader();
+		reader.onloadend = function() {
+
+		var tempImg = new Image();
+		tempImg.src = reader.result;
+		tempImg.onload = function() {
+
+			var MAX_WIDTH = 1000;
+			var MAX_HEIGHT = 1000;
+			var tempW = tempImg.width;
+			var tempH = tempImg.height;
+			if (tempW > tempH) {
+				if (tempW > MAX_WIDTH) {
+				   tempH *= MAX_WIDTH / tempW;
+				   tempW = MAX_WIDTH;
+				}
+			} else {
+				if (tempH > MAX_HEIGHT) {
+				   tempW *= MAX_HEIGHT / tempH;
+				   tempH = MAX_HEIGHT;
+				}
+			}
+
+			var canvas = document.createElement('canvas');
+			canvas.width = tempW;
+			canvas.height = tempH;
+			var ctx = canvas.getContext("2d");
+			ctx.drawImage(this, 0, 0, tempW, tempH);
+			var dataURL = canvas.toDataURL("image/jpeg");
+			//console.log(dataURL);
+			var xhr = new XMLHttpRequest();
+			//xhr.upload.addEventListener("progress", uploadProgress, false);
+			xhr.addEventListener("load", uploadComplete, false);
+			xhr.onreadystatechange = function(ev){
+				//document.getElementById('progressNumber').innerHTML = aj;
+			};
+			xhr.open('POST', "<?=base_url()?>index.php/appointment/uploadfiles/<?= $curr_patient['patient_id'] ?>/<?= $appointment['appointment_id'] ?>", true);
+			xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			var data = 'images=' + dataURL;
+			xhr.send(data);
+
+		  }
+	   }
+	   reader.readAsDataURL(file);
 	}
-
-function resizeAndUpload(file) {
-var reader = new FileReader();
-    reader.onloadend = function() {
-
-    var tempImg = new Image();
-    tempImg.src = reader.result;
-    tempImg.onload = function() {
-
-        var MAX_WIDTH = 1000;
-        var MAX_HEIGHT = 1000;
-        var tempW = tempImg.width;
-        var tempH = tempImg.height;
-        if (tempW > tempH) {
-            if (tempW > MAX_WIDTH) {
-               tempH *= MAX_WIDTH / tempW;
-               tempW = MAX_WIDTH;
-            }
-        } else {
-            if (tempH > MAX_HEIGHT) {
-               tempW *= MAX_HEIGHT / tempH;
-               tempH = MAX_HEIGHT;
-            }
-        }
-
-        var canvas = document.createElement('canvas');
-        canvas.width = tempW;
-        canvas.height = tempH;
-        var ctx = canvas.getContext("2d");
-        ctx.drawImage(this, 0, 0, tempW, tempH);
-        var dataURL = canvas.toDataURL("image/jpeg");
-		//console.log(dataURL);
-        var xhr = new XMLHttpRequest();
-		//xhr.upload.addEventListener("progress", uploadProgress, false);
-        xhr.addEventListener("load", uploadComplete, false);
-        xhr.onreadystatechange = function(ev){
-            //document.getElementById('progressNumber').innerHTML = aj;
-        };
-        xhr.open('POST', "<?=base_url()?>index.php/appointment/uploadfiles/<?= $curr_patient['patient_id'] ?>/<?= $appointment['appointment_id'] ?>", true);
-        xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-        var data = 'images=' + dataURL;
-        xhr.send(data);
-
-      }
-   }
-   reader.readAsDataURL(file);
-}
 
       function uploadProgress(evt) {
         if (evt.lengthComputable) {
@@ -187,6 +203,7 @@ var reader = new FileReader();
 				$("#patient_id").val(ui.item ? ui.item.id : '');
 				$("#phone_number").val(ui.item ? ui.item.num : '');
 				$("#display_id").val(ui.item ? ui.item.display : '');
+				loadPayments(ui.item.id);
 
 			},
 			change: function(event, ui) {
@@ -301,11 +318,6 @@ var reader = new FileReader();
 			formatTime:'<?=$def_timeformate; ?>'
 		});
 		
-		$('payments option').on('click',function(){
-			
-		}
-		
-		)
 });
 
 function openReason(onof) {
@@ -355,6 +367,7 @@ function openReason(onof) {
 		$curr_treatment_name="";
 		$appointment_date = $appointment_date;
 		$status = "Appointments";
+		$curr_payment_id=0;
 	}
 	if(isset($curr_patient)){
 		$patient_id = $curr_patient['patient_id'];
@@ -429,8 +442,7 @@ function openReason(onof) {
 					<input type="hidden" name="appointment_id" value="<?= $appointment_id; ?>"/>
 					<input type="hidden" name="patient_id" id="patient_id" value="<?php if(isset($curr_patient)){echo $curr_patient['patient_id']; } ?>"/>
 					<input type="hidden" name="treatment_id" id="treatment_id" value="<?php if(isset($curr_treatment)){echo $curr_treatment['id']; } ?>"/>
-					<input type="hidden" name="payment_id" id="payment_id" value=""/>
-					<input type="hidden" name="payment_id_orig" id="payment_id_orig" value=""/>
+					<input type="hidden" name="payment_id_orig" id="payment_id_orig" value="<?= $curr_payment_id; ?>"/>
 
 					<div class="panel panel-success">
 						<div class="panel-heading">
@@ -505,13 +517,17 @@ function openReason(onof) {
 					
 					<div class="col-md-12">
 						<div class="form-group">
-							<label for="openPayments">Платежі Пацієнта</label></br>
+							<label for="payment_id">Платежі Пацієнта</label></br>
 							<?php
-								$payments_data=array('default'=>'Вибрати');
-								foreach($curr_payments as $payment){
-									$payments_data[$payment['payment_id']]=$payment['treatment'].' '.$payment['pay_date'];
+								$payments_data=array('0'=>'Без оплати');
+								$selected='0';
+								if(isset($curr_payments)){
+									foreach($curr_payments as $payment){
+										if ($payment['payment_id']==$curr_payment_id) $selected=$curr_payment_id;
+										$payments_data[$payment['payment_id']]=$payment['treatment'].' '.$payment['pay_date'];
+									}
 								}
-								echo form_dropdown('curr_payment', $payments_data, 'default','class="form-control", id="payments"'); 
+								echo form_dropdown('payment_id', $payments_data, $selected,'class="form-control", id="payment_id"'); 
 							?>
 						</div>
 					</div>

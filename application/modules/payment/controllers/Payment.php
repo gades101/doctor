@@ -6,6 +6,7 @@ class Payment extends CI_Controller {
         parent::__construct();
 		$this->load->model('payment_model');
 		$this->load->model('patient/patient_model');
+		$this->load->model('admin/admin_model');
 		$this->load->model('treatment/treatment_model');
 		$this->load->model('settings/settings_model');
 		$this->load->model('menu_model');
@@ -60,13 +61,8 @@ class Payment extends CI_Controller {
 				if ($curr_patient_id) 	$data['curr_patient'] = $this->patient_model->get_patient_detail($curr_patient_id);
 				else $data['patients'] = $this->patient_model->get_patient();
 				$data['currency_postfix'] = $this->settings_model->get_currency_postfix();
-				/*$data['due_amount'] = $this->patient_model->get_due_amount($bill_id);
-				$data['visit_id'] = $this->patient_model->get_visit_id($bill_id);
-				$patient_id =  $this->patient_model->get_patient_id_from_bill_id($bill_id);
-				$data['patient_id'] =$patient_id;
-				$data['bill_id'] = $bill_id;
-				$data['patient'] = $this->patient_model->get_patient_detail($patient_id);
-				$data['called_from'] = $called_from;*/
+				$data['doctors'] = $this->admin_model->get_doctor();
+				$data['selected_doctor_id'] = NULL;
 				$data['def_dateformate'] = $this->settings_model->get_date_formate();
 				$this->load->view('templates/header');
 				$this->load->view('templates/menu');
@@ -123,10 +119,10 @@ class Payment extends CI_Controller {
 		}
 	}
 	
-	
-	public function payment_ajax_info ($patient_id){
-	//pay apps_remaining
-	//treat count
+	public function payment_ajax_info($patient_id){
+		$data=$this->payment_model->get_curr_payments($patient_id);
+		echo json_encode($data);
+
 	}
 }
 ?>

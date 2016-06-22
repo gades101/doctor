@@ -247,7 +247,10 @@ $(window).load(function(){
 				var link="<?=base_url();?>"+"index.php/payment/edit/"+item.payment_id;
 				var row=$('<tr></tr>').append($('<td></td>').text(i))
 				.append($('<td></td>').text(item.pay_date))
-				.append($('<td></td>').text(item.pay_amount));
+				.append($('<td></td>').text(item.pay_amount))
+				.append($('<td></td>').text(item.treatment))
+				.append($('<td></td>').text(item.first_name+" "+item.middle_name))
+				.append($('<td></td>').text(item.apps_remaining));
 				tab.append(row);
 				i++;
 			});
@@ -508,6 +511,9 @@ function goToApp(link){
 								<th class='appTime'>№</th>
 								<th class='' >Дата оплати</th>
 								<th class=''>Сума оплати</th>
+								<th class=''>Процедура</th>
+								<th class=''>Терапевт</th>
+								<th class=''>Непризначених зайнять </th>
 							</tr>
 						</thead>
 						<tbody id="page_3_tbody"></tbody>

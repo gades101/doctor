@@ -142,6 +142,7 @@
 
 			<input type="hidden" name="payment_type" value="bill_payment" />
 			<input type="hidden" name="treatment_id" id="treatment_id" value="<?php if(isset($curr_treatment)){echo $curr_treatment['id']; } ?>"/>
+
 			<div class="col-md-12">
 				<label for="patient_name"><?php echo "ПІБ Пацієнта";?></label>
 				<?php if(isset($patient_id) && $patient_id != NULL) { ?>
@@ -175,6 +176,20 @@
 					<input type="text" name="pay_date" id="pay_date" class="form-control" value="<?=$pay_date;?>" />
 				</div>
 			</div>
+			
+			<div class="col-md-6">
+				<div class="form-group">
+					<label for="doctor"><?php echo $this->lang->line('doctor');?></label>
+					<?php
+						$doctor_detail = array();
+						foreach ($doctors as $doctor_list){
+							$doctor_detail[$doctor_list['userid']] = $doctor_list['name'];
+						}
+					?>
+					<?php echo form_dropdown('userid', $doctor_detail, $selected_doctor_id,'class="form-control"'); ?>
+				</div>
+			</div>
+			
 			<div class="col-md-12">
 				<div class="form-group">
 					<label for="title"><?php echo $this->lang->line('payment_mode');?></label>
