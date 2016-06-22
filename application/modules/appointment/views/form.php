@@ -340,6 +340,7 @@ function openReason(onof) {
 		$appointment_id = $appointment['appointment_id'];
 		$app_note=$appointment['app_note'];
 		$curr_treatment_name=$curr_treatment['treatment'];
+		$curr_payment_id=$appointment['payment_id'];
 		if($status=='Cancel'){$appointment_details=$appointment['appointment_details'];}
 		else {$appointment_details="";}
 	}else{
@@ -429,6 +430,7 @@ function openReason(onof) {
 					<input type="hidden" name="patient_id" id="patient_id" value="<?php if(isset($curr_patient)){echo $curr_patient['patient_id']; } ?>"/>
 					<input type="hidden" name="treatment_id" id="treatment_id" value="<?php if(isset($curr_treatment)){echo $curr_treatment['id']; } ?>"/>
 					<input type="hidden" name="payment_id" id="payment_id" value=""/>
+					<input type="hidden" name="payment_id_orig" id="payment_id_orig" value=""/>
 
 					<div class="panel panel-success">
 						<div class="panel-heading">
@@ -501,7 +503,7 @@ function openReason(onof) {
 						</div>
 					</div>
 					
-					<div class="col-md-6">
+					<div class="col-md-12">
 						<div class="form-group">
 							<label for="openPayments">Платежі Пацієнта</label></br>
 							<?php
@@ -509,10 +511,8 @@ function openReason(onof) {
 								foreach($curr_payments as $payment){
 									$payments_data[$payment['payment_id']]=$payment['treatment'].' '.$payment['pay_date'];
 								}
-								echo form_dropdown('curr_payment', $payments_data, 'default','class="form-control", id="payments", style="width:auto;display:inline-block"'); 
-
+								echo form_dropdown('curr_payment', $payments_data, 'default','class="form-control", id="payments"'); 
 							?>
-							<span id="openPayments" class="btn btn-primary" onclick=openPayments() >Завантажити</span>
 						</div>
 					</div>
 					
