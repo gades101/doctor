@@ -227,6 +227,7 @@ class Appointment extends CI_Controller {
 				$this->load->view('templates/footer');
 			}else{
 				$this->appointment_model->add_appointment($this->input->post('status'));
+				$this->payment_model->edit_payment_count($this->input->post('payment_id'),$this->input->post('payment_id_orig'));
 				$year = date("Y", strtotime($this->input->post('appointment_date')));
 				$month = date("m", strtotime($this->input->post('appointment_date')));
 				$day = date("d", strtotime($this->input->post('appointment_date')));

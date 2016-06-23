@@ -53,7 +53,7 @@ class Appointment_model extends CI_Model {
 		$data['appointment_date'] = $appointment_date;
         $data['start_time'] = $start_time;
         $data['end_time'] = $end_time;
-		$data['visit_id'] = 0;
+		$data['payment_id'] = $this->input->post('payment_id');
 
 		$doctor_id = $this->input->post('doctor_id');
 		//What to do when User is Admin or Staff??

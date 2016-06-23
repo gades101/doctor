@@ -4,35 +4,36 @@
 <?php if (isset($appointment)){ ?>
 	var img_path="<?= base_url() ?>patient_media/<?= $curr_patient['patient_id'] ?>/<?= $appointment['appointment_id'] ?>/foto/";
 	var showimages=function (){
-	$.ajax({
-		url: "<?= base_url() ?>index.php/appointment/showmedia/<?= $curr_patient['patient_id'] ?>/<?= $appointment['appointment_id'] ?>/",
-		type: 'POST',
-		cache: false,
-		dataType: 'json',
-		processData: false, // Не обрабатываем файлы (Don't process the files)
-		contentType: false, // Так jQuery скажет серверу что это строковой запрос
-		success: function( respond, textStatus, jqXHR ){
-			if( typeof respond.error === 'undefined' ){
-				// Файлы успешно загружены, делаем что нибудь здесь
-				// выведем пути к загруженным файлам в блок '.ajax-respond'
-				var html = '',filelist=$('#filelist'),elem;
-				$('#filelist').html('');
-					respond.forEach(function(item){
-						if (item!="." && item!=".."){
-							elem=$('<a></a>').addClass('flipLightBox').attr('href',img_path+item).append($('<img>').attr({src:img_path+item, width:'120px',height:'120px',alt:'img'})).append('<span>'+item+'</span>');
-							filelist.append(elem);
-						}
-					});
+		$.ajax({
+			url: "<?= base_url() ?>index.php/appointment/showmedia/<?= $curr_patient['patient_id'] ?>/<?= $appointment['appointment_id'] ?>/",
+			type: 'POST',
+			cache: false,
+			dataType: 'json',
+			processData: false, // Не обрабатываем файлы (Don't process the files)
+			contentType: false, // Так jQuery скажет серверу что это строковой запрос
+			success: function( respond, textStatus, jqXHR ){
+				if( typeof respond.error === 'undefined' ){
+					// Файлы успешно загружены, делаем что нибудь здесь
+					// выведем пути к загруженным файлам в блок '.ajax-respond'
+					var html = '',filelist=$('#filelist'),elem;
+					$('#filelist').html('');
+						respond.forEach(function(item){
+							if (item!="." && item!=".."){
+								elem=$('<a></a>').addClass('flipLightBox').attr('href',img_path+item).append($('<img>').attr({src:img_path+item, width:'120px',height:'120px',alt:'img'})).append('<span>'+item+'</span>');
+								filelist.append(elem);
+							}
+						});
 
-			$('body').flipLightBox();
-			}
-			//else{console.log('ОШИБКИ ОТВЕТА сервера: ' + respond.error );}
-		},
-		/*error: function( jqXHR, textStatus, errorThrown ){
-			console.log('ОШИБКИ AJAX запроса: ' + textStatus );
-		}*/
-	});
-}
+				$('body').flipLightBox();
+				}
+				//else{console.log('ОШИБКИ ОТВЕТА сервера: ' + respond.error );}
+			},
+			/*error: function( jqXHR, textStatus, errorThrown ){
+				console.log('ОШИБКИ AJAX запроса: ' + textStatus );
+			}*/
+		});
+	}
+	
 <?php } ?>
 $(window).load(function(){
 	function loadPayments(patient_id){
@@ -46,7 +47,7 @@ $(window).load(function(){
 					paylist.html('');
 					paylist.append($('<option>').val('0').text('Без оплати'));
 					data.forEach(function(item){
-						paylist.append($('<option>').val(item.payment_id).text(item.treatment+" "+item.pay_date));
+						paylist.append($('<option>').val(item.payment_id).text(item.treatment+" (залишилось зайнять: "+item.apps_remaining+")"));
 					});
 				}
 			});
@@ -182,14 +183,11 @@ $(window).load(function(){
 			}
 		});
 
-
 		var searcharrpatient=[<?php $i = 0;
 		foreach ($patients as $patient) {
 			if ($i > 0) { echo ",";}
-
 			echo '{value:"' . $patient['first_name'] . " " . $patient['middle_name'] . " " . $patient['last_name'] . '",id:"' . $patient['patient_id'] . '",display:"' . $patient['display_id'] . '",num:"' . $patient['phone_number'] . '"}';
 			$i++;
-
 		}
 		?>];
 
@@ -316,8 +314,18 @@ $(window).load(function(){
 			step:<?=$time_interval*60;?>,
 			format: '<?=$def_timeformate; ?>',
 			formatTime:'<?=$def_timeformate; ?>'
-		});
+		});	
 		
+		$('#payment_id').on('change', function(){
+			if(this.value!=0){
+				$('#treatment_id').val(this.value);
+				$('#treatment').val(this.children[this.selectedIndex].textContent).attr('disabled',true);
+			}
+			else{
+				$('#treatment_id').val("");
+				$('#treatment').val("").attr('disabled',false);
+			}
+		});	
 });
 
 function openReason(onof) {
@@ -331,7 +339,6 @@ function openReason(onof) {
 	   $('form').first().show();
 		$('#button_panel').show();
 	}
-
 }
 </script>
 <?php
@@ -524,7 +531,7 @@ function openReason(onof) {
 								if(isset($curr_payments)){
 									foreach($curr_payments as $payment){
 										if ($payment['payment_id']==$curr_payment_id) $selected=$curr_payment_id;
-										$payments_data[$payment['payment_id']]=$payment['treatment'].' '.$payment['pay_date'];
+										$payments_data[$payment['payment_id']]=$payment['treatment'].' (залишилось зайнять: '.$payment['apps_remaining'].')';
 									}
 								}
 								echo form_dropdown('payment_id', $payments_data, $selected,'class="form-control", id="payment_id"'); 
