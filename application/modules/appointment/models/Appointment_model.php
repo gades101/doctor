@@ -77,6 +77,7 @@ class Appointment_model extends CI_Model {
 		// Insert Appointment
 		$data['status'] = $status;
 		$this->db->insert('appointments', $data);
+		file_put_contents('t1.txt',print_r($this->db->error(),true));
 		$appointment_id = $this->db->insert_id();
 
 		//Creating a Log of Appintment

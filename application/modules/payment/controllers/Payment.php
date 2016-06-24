@@ -122,7 +122,7 @@ class Payment extends CI_Controller {
 	public function payment_ajax_info($patient_id){
 		$data=$this->payment_model->get_curr_payments($patient_id);
 		echo json_encode($data);
-
+		//else return json_encode($data);
 	}
 }
 ?>

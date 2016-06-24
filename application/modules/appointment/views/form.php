@@ -23,14 +23,9 @@
 								filelist.append(elem);
 							}
 						});
-
 				$('body').flipLightBox();
 				}
-				//else{console.log('ОШИБКИ ОТВЕТА сервера: ' + respond.error );}
 			},
-			/*error: function( jqXHR, textStatus, errorThrown ){
-				console.log('ОШИБКИ AJAX запроса: ' + textStatus );
-			}*/
 		});
 	}
 	
@@ -47,7 +42,7 @@ $(window).load(function(){
 					paylist.html('');
 					paylist.append($('<option>').val('0').text('Без оплати'));
 					data.forEach(function(item){
-						paylist.append($('<option>').val(item.payment_id).text(item.treatment+" (залишилось зайнять: "+item.apps_remaining+")"));
+						paylist.append($('<option>').val(item.payment_id).attr('data-treatment',item.treatment_id).text(item.treatment+" (залишилось зайнять: "+item.apps_remaining+")"));
 					});
 				}
 			});
@@ -68,16 +63,6 @@ $(window).load(function(){
 	} else {
 		alert('The File APIs are not fully supported in this browser.');
 	}
-	/*function openPayments(){
-		$.ajax({
-			type: "POST",
-			url: "<?php echo base_url(); ?>index.php/payment/payment_ajax_info/<?php echo $patient_id; ?>/",
-			dataType: "json",
-			success: function(data){
-				page_build(page_num,data);
-			}
-		});
-	}*/
 
 	function resizeAndUpload(file) {
 	var reader = new FileReader();
@@ -109,7 +94,6 @@ $(window).load(function(){
 			var ctx = canvas.getContext("2d");
 			ctx.drawImage(this, 0, 0, tempW, tempH);
 			var dataURL = canvas.toDataURL("image/jpeg");
-			//console.log(dataURL);
 			var xhr = new XMLHttpRequest();
 			//xhr.upload.addEventListener("progress", uploadProgress, false);
 			xhr.addEventListener("load", uploadComplete, false);
@@ -132,7 +116,6 @@ $(window).load(function(){
           var progress=document.createElement('div');
           var bar=document.getElementById('progressNumber');
           bar.appendChild(progress);
-         // console.log('progress: '+file_count);
           progress.innerHTML = percentComplete.toString() + '%';
         }
         else {
@@ -318,8 +301,9 @@ $(window).load(function(){
 		
 		$('#payment_id').on('change', function(){
 			if(this.value!=0){
-				$('#treatment_id').val(this.value);
-				$('#treatment').val(this.children[this.selectedIndex].textContent).attr('disabled',true);
+				var opt=this.children[this.selectedIndex];
+				$('#treatment_id').val(opt.dataset.treatment);
+				$('#treatment').val(opt.textContent).attr('disabled',true);
 			}
 			else{
 				$('#treatment_id').val("");
@@ -525,17 +509,15 @@ function openReason(onof) {
 					<div class="col-md-12">
 						<div class="form-group">
 							<label for="payment_id">Платежі Пацієнта</label></br>
-							<?php
-								$payments_data=array('0'=>'Без оплати');
-								$selected='0';
-								if(isset($curr_payments)){
-									foreach($curr_payments as $payment){
-										if ($payment['payment_id']==$curr_payment_id) $selected=$curr_payment_id;
-										$payments_data[$payment['payment_id']]=$payment['treatment'].' (залишилось зайнять: '.$payment['apps_remaining'].')';
-									}
-								}
-								echo form_dropdown('payment_id', $payments_data, $selected,'class="form-control", id="payment_id"'); 
-							?>
+							<select id='payment_id' class="form-control">
+								<option value='0'>Без оплати</option>
+								<?php if(isset($curr_payments)){
+									foreach($curr_payments as $payment){ ?>
+										<option value="<?= $payment['payment_id']; ?>"  data-treatment="<?= $payment['treatment_id']; ?>"/><?=$payment['treatment'].' (залишилось зайнять: '.$payment['apps_remaining'].')'; ?></option>
+									
+								
+								<?php } } ?>
+							</select>
 						</div>
 					</div>
 					
