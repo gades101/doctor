@@ -225,7 +225,6 @@ function check_doctor_availability($i,$doctor_id){
 								<?php
 									$i = 0;
 									$time_now=time();
-									//file_put_contents('t1.txt',print_r($events,true));
 									foreach ($events as $event) {
 										$event_class="";
 										if ($i==0){
@@ -577,7 +576,7 @@ function check_doctor_availability($i,$doctor_id){
 
 										switch($appointment['status']){
 											case 'Appointments':
-												$class = "btn-primary";
+												$class=($appointment['payment_id']>0) ? "btn-success" : "btn-primary";
 												$href = base_url() . "index.php/appointment/edit_appointment/" . $appointment_id ;
 												break;
 											case 'Consultation':
@@ -602,7 +601,6 @@ function check_doctor_availability($i,$doctor_id){
 												$href = base_url() . "index.php/appointment/edit_appointment/" . $appointment_id ;
 												break;
 										}
-
 										$start_position = $appointment['userid']."_".$start_position;
 										$end_position = $appointment['userid']."_".$end_position;
 								?>

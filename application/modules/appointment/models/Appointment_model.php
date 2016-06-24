@@ -77,7 +77,6 @@ class Appointment_model extends CI_Model {
 		// Insert Appointment
 		$data['status'] = $status;
 		$this->db->insert('appointments', $data);
-		file_put_contents('t1.txt',print_r($this->db->error(),true));
 		$appointment_id = $this->db->insert_id();
 
 		//Creating a Log of Appintment
@@ -182,8 +181,6 @@ class Appointment_model extends CI_Model {
 			$query=$this->db->get();
 
 			$row = $query->num_rows();
-			//file_put_contents('t1.txt',print_r($this->db->last_query(),true));
-			//file_put_contents('t1.txt',print_r($this->db->error(),true));
 			if ($row > 0) {
             return $query->result_array();
 			} else {

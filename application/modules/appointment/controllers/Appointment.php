@@ -268,7 +268,7 @@ class Appointment extends CI_Controller {
 				$data['def_timeformate'] = $this->settings_model->get_time_formate();
 				$data['time_interval'] = $this->settings_model->get_time_interval();
 				$data['dep']=$dep;
-				$data['curr_payments']=$this->payment_model->get_curr_payments($patient_id);
+				$data['curr_payments']=$this->payment_model->get_curr_payments($patient_id,$appointment['payment_id']);
 				$this->load->view('templates/header');
 				$this->load->view('templates/menu');
 				$this->load->view('form', $data);
@@ -534,7 +534,6 @@ class Appointment extends CI_Controller {
 						$data = base64_decode($i);
 						$this->resize($data,$uploaddir. mt_rand() . '.jpg',75);
 						//$file = $uploaddir . mt_rand() . '.jpg';
-						//$success = file_put_contents($file, $data);
 					}
 					$j=1;
 			}

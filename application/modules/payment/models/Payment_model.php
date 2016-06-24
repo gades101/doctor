@@ -34,7 +34,7 @@ class Payment_model extends CI_Model {
         return $query->row();
 	}
 
-	function get_curr_payments($patient_id){
+	function get_curr_payments($patient_id,$payment_id=0){
 		//$query = $this->db->get_where('payment', array('patient_id' => $patient_id, 'count > 0'));
 		$this->db->select("p.payment_id, p.patient_id, p.treatment_id, p.pay_date, p.pay_amount, p.apps_remaining, c.first_name, c.middle_name, t.treatment",FALSE);
 		$this->db->from('ck_payment p');
@@ -42,6 +42,7 @@ class Payment_model extends CI_Model {
 		$this->db->join('ck_doctor d', 'p.userid = d.userid', 'left');
 		$this->db->join('ck_contacts c', 'd.contact_id = c.contact_id', 'left');
 		$this->db->where(array('p.patient_id'=>$patient_id,'p.apps_remaining >'=>0),NULL,FALSE);
+		$this->db->or_where("p.payment_id=$payment_id",NULL,FALSE);
 		$query=$this->db->get();
 		return $query->result_array();
 	}
@@ -55,6 +56,7 @@ class Payment_model extends CI_Model {
 		$this->db->update('payment', $data);
 	}
 	function edit_payment_count($payment_id,$payment_id_orig){
+	//file_put_contents('t1.txt',$payment_id.'-'.$payment_id_orig);
 		if($payment_id!=$payment_id_orig){
 			$this->db->set('apps_remaining','apps_remaining-1',false);
 			$this->db->where('payment_id', $payment_id);

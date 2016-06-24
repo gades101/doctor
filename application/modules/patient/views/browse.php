@@ -35,10 +35,7 @@ $( window ).load(function() {
 									<th><?php echo $this->lang->line("phone_number");?></th>
 									<th><?php echo $this->lang->line("reference_by");?></th>
 									<th><?php echo $this->lang->line("appointment");?></th>
-									<?php if($level != "Receptionist") { ?>
-									<th><?php echo $this->lang->line("visit");?></th>
-									<?php } ?>
-									<th><?php echo $this->lang->line("follow_up");?></th>
+									<th><?php echo $this->lang->line("payment");?></th>									
 									<?php if($level != "Receptionist") { ?>
 									<th><?php echo $this->lang->line("delete");?></th>
 									<?php } ?>
@@ -62,12 +59,9 @@ $( window ).load(function() {
 									
 									<?php if($level != "Receptionist") { ?>
 									<td><a class="btn btn-primary btn-sm square-btn-adjust" title="Записати на прийом" href="<?php echo site_url("appointment/add/".$date_time."/Appointments/".$patient['patient_id']); ?>"><?php echo $this->lang->line("appointment");?></a></td>
+									<td><a class="btn btn-primary btn-sm square-btn-adjust" title="Створити платіж" href="<?php echo site_url('payment/insert/'.$patient['patient_id']); ?>"><?php echo $this->lang->line("payment");?></a></td>
 									<?php } ?>
 									
-									<?php if($level != "Receptionist") { ?>
-									<td><a class="btn btn-primary btn-sm square-btn-adjust" title="Visit" href="<?php echo site_url("patient/visit/" . $patient['patient_id']); ?>"><?php echo $this->lang->line("visit");?></a></td>
-									<?php } ?>
-									<td><a class="btn btn-success btn-sm square-btn-adjust" title="Follow Up" href="<?php echo site_url("patient/followup/" . $patient['patient_id']); ?>"><?php echo $followup_date; ?></a></td>
 									<?php if($level != "Receptionist") { ?>
 									<td><a class="btn btn-danger btn-sm square-btn-adjust confirmDelete" title="<?php echo $this->lang->line('delete').' '. $this->lang->line("patient").'а : ' . $patient['first_name'] . " " . $patient['middle_name'] . " " . $patient['last_name'] ?>" href="<?php echo site_url("patient/delete/" . $patient['patient_id']); ?>"><?php echo $this->lang->line("delete");?></a></td>
 									<?php } ?>

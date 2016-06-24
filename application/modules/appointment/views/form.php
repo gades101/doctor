@@ -302,6 +302,8 @@ $(window).load(function(){
 		$('#payment_id').on('change', function(){
 			if(this.value!=0){
 				var opt=this.children[this.selectedIndex];
+										console.log(opt.textContent);
+
 				$('#treatment_id').val(opt.dataset.treatment);
 				$('#treatment').val(opt.textContent).attr('disabled',true);
 			}
@@ -509,13 +511,11 @@ function openReason(onof) {
 					<div class="col-md-12">
 						<div class="form-group">
 							<label for="payment_id">Платежі Пацієнта</label></br>
-							<select id='payment_id' class="form-control">
+							<select id='payment_id' name='payment_id' class="form-control">
 								<option value='0'>Без оплати</option>
 								<?php if(isset($curr_payments)){
 									foreach($curr_payments as $payment){ ?>
-										<option value="<?= $payment['payment_id']; ?>"  data-treatment="<?= $payment['treatment_id']; ?>"/><?=$payment['treatment'].' (залишилось зайнять: '.$payment['apps_remaining'].')'; ?></option>
-									
-								
+										<option value="<?php echo $payment['payment_id']; ?>"  data-treatment="<?= $payment['treatment_id']; ?>" <?php if($payment['payment_id']==$curr_payment_id){echo 'selected=true';} ?> /><?= $payment['treatment'].' (залишилось зайнять: '.$payment['apps_remaining'].')'; ?></option>				
 								<?php } } ?>
 							</select>
 						</div>
