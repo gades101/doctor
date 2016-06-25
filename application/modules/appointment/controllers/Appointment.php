@@ -346,6 +346,9 @@ class Appointment extends CI_Controller {
             redirect('login/index');
         }else{
 				$this->appointment_model->change_status($appointment_id,$new_status);
+				if($new_status=='Cancel'){
+					$this->payment_model->edit_payment_count(0,$this->input->post('payment_id_orig'));
+				}
 				$appointment = $this->appointment_model->get_appointment_from_id($appointment_id);
 				$appointment_date = $appointment['appointment_date'];
 				$year = date("Y", strtotime($appointment_date));

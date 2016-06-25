@@ -572,11 +572,7 @@ function openReason(onof) {
 						<?php } ?>
 						<?php if ($status != 'Cancel') { ?>
 							<span class="btn btn-primary" onclick=openReason(1)><?php echo $this->lang->line('cancel')." ".$this->lang->line('appointment');?></span>
-							<!--<a class="btn btn-primary" href="<?=base_url() . "index.php/appointment/change_status/" . $appointment_id . "/Cancel";?>" ><?php echo $this->lang->line('cancel')." ".$this->lang->line('appointment');?></a>
-						<?php } ?>
-						<?php if ($status != 'Waiting') { ?>
-							<a class="btn btn-primary" href="<?=base_url() . "index.php/appointment/change_status/" . $appointment_id . "/Waiting";?>"><?php echo $this->lang->line('waiting');?></a>
-						<?php } ?>-->
+						<?php } ?>		
 						<?php if ($status != 'Consultation') { ?>
 							<a class="btn btn-primary" href="<?=base_url() . "index.php/appointment/change_status/" . $appointment_id . "/Consultation";?>">Консультація</a>
 						<?php } ?>
