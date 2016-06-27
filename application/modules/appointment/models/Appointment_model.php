@@ -232,17 +232,18 @@ class Appointment_model extends CI_Model {
         $this->db->delete('appointments', array('appointment_id' => $appointment_id));
     }
 
-    function change_status($appointment_id, $new_status,$visit_id = NULL) {
+    function change_status($appointment_id, $new_status,$payment_id = NULL) {
 		//Fetch Current Details
 		$current_appointment = $this->get_appointments_id($appointment_id);
 
         //Update Status
         $data['status'] = $new_status;
-		if(isset($visit_id)){
-			$data['visit_id'] = $visit_id;
-		}
+		/*if(isset($payment_id)){
+			$data['payment_id'] = $payment_id;
+		}*/
 		if($new_status=='Cancel'){
 			$data['appointment_details']=$this->input->post('appointment_details');
+			$data['payment_id'] = 0;
 		}
 		$this->db->update('appointments', $data, array('appointment_id' => $appointment_id));
         //Set Time Zone

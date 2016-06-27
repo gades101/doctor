@@ -546,7 +546,7 @@ function openReason(onof) {
 					</br>
 					<?php if (isset($appointment)){?>
 					<div id="cancel_details" style="display:none">
-						<?php echo form_open("appointment/change_status/" . $appointment_id . "/Cancel" ) ?>
+						<?php echo form_open("appointment/change_status/" . $appointment_id . "/Cancel/". $curr_payment_id ) ?>
 							<div class="col-md-12">
 								<div class="form-group">
 									<label for="appointment_details">Причина скасування</label>

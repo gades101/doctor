@@ -337,8 +337,7 @@ class Appointment extends CI_Controller {
         }
     }
 
-	function change_status($appointment_id = NULL,$new_status = NULL) {
-
+	function change_status($appointment_id = NULL,$new_status = NULL,$curr_payment_id=NULL) {
 		if ( $this->is_session_started() === FALSE ){
 			session_start();
 		}
@@ -347,7 +346,7 @@ class Appointment extends CI_Controller {
         }else{
 				$this->appointment_model->change_status($appointment_id,$new_status);
 				if($new_status=='Cancel'){
-					$this->payment_model->edit_payment_count(0,$this->input->post('payment_id_orig'));
+					$this->payment_model->edit_payment_count(0,$curr_payment_id);
 				}
 				$appointment = $this->appointment_model->get_appointment_from_id($appointment_id);
 				$appointment_date = $appointment['appointment_date'];
@@ -355,7 +354,7 @@ class Appointment extends CI_Controller {
 					$month = date("m", strtotime($appointment_date));
 					$day = date("d", strtotime($appointment_date));
 				redirect('appointment/index/'.$_SESSION['dep'].'/'.$year.'/'.$month.'/'.$day);
-			$this->appointment_model->change_status($appointment_id,$new_status);
+			$this->appointment_model->change_status($appointment_id,$new_status,$curr_payment_id);
 			$appointment = $this->appointment_model->get_appointment_from_id($appointment_id);
 			$appointment_date = $appointment['appointment_date'];
 			$year = date("Y", strtotime($appointment_date));
