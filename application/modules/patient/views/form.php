@@ -215,7 +215,7 @@ $(window).load(function(){
 				}
 				item.start_time=item.start_time.substr(0,5);
 				item.end_time=item.end_time.substr(0,5);
-				var link="<?=base_url();?>"+"index.php/appointment/edit_appointment/"+item.appointment_id;
+				var link="<?=base_url();?>"+"index.php/appointment/edit_appointment/"+item.appointment_id, pay;
 				if (item.status=='Cancel'){
 					field_class = "tbl-cancel";
 				}
@@ -227,9 +227,10 @@ $(window).load(function(){
 						field_class = "tbl-future";
 					}
 				}
+				pay=(item.payment_id>0) ? "Так" : "Ні";
 				var row=$('<tr></tr>').append($('<td></td>').text(i)).append($('<td></td>').addClass(field_class).append($('<a></a>').text(item.treatment).attr("href",link)))
 				.append($('<td></td>').text(item.appointment_date))
-				.append($('<td></td>').text(item.start_time)).append($('<td></td>').text(item.name)).append($('<td></td>').addClass('fotos').text(item.foto_num)).append($('<td></td>'));
+				.append($('<td></td>').text(item.start_time)).append($('<td></td>').text(item.name)).append($('<td></td>').addClass('fotos').text(item.foto_num)).append($('<td></td>').text(pay));
 				tab.append(row);
 				if (item.foto_num!=0){
 					$(row).find('.fotos').addClass('foto-btn').click(function(){showimages(item.appointment_id)});
@@ -259,7 +260,7 @@ $(window).load(function(){
 			});
 		}		
 		
-		patient_payments
+		//patient_payments;
 	}
 <?php } ?>
 

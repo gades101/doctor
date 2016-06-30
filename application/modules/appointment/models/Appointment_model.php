@@ -170,7 +170,7 @@ class Appointment_model extends CI_Model {
 
 	 function get_all_appointments_by_patient($patient_id){
 
-			$this->db->select("ck_treatments.treatment,a.appointment_id,a.appointment_date,a.start_time,a.end_time, a.status,ck_users.name,",FALSE);
+			$this->db->select("ck_treatments.treatment,a.appointment_id,a.appointment_date,a.start_time,a.end_time,a.status,a.payment_id,ck_users.name,",FALSE);
 			$this->db->from('ck_appointments a');
 			$this->db->join('ck_treatments', 'a.treatment_id = ck_treatments.id', 'left');
 			$this->db->join('ck_users', 'a.userid=ck_users.userid', 'inner');

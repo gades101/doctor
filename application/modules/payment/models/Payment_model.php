@@ -19,9 +19,23 @@ class Payment_model extends CI_Model {
 		$data['pay_date'] = date('Y-m-d',strtotime($this->input->post('pay_date')));
 		$data['pay_mode'] = $this->input->post('pay_mode');
 		$data['userid'] = $this->input->post('userid');
-	//	$data['cheque_no'] = $this->input->post('cheque_number');
+		$data['apps_remaining']=$this->input->post('apps_remaining');
 		$this->db->insert('payment', $data);
     }
+
+	function new_payment_from_app($treatment) {
+		$data = array();
+		$data['patient_id'] = $this->input->post('patient_id');
+		$data['treatment_id'] = $treatment['id'];
+		$data['pay_amount'] = ($this->input->post('discount')) ? ($treatment['price']*(100-$this->input->post('discount'))/100) : $treatment['price'];
+		$data['pay_date'] = date('Y-m-d');
+		$data['pay_mode'] = 'cash';
+		$data['userid'] = $this->input->post('doctor_id');
+		$data['apps_remaining']=$treatment['count']-1;	
+		$this->db->insert('payment', $data);
+		$_POST['payment_id']=$this->db->insert_id();
+    }
+	
 	function get_paid_amount($bill_id){
 		$this->db->select_sum('pay_amount', 'pay_total');
         $query = $this->db->get_where('payment', array('bill_id' => $bill_id));
@@ -41,7 +55,7 @@ class Payment_model extends CI_Model {
 		$this->db->join('ck_treatments t', 'p.treatment_id = t.id', 'left');
 		$this->db->join('ck_doctor d', 'p.userid = d.userid', 'left');
 		$this->db->join('ck_contacts c', 'd.contact_id = c.contact_id', 'left');
-		$this->db->where(array('p.patient_id'=>$patient_id,'p.apps_remaining >'=>0),NULL,FALSE);
+		$this->db->where(array('p.patient_id'=>$patient_id),NULL,FALSE);
 		$this->db->or_where("p.payment_id=$payment_id",NULL,FALSE);
 		$query=$this->db->get();
 		return $query->result_array();
@@ -56,7 +70,6 @@ class Payment_model extends CI_Model {
 		$this->db->update('payment', $data);
 	}
 	function edit_payment_count($payment_id,$payment_id_orig){
-	//file_put_contents('t1.txt',$payment_id.'-'.$payment_id_orig);
 		if($payment_id!=$payment_id_orig){
 			$this->db->set('apps_remaining','apps_remaining-1',false);
 			$this->db->where('payment_id', $payment_id);
@@ -68,6 +81,13 @@ class Payment_model extends CI_Model {
 			}
 		}
 	}
+    function delete_payment($payment_id) {
+        $this->db->delete('payment', array('payment_id' => $payment_id));
+		$this->db->set('payment_id',0,false);
+		$this->db->where('payment_id', $payment_id);
+		$this->db->update('appointment');
+
+    }
 	 function get_all_payments_by_patient($patient_id){
 		$query = $this->db->get_where('payment',array('patient_id'=>$patient_id));
 		$row = $query->num_rows();

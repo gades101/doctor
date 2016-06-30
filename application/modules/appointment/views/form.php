@@ -48,6 +48,27 @@ $(window).load(function(){
 			});
 		}
 	}
+	
+	$("#new_payment").click(function() {
+			var pay=$('#new_payment');
+			if (pay.prop('checked')==true){
+				if($('#treatment_id').val() && $('#patient_id').val()){
+					$('#discount').prop('disabled',false);
+					$('#payment_id').val(0).prop('disabled',true);
+					$('#treatment').prop('disabled',false);
+
+				}
+				else{
+					pay.prop('checked',false);
+					alert('Пацієнт та процедура мають бути обрані');
+				}
+			}
+			else {
+				$('#discount').prop('disabled',true).val('');
+				$('#payment_id').prop('disabled',false);
+			}
+		});
+
 //UPLOAD
 	<?php if (isset($appointment)){ ?>
 	showimages();
@@ -302,14 +323,12 @@ $(window).load(function(){
 		$('#payment_id').on('change', function(){
 			if(this.value!=0){
 				var opt=this.children[this.selectedIndex];
-										console.log(opt.textContent);
-
 				$('#treatment_id').val(opt.dataset.treatment);
-				$('#treatment').val(opt.textContent).attr('disabled',true);
+				$('#treatment').val(opt.textContent).prop('disabled',true);
 			}
 			else{
 				$('#treatment_id').val("");
-				$('#treatment').val("").attr('disabled',false);
+				$('#treatment').val("").prop('disabled',false);
 			}
 		});	
 });
@@ -504,7 +523,7 @@ function openReason(onof) {
 					<div class="col-md-3">
 						<div class="form-group">
 							<label for="treatment">Процедура</label>
-							<input type="text" name="treatment" value="<?=$curr_treatment_name;?>" id="treatment" class="form-control "/>
+							<input type="text" name="treatment" value="<?=$curr_treatment_name;?>" <?php if($curr_payment_id!=0) echo "disabled=true"; ?> id="treatment" class="form-control "/>
 						</div>
 					</div>
 					
@@ -518,6 +537,17 @@ function openReason(onof) {
 										<option value="<?php echo $payment['payment_id']; ?>"  data-treatment="<?= $payment['treatment_id']; ?>" <?php if($payment['payment_id']==$curr_payment_id){echo 'selected=true';} ?> /><?= $payment['treatment'].' (залишилось зайнять: '.$payment['apps_remaining'].')'; ?></option>				
 								<?php } } ?>
 							</select>
+						</div>
+					</div>
+	
+					<div class="col-md-6">
+						<div class="form-group">
+						<label for="new_payment">
+							 Створити Платіж &nbsp
+							 <input type="checkbox" name="new_payment" id="new_payment" class=""/>
+							 &nbsp&nbsp Знижка&nbsp
+							 <input type="text" name="discount" value=""  id="discount" class="" disabled=true />
+						</label>
 						</div>
 					</div>
 					

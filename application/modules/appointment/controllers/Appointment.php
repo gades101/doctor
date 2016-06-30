@@ -226,8 +226,12 @@ class Appointment extends CI_Controller {
 				$this->load->view('form', $data);
 				$this->load->view('templates/footer');
 			}else{
-				$this->appointment_model->add_appointment($this->input->post('status'));
 				$this->payment_model->edit_payment_count($this->input->post('payment_id'),$this->input->post('payment_id_orig'));
+				if($this->input->post('new_payment')){
+					$treatment=$this->treatment_model->get_edit_treatment($this->input->post('treatment_id'));
+					$this->payment_model->new_payment_from_app($treatment);
+				}
+				$this->appointment_model->add_appointment($this->input->post('status'));
 				$year = date("Y", strtotime($this->input->post('appointment_date')));
 				$month = date("m", strtotime($this->input->post('appointment_date')));
 				$day = date("d", strtotime($this->input->post('appointment_date')));
@@ -274,12 +278,16 @@ class Appointment extends CI_Controller {
 				$this->load->view('form', $data);
 				$this->load->view('templates/footer');
 			}else{
+				$this->payment_model->edit_payment_count($this->input->post('payment_id'),$this->input->post('payment_id_orig'));
+				if($this->input->post('new_payment')){
+					$treatment=$this->treatment_model->get_edit_treatment($this->input->post('treatment_id'));
+					$this->payment_model->new_payment_from_app($treatment);
+				}
 				$patient_id = $this->input->post('patient_id');
 				$payment_id=$this->input->post('curr_payment_id');
 				$curr_patient = $this->patient_model->get_patient_detail($patient_id);
 				$title = $curr_patient['first_name']." " .$curr_patient['middle_name'].$curr_patient['last_name'];
 				$this->appointment_model->update_appointment($title);
-				$this->payment_model->edit_payment_count($this->input->post('payment_id'),$this->input->post('payment_id_orig'));
 				$year = date('Y', strtotime($this->input->post('appointment_date')));
 				$month = date('m', strtotime($this->input->post('appointment_date')));
 				$day = date('d', strtotime($this->input->post('appointment_date')));

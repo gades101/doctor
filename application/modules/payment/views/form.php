@@ -8,13 +8,10 @@
 		$pay_amount=$payment->pay_amount;
 		$discount=$patient['discount'];
 	} else {
-		//$payment_cheque_no = "";
-		//$payment_pay_amount = 0;
 		$pay_mode = "cash";
 		$pay_date=date("d-m-Y");
 		$pay_amount=0;
 		$discount="";
-		//$pay_mode ='cash';
 		$curr_treatment_name="";
 	}
 	if (isset($curr_patient)){
@@ -68,7 +65,7 @@
 		var searchtreatment=[<?php $i = 0;
 		foreach ($treatments as $treatment) {
 			if ($i > 0) { echo ",";}
-			echo '{value:"' . $treatment['treatment'] . '",id:"' . $treatment['id'] . '",price:"' . $treatment['price'] . '"}';
+			echo '{value:"' . $treatment['treatment'] . '",id:"' . $treatment['id'] . '",price:"' . $treatment['price'] . '",count:"' . $treatment['count'] . '"}';
 			$i++;
 		}
 		?>];
@@ -81,6 +78,7 @@
 				//do something
 				$("#treatment_id").val(ui.item ? ui.item.id : '');
 				$("#treatment").val(ui.item ? ui.item.treatment : '');
+				$("#apps_remaining").val(ui.item ? ui.item.count : '');
 				$("#pay_amount").val(ui.item ? ui.item.price*((100-$("#discount").val())/100) : '');
 				price=ui.item ? ui.item.price : '';
 			},
@@ -142,6 +140,8 @@
 
 			<input type="hidden" name="payment_type" value="bill_payment" />
 			<input type="hidden" name="treatment_id" id="treatment_id" value="<?php if(isset($curr_treatment)){echo $curr_treatment['id']; } ?>"/>
+			<input type="hidden" name="apps_remaining" id="apps_remaining" value="<?php if(isset($curr_treatment)){echo $curr_treatment['count']; } ?>"/>
+
 
 			<div class="col-md-12">
 				<label for="patient_name"><?php echo "ПІБ Пацієнта";?></label>
@@ -205,7 +205,7 @@
 					<input class="btn btn-primary" type="submit" value="<?php echo $this->lang->line('add');?>" name="submit" />
 					<?php }else{ ?>
 					<input class="btn btn-primary" type="submit" value="<?php echo $this->lang->line('edit');?>" name="submit" />
-					<?php } ?>
+					<a class="btn btn-danger" href="<?=base_url() . "index.php/payment/del/" . $payment->payment_id;?>">Видалити</a>					<?php } ?>
 				</div>
 			</div>
 			<?php

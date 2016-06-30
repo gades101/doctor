@@ -120,6 +120,16 @@ class Payment extends CI_Controller {
 
 		}
 	}
+    public function del($payment_id) {
+        session_start();
+		//Check if user has logged in
+		if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
+            redirect('login/index/');
+        } else {
+            $this->payment_model->delete_payment($payment_id);
+            $this->index();
+        }
+    }	
 	
 	public function payment_ajax_info($patient_id){
 		$data=$this->payment_model->get_curr_payments($patient_id);
