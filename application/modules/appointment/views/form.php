@@ -569,6 +569,7 @@ function openReason(onof) {
 					<div class="col-md-12">
 						<div class="form-group">
 							<button class="btn btn-primary" type="submit" name="submit" /><?php echo $this->lang->line('save');?></button>
+							<a class="btn btn-primary" href="<?=base_url() . "index.php/appointment/index/".$dep;?>"><?=$this->lang->line('back_to_app');?></a>
 						</div>
 					</div>
 
@@ -593,8 +594,6 @@ function openReason(onof) {
 
 					<div class="col-md-12" id="button_panel">
 						<div class="form-group">
-
-							<a class="btn btn-primary" href="<?=base_url() . "index.php/appointment/index/".$dep;?>"><?=$this->lang->line('back_to_app');?></a>
 					<?php if(isset($appointment)){ ?>
 						<a class="btn btn-primary" href="<?php echo site_url("patient/edit/" . $curr_patient['patient_id']."/patient"); ?>">Редагувати пацієнта</a>
 						<?php if ($status != 'Appointments') { ?>
