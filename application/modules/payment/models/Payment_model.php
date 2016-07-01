@@ -20,6 +20,7 @@ class Payment_model extends CI_Model {
 		$data['pay_mode'] = $this->input->post('pay_mode');
 		$data['userid'] = $this->input->post('userid');
 		$data['apps_remaining']=($this->input->post('apps_remaining')=="") ? 1 : $this->input->post('apps_remaining');
+		$data['notes'] = $this->input->post('notes');
 		$this->db->insert('payment', $data);
     }
 
@@ -66,6 +67,7 @@ class Payment_model extends CI_Model {
 		$data['pay_amount'] = $this->input->post('pay_amount');
 		$data['pay_mode'] = $this->input->post('pay_mode');
 		$data['pay_date'] = $this->input->post('pay_date');
+		$data['notes'] = $this->input->post('notes');
 		$this->db->where('payment_id', $payment_id);
 		$this->db->update('payment', $data);
 	}

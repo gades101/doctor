@@ -22,6 +22,7 @@
 									<th><?php echo $this->lang->line("id");?></th>
 									<th><?php echo $this->lang->line("date");?></th>
 									<th><?php echo $this->lang->line("patient");?></th>
+									<th><?php echo $this->lang->line("doctor");?></th>
 									<th><?php echo $this->lang->line("amount")." Грн.";?></th>
 									<th><?php echo $this->lang->line("payment_mode");?></th>
 									<th><?php echo $this->lang->line("edit");?></th>
@@ -40,6 +41,7 @@
 										<td><?php echo $payment['payment_id']; ?></td>
 										<td><?php echo $payment_date; ?></td>
 										<td><a href="<?= site_url('patient/edit/'.$payment['patient_id'].'/patient');?>"><?=$payment['first_name'].' '.$payment['middle_name']; ?></a></td>
+										<td><?php echo $payment['username']; ?></td>
 										<td><?php echo $payment['pay_amount']; ?></td>
 										<td><?php if($payment['pay_mode'] == "cheque") {echo "Безготівковий розрах.";} else echo "Готівка"?></td>
 										<td><a href="<?= site_url('payment/edit/'.$payment['payment_id']);?>" class="btn btn-sm btn-primary square-btn-adjust"><?php echo $this->lang->line("edit");?></a></td>

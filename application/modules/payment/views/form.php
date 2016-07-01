@@ -7,12 +7,14 @@
 		$curr_treatment_name=$curr_treatment['treatment'];
 		$pay_amount=$payment->pay_amount;
 		$discount=$patient['discount'];
+		$notes=$payment->notes;
 	} else {
 		$pay_mode = "cash";
 		$pay_date=date("d-m-Y");
 		$pay_amount=0;
 		$discount="";
 		$curr_treatment_name="";
+		$notes="";
 	}
 	if (isset($curr_patient)){
 		$patient_id=$curr_patient['patient_id'];
@@ -197,6 +199,12 @@
 						<option value="cash" <?php if ($pay_mode =='cash') {echo "selected";} ?>>Готівка</option>
 						<option value="cheque" <?php if ($pay_mode =='cheque') {echo "selected";} ?>>Безготівковий розрах.</option>
 					</select>
+				</div>
+			</div>
+			<div class="col-md-12">
+				<div class="form-group">
+					<label for="title">Примітки</label>
+					<input type="text" name="notes" id="notes" class="form-control" value="<?=$notes;?>" />
 				</div>
 			</div>
 			<div class="col-md-6">
