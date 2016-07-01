@@ -39,7 +39,7 @@
 									<tr <?php if ($i%2 == 0) { echo "class='even'"; } else { echo "class='odd'"; }?> >
 										<td><?php echo $payment['payment_id']; ?></td>
 										<td><?php echo $payment_date; ?></td>
-										<td><?php echo $payment['first_name'].' '.$payment['middle_name']; ?></td>
+										<td><a href="<?= site_url('patient/edit/'.$payment['patient_id'].'/patient');?>"><?=$payment['first_name'].' '.$payment['middle_name']; ?></a></td>
 										<td><?php echo $payment['pay_amount']; ?></td>
 										<td><?php if($payment['pay_mode'] == "cheque") {echo "Безготівковий розрах.";} else echo "Готівка"?></td>
 										<td><a href="<?= site_url('payment/edit/'.$payment['payment_id']);?>" class="btn btn-sm btn-primary square-btn-adjust"><?php echo $this->lang->line("edit");?></a></td>

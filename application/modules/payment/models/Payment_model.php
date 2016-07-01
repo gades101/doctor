@@ -19,7 +19,7 @@ class Payment_model extends CI_Model {
 		$data['pay_date'] = date('Y-m-d',strtotime($this->input->post('pay_date')));
 		$data['pay_mode'] = $this->input->post('pay_mode');
 		$data['userid'] = $this->input->post('userid');
-		$data['apps_remaining']=$this->input->post('apps_remaining');
+		$data['apps_remaining']=($this->input->post('apps_remaining')=="") ? 1 : $this->input->post('apps_remaining');
 		$this->db->insert('payment', $data);
     }
 
@@ -31,7 +31,7 @@ class Payment_model extends CI_Model {
 		$data['pay_date'] = date('Y-m-d');
 		$data['pay_mode'] = 'cash';
 		$data['userid'] = $this->input->post('doctor_id');
-		$data['apps_remaining']=$treatment['count']-1;	
+		$data['apps_remaining']=($treatment['count']=="") ? 0 : $treatment['count']-1;	
 		$this->db->insert('payment', $data);
 		$_POST['payment_id']=$this->db->insert_id();
     }

@@ -278,6 +278,7 @@ class Appointment extends CI_Controller {
 				$this->load->view('form', $data);
 				$this->load->view('templates/footer');
 			}else{
+			//file_put_contents('t1.txt',print_r($this->input->post(),true));
 				$this->payment_model->edit_payment_count($this->input->post('payment_id'),$this->input->post('payment_id_orig'));
 				if($this->input->post('new_payment')){
 					$treatment=$this->treatment_model->get_edit_treatment($this->input->post('treatment_id'));

@@ -605,9 +605,9 @@ function openReason(onof) {
 						<?php if ($status != 'Consultation') { ?>
 							<a class="btn btn-primary" href="<?=base_url() . "index.php/appointment/change_status/" . $appointment_id . "/Consultation";?>">Консультація</a>
 						<?php } ?>
-						<?php if (!isset($doctor)) { ?>
-							<a class="btn btn-danger" href="<?=base_url() . "index.php/appointment/del/" . $appointment_id;?>">Видалити запис</a>
-						<?php } ?>
+						<!--<?php if (!isset($doctor)) { ?>
+							<a class="btn btn-danger" href="<?=base_url() . "index.php/appointment/del/" . $aappointment_id;?>">Видалити запис</a>
+						<?php } ?>-->
 					<?php } ?>
 
 						</div>
