@@ -363,30 +363,6 @@ function check_doctor_availability($i,$doctor_id){
 									$end_position = nearest_timeinterval($end_position);
 
 									$appointment_column = 0;
-									/*
-									for($column = 1;$column <= 10;$column = $column + 1){
-										$cell_available = FALSE;
-										//Check if cell is empty
-											if(!($cell[$doctor_id][$start_position][$column] > 0)){
-												for($row = $start_position;$row<$end_position;$row = $row + ($time_interval * 100)){
-													if(!($cell[$doctor_id][$row][$column] > 0)){
-														$cell[$doctor_id][$row][$column] = $appointment_id;
-														$appointment_column = $column;
-														$cell_available = TRUE;
-													}else{
-														//Clear the incorrect data
-														for($r = $start_position;$r<$row;$r = $r + ($time_interval * 100)){
-															$cell[$doctor_id][$r][$column] = 0;
-														}
-														$cell_available = FALSE;
-														break;
-													}
-												}
-												if($cell_available){
-													break;
-												}
-											}
-									}*/
 									$nxt=false;
 									$ca=false;
 									switch($appointment['status']){

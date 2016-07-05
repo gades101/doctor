@@ -61,6 +61,7 @@ $(window).load(function(){
 	$('#dob').datetimepicker({
 			timepicker:false,
 			format: '<?=$def_dateformate; ?>',
+			scrollInput:false,
 
 	});
 

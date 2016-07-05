@@ -151,6 +151,11 @@ $(window).load(function(){
 			}
         aj++;
 		}
+	
+	<?php if(isset($saved)) { echo 'alert("Збережено");';} ?>
+		
+
+
 <?php } ?>
 //END UPLOAD
 
@@ -305,19 +310,22 @@ $(window).load(function(){
 		$('#appointment_date').datetimepicker({
 			timepicker:false,
 			format: '<?=$def_dateformate; ?>',
+			scrollInput:false,
 			
 		});
 		$('#start_time').datetimepicker({
 			datepicker:false,
 			step:<?=$time_interval*60;?>,
 			format: '<?=$def_timeformate; ?>',
-			formatTime:'<?=$def_timeformate; ?>'
+			formatTime:'<?=$def_timeformate; ?>',
+			scrollInput:false,
 		});
 		$('#end_time').datetimepicker({
 			datepicker:false,
 			step:<?=$time_interval*60;?>,
 			format: '<?=$def_timeformate; ?>',
-			formatTime:'<?=$def_timeformate; ?>'
+			formatTime:'<?=$def_timeformate; ?>',
+			scrollInput:false,
 		});	
 		
 		$('#payment_id').on('change', function(){
@@ -391,52 +399,6 @@ function openReason(onof) {
 <div id="page-inner">
 	<div class="row">
 		<div class="col-md-12">
-			<?php if(!isset($appointment) && !isset($curr_patient)){ ?>
-			<div class="panel panel-primary">
-				<div class="panel-heading">
-					<?php echo $this->lang->line('add')." ".$this->lang->line('patient').'а';?>
-				</div>
-				<div class="panel-body">
-					<?php $s_time = date('H:i',strtotime($start_time));?>
-					<?php $time = explode(":", $s_time); ?>
-					<?php echo form_open('appointment/insert_patient_add_appointment' . "/" . $time[0] . "/" . $time[1] . "/" . $appointment_date . "/" . $status . "/" . $selected_doctor_id."/0/") ?>
-						<div class="col-md-3">
-							<div class="form-group">
-								<label for="first_name"><?php echo $this->lang->line('first');?></label>
-								<input type="text" name="first_name" value="" class="form-control"/>
-								<?php echo form_error('first_name','<div class="alert alert-danger">','</div>'); ?>
-							</div>
-						</div>
-						<div class="col-md-3">
-							<div class="form-group">
-								<label for="middle_name"><?php echo $this->lang->line('middle');?></label>
-								<input type="text" name="middle_name" value=""  class="form-control"/>
-								<?php echo form_error('middle_name','<div class="alert alert-danger">','</div>'); ?>
-							</div>
-						</div>
-						<div class="col-md-3">
-							<div class="form-group">
-								<label for="last_name"><?php echo $this->lang->line('last');?></label>
-								<input type="text" name="last_name" value="" class="form-control"/>
-								<?php echo form_error('last_name','<div class="alert alert-danger">','</div>'); ?>
-							</div>
-						</div>
-						<div class="col-md-3">
-							<div class="form-group">
-								<label for="reference_by"><?php echo $this->lang->line('reference_by')?></label>
-								<input type="text" name="reference_by" value="" class="form-control"/>
-								<?php echo form_error('reference_by','<div class="alert alert-danger">','</div>'); ?>
-							</div>
-						</div>
-						<div class="col-md-3">
-							<div class="form-group">
-								<button class="btn btn-primary" type="submit" name="submit" /><?php echo $this->lang->line('add')." ".$this->lang->line('patient')."а";?></button>
-							</div>
-						</div>
-					<?php echo form_close(); ?>
-				</div>
-			</div>
-			<?php } ?>
 			<div class="panel panel-primary">
 				<div class="panel-heading">
 					<?=$header;?>
@@ -524,6 +486,7 @@ function openReason(onof) {
 						<div class="form-group">
 							<label for="treatment">Процедура</label>
 							<input type="text" name="treatment" value="<?=$curr_treatment_name;?>" <?php if($curr_payment_id!=0) echo "disabled=true"; ?> id="treatment" class="form-control "/>
+							<?php echo form_error('treatment','<div class="alert alert-danger">','</div>'); ?>
 						</div>
 					</div>
 					

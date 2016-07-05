@@ -250,13 +250,18 @@ class Appointment extends CI_Controller {
 		if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
             redirect('login/index');
         } else {
-			$this->form_validation->set_rules('patient_id', 'Patient Name', 'required');
+			$this->form_validation->set_rules('patient_id', 'Пацієнт', 'required');
+			$this->form_validation->set_rules('treatment', 'Процедура', 'required');
 			$this->form_validation->set_rules('doctor_id', 'Doctor Name', 'required');
 			$this->form_validation->set_rules('start_time', 'Start Time', 'required');
 			$this->form_validation->set_rules('end_time', 'End Time', 'required');
 			$this->form_validation->set_rules('appointment_date', 'Date', 'required');
 			$dep=$_SESSION['dep'];
 			if ($this->form_validation->run() === FALSE){
+				if(isset($_SESSION['saved'])) {
+					$data['saved']='';
+					unset ($_SESSION['saved']);
+				}	
 				$appointment = $this->appointment_model->get_appointments_id($appointment_id);
 				//$appointment['appointment_details']=htmlspecialchars($appointment['appointment_details']);
 				$data['appointment']=$appointment;
@@ -278,7 +283,6 @@ class Appointment extends CI_Controller {
 				$this->load->view('form', $data);
 				$this->load->view('templates/footer');
 			}else{
-			//file_put_contents('t1.txt',print_r($this->input->post(),true));
 				$this->payment_model->edit_payment_count($this->input->post('payment_id'),$this->input->post('payment_id_orig'));
 				if($this->input->post('new_payment')){
 					$treatment=$this->treatment_model->get_edit_treatment($this->input->post('treatment_id'));
@@ -289,11 +293,12 @@ class Appointment extends CI_Controller {
 				$curr_patient = $this->patient_model->get_patient_detail($patient_id);
 				$title = $curr_patient['first_name']." " .$curr_patient['middle_name'].$curr_patient['last_name'];
 				$this->appointment_model->update_appointment($title);
-				$year = date('Y', strtotime($this->input->post('appointment_date')));
+				$_SESSION['saved']=1;
+				redirect('appointment/edit_appointment/'.$this->input->post('appointment_id'));
+				/*$year = date('Y', strtotime($this->input->post('appointment_date')));
 				$month = date('m', strtotime($this->input->post('appointment_date')));
 				$day = date('d', strtotime($this->input->post('appointment_date')));
-				redirect('appointment/index/'.$dep.'/'.$year.'/'.$month.'/'.$day);
-				//$this->index($_SESSION['dep'], $year, $month, $day);
+				redirect('appointment/index/'.$dep.'/'.$year.'/'.$month.'/'.$day);*/
 			}
 		}
 	}

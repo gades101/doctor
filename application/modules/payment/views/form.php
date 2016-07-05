@@ -102,6 +102,7 @@
 		$('#pay_date').datetimepicker({
 			timepicker:false,
 			format: '<?=$def_dateformate;?>',
+			scrollInput:false,
 		});
 		$( "#pay_mode" ).change(function() {
 			if($( "#pay_mode" ).val() == 'cheque'){
