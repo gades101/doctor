@@ -1,12 +1,12 @@
 <?php
 
-class Treatment extends CI_Controller {
+class Discount extends CI_Controller {
 
     function __construct() {
         parent::__construct();
 		
 		$this->load->model('menu_model');
-		$this->load->model('treatment_model');
+		$this->load->model('discount_model');
 		$this->load->model('settings/settings_model');
 		
 		$this->lang->load('main');
@@ -28,7 +28,6 @@ class Treatment extends CI_Controller {
 		}
 		return FALSE;
 	}
-	/**Treatments*/
     public function index() {
 		if ( $this->is_session_started() === FALSE ){
 			session_start();
@@ -36,21 +35,21 @@ class Treatment extends CI_Controller {
         if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
             redirect('login/index');
         } else {
-            $this->form_validation->set_rules('treatment', 'Treatment Name', 'trim|required|xss_clean|is_unique[treatments.treatment]');
-            $this->form_validation->set_rules('treatment_price', 'Treatment Price', 'trim|required|xss_clean');
-            $data['currency_postfix'] = $this->settings_model->get_currency_postfix();
+           // $this->form_validation->set_rules('treatment', 'Treatment Name', 'trim|required|xss_clean|is_unique[treatments.treatment]');
+            //$this->form_validation->set_rules('treatment_price', 'Treatment Price', 'trim|required|xss_clean');
+            //$data['currency_postfix'] = $this->settings_model->get_currency_postfix();
             if ($this->form_validation->run() === FALSE) {
-                $data['treatments'] = $this->treatment_model->get_treatments();                
+                $data['discounts'] = $this->discount_model->get_discounts();                
                 $this->load->view('templates/header');
                 $this->load->view('templates/menu');
-                $this->load->view('treatments_list', $data);
+                $this->load->view('browse', $data);
                 $this->load->view('templates/footer');
             } else {
-                $this->treatment_model->add_treatment();
-                $data['treatments'] = $this->treatment_model->get_treatments();
+                $this->discount_model->save_discounts();
+                $data['discounts'] = $this->discount_model->get_discounts();                
                 $this->load->view('templates/header');
                 $this->load->view('templates/menu');
-                $this->load->view('treatments_list', $data);
+                $this->load->view('browse', $data);
                 $this->load->view('templates/footer');
             }
         }
