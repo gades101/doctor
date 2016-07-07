@@ -2,7 +2,7 @@
 
 $( window ).load(function() {
 	$('.confirmDelete').click(function(){
-			return confirm("Are you sure you want to delete?");
+			return confirm("Ви впевнені");
 		});
 		
     $('#treatments').dataTable();	
@@ -14,24 +14,19 @@ $( window ).load(function() {
 		<div class="col-md-12">
 			<div class="panel panel-primary">
 				<div class="panel-heading">
-					<?php echo $this->lang->line('add_treatment');?>
+					Додати знижку
 				</div>
 				<div class="panel-body">
-					<?php echo form_open('treatment/index'); ?>
+					<?php echo form_open('discount/index'); ?>
 						<div class="form-group input-group">
-							<label for="treatment"><?php echo $this->lang->line('treatment');?></label>
-							<input type="text" class="form-control" name="treatment" id="treatment" value=""/>
-							<?php echo form_error('treatment','<div class="alert alert-danger">','</div>'); ?>
+							<label for="amount">Сума</label>
+							<input type="text" class="form-control" name="amount" id="amount" value=""/>
+							<?php echo form_error('amount','<div class="alert alert-danger">','</div>'); ?>
 						</div>
 						<div class="form-group input-group">
-							<label for="treatment_price">Сума</label>
-							<input type="text" class="form-control"  name="treatment_price" id="treatment_price" value=""/>
-							<?php echo form_error('treatment_price','<div class="alert alert-danger">','</div>'); ?>
-						</div>
-						<div class="form-group input-group">
-							<label for="treatment_count">Кількість</label>
-							<input type="text" name="treatment_count" id="treatment_count" value="" class="form-control"/>
-							<?php echo form_error('treatment_count','<div class="alert alert-danger">','</div>'); ?>
+							<label for="percent">Знижка (у відсотках)</label>
+							<input type="text" name="percent" id="percent" value="" class="form-control"/>
+							<?php echo form_error('percent','<div class="alert alert-danger">','</div>'); ?>
 						</div>						
 						<div class="form-group input-group">
 							<button type="submit" name="submit" class="btn btn-primary"><?php echo $this->lang->line('add');?></button>
@@ -41,29 +36,27 @@ $( window ).load(function() {
 			</div>	
 			<div class="panel panel-primary">
 				<div class="panel-heading">
-					<?php echo $this->lang->line('treatments');?>
+					Знижки
 				</div>
 				<div class="panel-body">
-					<?php if ($treatments) { ?>
+					<?php if ($discounts) { ?>
 						<table class="table table-striped table-bordered table-hover dataTable no-footer" id="treatments" >
 						<thead>
 							<tr>
-								<th><?php echo $this->lang->line('no');?></th>
-								<th><?php echo $this->lang->line('treatment_name');?></th>
-								<th><?php echo $this->lang->line('treatment_charges');?></th>
+								<th>Сума</th>
+								<th>Відсоток</th>
 								<th><?php echo $this->lang->line('edit');?></th>
 								<th><?php echo $this->lang->line('delete');?></th>
 							</tr>
 						</thead>
 						<tbody>
 						<?php $i=1; $j=1 ?>
-						<?php foreach ($treatments as $treatment):  ?>
+						<?php foreach ($discounts as $discount):  ?>
 						<tr <?php if ($i%2 == 0) { echo "class='even'"; } else {echo "class='odd'";}?> >
-							<td><?php echo $j; ?></td>
-							<td><?php echo $treatment['treatment']; ?></td>
-							<td class="right"><?php echo currency_format($treatment['price']);if($currency_postfix) echo $currency_postfix['currency_postfix']; ?></td>                
-							<td><a class="btn btn-primary btn-sm" title="Visit" href="<?php echo site_url("treatment/edit_treatment/" . $treatment['id']); ?>"><?php echo $this->lang->line('edit');?></a></td>
-							<td><a class="btn btn-danger btn-sm confirmDelete" title="<?php echo $this->lang->line('delete_treatment')." : " . $treatment['treatment'] ?>" href="<?php echo site_url("treatment/delete_treatment/" . $treatment['id']); ?>"><?php echo $this->lang->line('delete');?></a></td>
+							<td><?php echo $discount['amount']; ?></td>
+							<td><?php echo $discount['percent']; ?></td>
+							<td><a class="btn btn-primary btn-sm" href="<?php echo site_url("discount/edit_discount/".$discount['amount'].'/'.$discount['percent']); ?>"><?php echo $this->lang->line('edit');?></a></td>
+							<td><a class="btn btn-danger btn-sm confirmDelete" href="<?php echo site_url("discount/delete_discount/".$discount['amount'].'/'.$discount['percent']); ?>"><?php echo $this->lang->line('delete');?></a></td>
             </tr>
             <?php $i++; $j++;?>
             <?php endforeach ?>
@@ -71,6 +64,6 @@ $( window ).load(function() {
     </table>
 </div>  
 <?php }else{ ?>
-	No Treatments added. Add a treatment.
+	Додайте знижку
 <?php } ?>				
 				</div>

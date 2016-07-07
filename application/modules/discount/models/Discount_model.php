@@ -1,20 +1,20 @@
 <?php
 
-class Treatment_model extends CI_Model {
+class Discount_model extends CI_Model {
 
     public function __construct() {
         $this->load->database();
     }
 
-    public function get_treatments(){
-        $result = $this->db->get('treatments');
+    public function get_discounts(){
+        $result = $this->db->get('discount');
         return $result->result_array();
     }
     
-    public function add_treatment() {
-        $data['treatment'] = $this->input->post('treatment');
-        $data['price'] = $this->input->post('treatment_price');
-        $this->db->insert('treatments',$data);
+    public function add_discount() {
+        $data['amount'] = $this->input->post('amount');
+        $data['percent'] = $this->input->post('percent');
+        $this->db->insert('discount',$data);
     }
     
     public function get_edit_treatment($id) {    
@@ -23,7 +23,7 @@ class Treatment_model extends CI_Model {
         return $query->row_array();    
     }
     
-    public function edit_treatment($id){
+    public function edit_discounts($id){
         $data['treatment'] = $this->input->post('treatment');
         $data['price'] = $this->input->post('treatment_price');
         $data['count'] = $this->input->post('treatment_count');
@@ -31,16 +31,10 @@ class Treatment_model extends CI_Model {
         $this->db->update('treatments', $data);
     }
     
-    public function delete_treatment($id) {
-        $this->db->delete('treatments', array('id' => $id));
+    public function delete_discount($amount,$percent) {
+        $this->db->delete('discount', array('amount' => $amount,'percent' => $percent));
     }
-    
-    public function get_visit_treatment($visit_id){
-        $bill_id = patient_model::get_bill_id($visit_id);
-        
-        $query = $this->db->get_where('bill_detail', array('bill_id' => $bill_id));
-        return $query->result_array();
-    }
+ 
 }
 
 ?>

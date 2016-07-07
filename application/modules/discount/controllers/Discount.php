@@ -6,7 +6,7 @@ class Discount extends CI_Controller {
         parent::__construct();
 		
 		$this->load->model('menu_model');
-		$this->load->model('discount_model');
+		$this->load->model('discount/discount_model');
 		$this->load->model('settings/settings_model');
 		
 		$this->lang->load('main');
@@ -29,13 +29,14 @@ class Discount extends CI_Controller {
 		return FALSE;
 	}
     public function index() {
+
 		if ( $this->is_session_started() === FALSE ){
 			session_start();
 		}
         if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
             redirect('login/index');
         } else {
-           // $this->form_validation->set_rules('treatment', 'Treatment Name', 'trim|required|xss_clean|is_unique[treatments.treatment]');
+				$this->form_validation->set_rules('amount', 'Сума', 'trim|required|xss_clean');
             //$this->form_validation->set_rules('treatment_price', 'Treatment Price', 'trim|required|xss_clean');
             //$data['currency_postfix'] = $this->settings_model->get_currency_postfix();
             if ($this->form_validation->run() === FALSE) {
@@ -45,7 +46,8 @@ class Discount extends CI_Controller {
                 $this->load->view('browse', $data);
                 $this->load->view('templates/footer');
             } else {
-                $this->discount_model->save_discounts();
+
+                $this->discount_model->add_discount();
                 $data['discounts'] = $this->discount_model->get_discounts();                
                 $this->load->view('templates/header');
                 $this->load->view('templates/menu');
@@ -81,14 +83,14 @@ class Discount extends CI_Controller {
             }
         }
     }
-	public function delete_treatment($id) {
+	public function delete_discount($amount,$percent) {
         if ( $this->is_session_started() === FALSE ){
 			session_start();
 		}
         if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
             redirect('login/index');
         } else {
-            $this->treatment_model->delete_treatment($id);
+            $this->discount_model->delete_discount($amount,$percent);
             $this->index();
         }
     }
