@@ -503,15 +503,30 @@ function openReason(onof) {
 						</div>
 					</div>
 	
-					<div class="col-md-6">
+					<div class="col-md-12">
 						<div class="form-group">
-						<label for="new_payment">
-							 Створити Платіж &nbsp
-							 <input type="checkbox" name="new_payment" id="new_payment" class=""/>
-							 &nbsp&nbsp Знижка&nbsp
-							 <input type="text" name="discount" value=""  id="discount" class="" disabled=true />
-						</label>
+							<label for="new_payment">
+								 Створити Платіж
+								 <input type="checkbox" name="new_payment" id="new_payment" class=""/>
+							</label>
 						</div>
+					</div>
+					</br>
+					<div id="pay_block" class="panel-body" style="display:none">
+							<div class="col-md-3">
+								<label for="discount">Знижка %</label>
+								<input type="text" name="discount" id="discount" disabled=true value="<?php if(isset($curr_patient)){echo $curr_patient['discount']; } ?>" class="form-control"/>
+							</div>
+							<div class="col-md-3">
+								<label for="paid">Сплачено</label>
+								<input type="text" name="paid" id="paid" value="" class="form-control"/>
+								<?php echo form_error('paid','<div class="alert alert-danger">','</div>'); ?>
+							</div>
+							<div class="col-md-3">
+								<label for="amount">Сума</label>
+								<input type="text" name="amount" id="amount" value="" class="form-control"/>
+								<?php echo form_error('amount','<div class="alert alert-danger">','</div>'); ?>
+							</div>
 					</div>
 					
 					<br/>

@@ -17,18 +17,17 @@ class Discount_model extends CI_Model {
         $this->db->insert('discount',$data);
     }
     
-    public function get_edit_treatment($id) {    
-        $this->db->where("id", $id);
-        $query = $this->db->get("treatments");
+    public function get_edit_discount($amount,$percent) {    
+        $this->db->where(array('amount'=>$amount, 'percent'=>$percent));
+        $query = $this->db->get("discount");
         return $query->row_array();    
     }
     
-    public function edit_discounts($id){
-        $data['treatment'] = $this->input->post('treatment');
-        $data['price'] = $this->input->post('treatment_price');
-        $data['count'] = $this->input->post('treatment_count');
-        $this->db->where('id', $id);
-        $this->db->update('treatments', $data);
+    public function edit_discount($amount,$percent){
+        $data['amount'] = $this->input->post('amount');
+        $data['percent'] = $this->input->post('percent');
+        $this->db->where(array('amount'=>$amount, 'percent'=>$percent));
+        $this->db->update('discount', $data);
     }
     
     public function delete_discount($amount,$percent) {

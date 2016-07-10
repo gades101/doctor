@@ -15,6 +15,7 @@ class Payment_model extends CI_Model {
 		$data = array();
 		$data['patient_id'] = $this->input->post('patient_id');
 		$data['treatment_id'] = $this->input->post('treatment_id');
+		$data['paid'] = $this->input->post('paid');
 		$data['pay_amount'] = $this->input->post('pay_amount');
 		$data['pay_date'] = date('Y-m-d',strtotime($this->input->post('pay_date')));
 		$data['pay_mode'] = $this->input->post('pay_mode');
@@ -65,6 +66,7 @@ class Payment_model extends CI_Model {
 		$data['patient_id'] = $this->input->post('patient_id');
 		$data['treatment_id'] = $this->input->post('treatment_id');
 		$data['pay_amount'] = $this->input->post('pay_amount');
+		$data['paid'] = $this->input->post('paid');
 		$data['pay_mode'] = $this->input->post('pay_mode');
 		$data['pay_date'] = $this->input->post('pay_date');
 		$data['notes'] = $this->input->post('notes');

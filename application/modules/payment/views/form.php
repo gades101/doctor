@@ -6,12 +6,14 @@
 		$pay_date=$payment->pay_date;
 		$curr_treatment_name=$curr_treatment['treatment'];
 		$pay_amount=$payment->pay_amount;
+		$paid=$payment->paid;
 		$discount=$patient['discount'];
 		$notes=$payment->notes;
 	} else {
 		$pay_mode = "cash";
 		$pay_date=date("d-m-Y");
 		$pay_amount=0;
+		$paid=0;
 		$discount="";
 		$curr_treatment_name="";
 		$notes="";
@@ -46,8 +48,9 @@
 					//do something
 					$("#discount").val(ui.item ? ui.item.discount : '');
 					$("#patient_id").val(ui.item ? ui.item.id : '');
-					var this_patient_id = ui.item.id;
-					$("#pay_amount").val(price ? price*((100-ui.item.discount)/100) : '');
+					var this_patient_id = ui.item.id, amount=price ? price*((100-ui.item.discount)/100) : '';
+					$("#pay_amount").val(amount);
+					$("#paid").val(amount);
 				},
 				change: function(event, ui) {
 					if (ui.item == null) {
@@ -81,7 +84,9 @@
 				$("#treatment_id").val(ui.item ? ui.item.id : '');
 				$("#treatment").val(ui.item ? ui.item.treatment : '');
 				$("#apps_remaining").val(ui.item ? ui.item.count : '');
-				$("#pay_amount").val(ui.item ? ui.item.price*((100-$("#discount").val())/100) : '');
+				var amount=ui.item ? ui.item.price*((100-$("#discount").val())/100) : '';
+				$("#pay_amount").val(amount);
+				$("#paid").val(amount);
 				price=ui.item ? ui.item.price : '';
 			},
 			change: function(event, ui) {
@@ -163,7 +168,11 @@
 				<input name="treatment" id="treatment" type="text" class="form-control" value="<?= $curr_treatment_name; ?>"/><br />
 			</div>
 			<div class="col-md-12">
-				<label for="pay_amount">Ціна(грн.)</label>
+				<label for="paid">Сплачено</label>
+				<input name="paid" id="paid" type="text" class="form-control" value="<?= $paid; ?>"/><br />
+			</div>			
+			<div class="col-md-12">
+				<label for="pay_amount">Всього до сплати(грн.)</label>
 				<input name="pay_amount" id="pay_amount" type="text" readonly="readonly" class="form-control" value="<?php echo $pay_amount; ?>"/><br />
 				<input name="due_amount" id="due_amount" type="hidden" class="form-control" value="<?= $pay_amount; ?>"/>
 			</div>
