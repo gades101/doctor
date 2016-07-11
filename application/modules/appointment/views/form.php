@@ -53,9 +53,10 @@ $(window).load(function(){
 			var pay=$('#new_payment');
 			if (pay.prop('checked')==true){
 				if($('#treatment_id').val() && $('#patient_id').val()){
-					$('#discount').prop('disabled',false);
+					//$('#discount').prop('disabled',false);
 					$('#payment_id').val(0).prop('disabled',true);
 					$('#treatment').prop('disabled',false);
+					$('#pay_block').show();
 
 				}
 				else{
@@ -64,7 +65,8 @@ $(window).load(function(){
 				}
 			}
 			else {
-				$('#discount').prop('disabled',true).val('');
+				$('#pay_block').hide();
+				//$('#discount').prop('disabled',true).val('');
 				$('#payment_id').prop('disabled',false);
 			}
 		});
@@ -518,13 +520,13 @@ function openReason(onof) {
 								<input type="text" name="discount" id="discount" disabled=true value="<?php if(isset($curr_patient)){echo $curr_patient['discount']; } ?>" class="form-control"/>
 							</div>
 							<div class="col-md-3">
-								<label for="paid">Сплачено</label>
+								<label for="paid">Сплачено (грн.)</label>
 								<input type="text" name="paid" id="paid" value="" class="form-control"/>
 								<?php echo form_error('paid','<div class="alert alert-danger">','</div>'); ?>
 							</div>
 							<div class="col-md-3">
-								<label for="amount">Сума</label>
-								<input type="text" name="amount" id="amount" value="" class="form-control"/>
+								<label for="amount">Загальна сума (грн.)</label>
+								<input type="text" name="amount" id="amount" value="" disabled=true class="form-control"/>
 								<?php echo form_error('amount','<div class="alert alert-danger">','</div>'); ?>
 							</div>
 					</div>
