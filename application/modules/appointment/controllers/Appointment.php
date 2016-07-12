@@ -168,7 +168,6 @@ class Appointment extends CI_Controller {
             if ($year == NULL) { $year = date("Y");}
             if ($month == NULL) { $month = date("m");}
             if ($day == NULL) { $day = date("d");}
-
 			if ($hour == NULL) { $hour = date("H");}
             if ($min == NULL) { $min = date("i");}
          $dep=$_SESSION['dep'];
@@ -176,15 +175,11 @@ class Appointment extends CI_Controller {
 			$data['month'] = $month;
 			$data['day'] = $day;
 			$data['dep'] = $dep;
-
             $today = date('Y-m-d');
-
 			$data['hour'] = $hour;
 			$data['min'] = $min;
 			$time = $hour . ":" . $min;
-
             $appointment_dt = date("Y-m-d", gmmktime(0, 0, 0, $month, $day, $year));
-
             $data['appointment_date'] = $appointment_dt;
 			$data['appointment_time'] = $time;
 			$data['appointment_id']=0;

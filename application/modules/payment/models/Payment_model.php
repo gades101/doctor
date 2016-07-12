@@ -36,7 +36,6 @@ class Payment_model extends CI_Model {
 		$data['pay_mode'] = 'cash';
 		$data['userid'] = $this->input->post('doctor_id');
 		$data['apps_remaining']=($treatment['count']=="") ? 0 : $treatment['count']-1;
-		file_put_contents('t1.txt',print_r($data,true));
 		$this->db->insert('payment', $data);
 		$_POST['payment_id']=$this->db->insert_id();
     }
@@ -44,7 +43,6 @@ class Payment_model extends CI_Model {
 	function get_paid_amount($bill_id){
 		$this->db->select_sum('pay_amount', 'pay_total');
         $query = $this->db->get_where('payment', array('bill_id' => $bill_id));
-		
         $row = $query->row();
         return $row->pay_total;
 	}

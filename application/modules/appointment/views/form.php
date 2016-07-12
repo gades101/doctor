@@ -536,7 +536,7 @@ function openReason(onof) {
 							</div>
 							<div class="col-md-3">
 								<label for="pay_amount">Загальна сума (грн.)</label>
-								<input type="text" name="pay_amount" id="pay_amount" value="<?= $pay_amount; ?>" disabled=true class="form-control"/>
+								<input type="text" name="pay_amount" id="pay_amount" value="<?= $pay_amount; ?>" readonly="readonly" class="form-control"/>
 								<?php echo form_error('pay_amount','<div class="alert alert-danger">','</div>'); ?>
 							</div>
 					</div>
