@@ -31,6 +31,7 @@
 	
 <?php } ?>
 $(window).load(function(){
+	var price;
 	function loadPayments(patient_id){
 		if(patient_id){
 			$.ajax({
@@ -57,7 +58,6 @@ $(window).load(function(){
 					$('#payment_id').val(0).prop('disabled',true);
 					$('#treatment').prop('disabled',false);
 					$('#pay_block').show();
-
 				}
 				else{
 					pay.prop('checked',false);
@@ -164,7 +164,7 @@ $(window).load(function(){
 		var searchtreatment=[<?php $i = 0;
 		foreach ($treatments as $treatment) {
 			if ($i > 0) { echo ",";}
-			echo '{value:"' . $treatment['treatment'] . '",id:"' . $treatment['id'] . '"}';
+			echo '{value:"' . $treatment['treatment'] . '",id:"' . $treatment['id'] . '",price:"' . $treatment['price'] . '"}';
 			$i++;
 		}
 		?>];
@@ -177,6 +177,10 @@ $(window).load(function(){
 				//do something
 				$("#treatment_id").val(ui.item ? ui.item.id : '');
 				$("#treatment").val(ui.item ? ui.item.treatment : '');
+				var amount=ui.item ? ui.item.price*((100-$("#discount").val())/100) : '';
+				$("#pay_amount").val(amount);
+				$("#paid").val(amount);
+				price=ui.item ? ui.item.price : '';
 
 			},
 			change: function(event, ui) {
@@ -197,7 +201,7 @@ $(window).load(function(){
 		var searcharrpatient=[<?php $i = 0;
 		foreach ($patients as $patient) {
 			if ($i > 0) { echo ",";}
-			echo '{value:"' . $patient['first_name'] . " " . $patient['middle_name'] . " " . $patient['last_name'] . '",id:"' . $patient['patient_id'] . '",display:"' . $patient['display_id'] . '",num:"' . $patient['phone_number'] . '"}';
+			echo '{value:"' . $patient['first_name'] . " " . $patient['middle_name'] . " " . $patient['last_name'] . '",id:"' . $patient['patient_id'] . '",display:"' . $patient['display_id'] . '",num:"' . $patient['phone_number'] . '",discount:"' . $patient['discount'] .'"}';
 			$i++;
 		}
 		?>];
@@ -212,6 +216,10 @@ $(window).load(function(){
 				$("#patient_id").val(ui.item ? ui.item.id : '');
 				$("#phone_number").val(ui.item ? ui.item.num : '');
 				$("#display_id").val(ui.item ? ui.item.display : '');
+				$("#discount").val(ui.item ? ui.item.discount : '');
+				var amount=price ? price*((100-ui.item.discount)/100) : '';
+				$("#pay_amount").val(amount);
+				$("#paid").val(amount);
 				loadPayments(ui.item.id);
 
 			},
@@ -375,6 +383,7 @@ function openReason(onof) {
 		$app_note=$appointment['app_note'];
 		$curr_treatment_name=$curr_treatment['treatment'];
 		$curr_payment_id=$appointment['payment_id'];
+		$pay_amount=$curr_treatment['price']*(100 - $curr_patient['discount'])/100;
 		if($status=='Cancel'){$appointment_details=$appointment['appointment_details'];}
 		else {$appointment_details="";}
 	}else{
@@ -388,6 +397,7 @@ function openReason(onof) {
 		$app_note="";
 		$curr_treatment_name="";
 		$appointment_date = $appointment_date;
+		$pay_amount="";
 		$status = "Appointments";
 		$curr_payment_id=0;
 	}
@@ -484,7 +494,7 @@ function openReason(onof) {
 						</div>
 					</div>
 
-					<div class="col-md-3">
+					<div class="col-md-12">
 						<div class="form-group">
 							<label for="treatment">Процедура</label>
 							<input type="text" name="treatment" value="<?=$curr_treatment_name;?>" <?php if($curr_payment_id!=0) echo "disabled=true"; ?> id="treatment" class="form-control "/>
@@ -521,13 +531,13 @@ function openReason(onof) {
 							</div>
 							<div class="col-md-3">
 								<label for="paid">Сплачено (грн.)</label>
-								<input type="text" name="paid" id="paid" value="" class="form-control"/>
+								<input type="text" name="paid" id="paid" value="<?= $pay_amount; ?>" class="form-control"/>
 								<?php echo form_error('paid','<div class="alert alert-danger">','</div>'); ?>
 							</div>
 							<div class="col-md-3">
-								<label for="amount">Загальна сума (грн.)</label>
-								<input type="text" name="amount" id="amount" value="" disabled=true class="form-control"/>
-								<?php echo form_error('amount','<div class="alert alert-danger">','</div>'); ?>
+								<label for="pay_amount">Загальна сума (грн.)</label>
+								<input type="text" name="pay_amount" id="pay_amount" value="<?= $pay_amount; ?>" disabled=true class="form-control"/>
+								<?php echo form_error('pay_amount','<div class="alert alert-danger">','</div>'); ?>
 							</div>
 					</div>
 					

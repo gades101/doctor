@@ -29,11 +29,14 @@ class Payment_model extends CI_Model {
 		$data = array();
 		$data['patient_id'] = $this->input->post('patient_id');
 		$data['treatment_id'] = $treatment['id'];
-		$data['pay_amount'] = ($this->input->post('discount')) ? ($treatment['price']*(100-$this->input->post('discount'))/100) : $treatment['price'];
+		$data['paid'] = $this->input->post('paid');	
+		$data['pay_amount'] = $this->input->post('pay_amount');		
+		//$data['pay_amount'] = ($this->input->post('discount')) ? ($treatment['price']*(100-$this->input->post('discount'))/100) : $treatment['price'];
 		$data['pay_date'] = date('Y-m-d');
 		$data['pay_mode'] = 'cash';
 		$data['userid'] = $this->input->post('doctor_id');
-		$data['apps_remaining']=($treatment['count']=="") ? 0 : $treatment['count']-1;	
+		$data['apps_remaining']=($treatment['count']=="") ? 0 : $treatment['count']-1;
+		file_put_contents('t1.txt',print_r($data,true));
 		$this->db->insert('payment', $data);
 		$_POST['payment_id']=$this->db->insert_id();
     }
