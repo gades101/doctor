@@ -22,6 +22,9 @@ class Payment_model extends CI_Model {
 		$data['userid'] = $this->input->post('userid');
 		$data['apps_remaining']=($this->input->post('apps_remaining')=="") ? 1 : $this->input->post('apps_remaining');
 		$data['notes'] = $this->input->post('notes');
+		$this->db->set('all_paid','all_paid+'.$data['pay_amount'],false);
+		$this->db->where('patient_id', $data['patient_id']);
+		$this->db->update('patient');		
 		$this->db->insert('payment', $data);
     }
 
