@@ -22,9 +22,10 @@ class Payment_model extends CI_Model {
 		$data['userid'] = $this->input->post('userid');
 		$data['apps_remaining']=($this->input->post('apps_remaining')=="") ? 1 : $this->input->post('apps_remaining');
 		$data['notes'] = $this->input->post('notes');
-		$this->db->set('all_paid','all_paid+'.$data['pay_amount'],false);
+		$this->db->set('all_paid','all_paid + '.$data['paid'],false);
 		$this->db->where('patient_id', $data['patient_id']);
-		$this->db->update('patient');		
+		$this->db->update('patient');
+		//file_put_contents('t1.txt',print_r($this->db->last_query(),true));
 		$this->db->insert('payment', $data);
     }
 
@@ -43,12 +44,6 @@ class Payment_model extends CI_Model {
 		$_POST['payment_id']=$this->db->insert_id();
     }
 	
-	function get_paid_amount($bill_id){
-		$this->db->select_sum('pay_amount', 'pay_total');
-        $query = $this->db->get_where('payment', array('bill_id' => $bill_id));
-        $row = $query->row();
-        return $row->pay_total;
-	}
 	function get_payment($payment_id){
 		$query = $this->db->get_where('payment', array('payment_id' => $payment_id));
         return $query->row();
@@ -67,6 +62,10 @@ class Payment_model extends CI_Model {
 		return $query->result_array();
 	}
 	function edit_payment($payment_id){
+		$this->db->select('paid');
+		$old_paid=$this->db->get_where('payment',array('payment_id'=>$payment_id));
+		$old_paid=$old_paid->row();
+		$old_paid=$old_paid->paid;
 		$data['patient_id'] = $this->input->post('patient_id');
 		$data['treatment_id'] = $this->input->post('treatment_id');
 		$data['pay_amount'] = $this->input->post('pay_amount');
@@ -76,6 +75,12 @@ class Payment_model extends CI_Model {
 		$data['notes'] = $this->input->post('notes');
 		$this->db->where('payment_id', $payment_id);
 		$this->db->update('payment', $data);
+		if($old_paid!=$data['paid']){
+			$this->db->set('all_paid','all_paid+'.($data['paid']-$old_paid),false);
+			$this->db->where('patient_id', $data['patient_id']);
+			$this->db->update('patient');
+		}
+
 	}
 	function edit_payment_count($payment_id,$payment_id_orig){
 		if($payment_id!=$payment_id_orig){
