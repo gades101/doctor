@@ -160,7 +160,6 @@ $(window).load(function(){
 
 <?php } ?>
 //END UPLOAD
-
 		var searchtreatment=[<?php $i = 0;
 		foreach ($treatments as $treatment) {
 			if ($i > 0) { echo ",";}
@@ -198,10 +197,36 @@ $(window).load(function(){
 			}
 		});
 
+		var discounts=[<?php $i = 0;
+		foreach ($discounts as $discount) {
+			if ($i > 0) { echo ",";}
+			echo '{amount:"' . $discount['amount'] . '",percent:"' . $discount['percent'] . '"}';
+			$i++;
+		}
+		?>];		
+		
+		var calc_discount= function(user_disc, user_amount){
+			var curr_disc=user_disc;
+			discounts.every(function(discount){
+			console.log(discount);
+				if(+discount.percent>+user_disc){
+					console.log(user_amount);
+
+					if(+discount.amount<=+user_amount){
+						curr_disc=discount.percent;
+						return false;
+					}
+					return true;
+				}
+				else return false;
+			});
+			return curr_disc;
+		}
+		
 		var searcharrpatient=[<?php $i = 0;
 		foreach ($patients as $patient) {
 			if ($i > 0) { echo ",";}
-			echo '{value:"' . $patient['first_name'] . " " . $patient['middle_name'] . " " . $patient['last_name'] . '",id:"' . $patient['patient_id'] . '",display:"' . $patient['display_id'] . '",num:"' . $patient['phone_number'] . '",discount:"' . $patient['discount'] .'"}';
+			echo '{value:"' . $patient['first_name'] . " " . $patient['middle_name'] . " " . $patient['last_name'] . '",id:"' . $patient['patient_id'] . '",display:"' . $patient['display_id'] . '",num:"' . $patient['phone_number'] . '",discount:"' . $patient['discount'] . '",all_paid:"' . $patient['all_paid'] .'"}';
 			$i++;
 		}
 		?>];
@@ -216,7 +241,7 @@ $(window).load(function(){
 				$("#patient_id").val(ui.item ? ui.item.id : '');
 				$("#phone_number").val(ui.item ? ui.item.num : '');
 				$("#display_id").val(ui.item ? ui.item.display : '');
-				$("#discount").val(ui.item ? ui.item.discount : '');
+				$("#discount").val(calc_discount(ui.item.discount,ui.item.all_paid));
 				var amount=price ? price*((100-ui.item.discount)/100) : '';
 				$("#pay_amount").val(amount);
 				$("#paid").val(amount);

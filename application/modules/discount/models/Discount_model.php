@@ -7,6 +7,7 @@ class Discount_model extends CI_Model {
     }
 
     public function get_discounts(){
+		$this->db->order_by('amount','desc');
         $result = $this->db->get('discount');
         return $result->result_array();
     }

@@ -13,6 +13,7 @@ class Appointment extends CI_Controller {
 		$this->load->model('menu_model');
 		$this->load->model('treatment/treatment_model');
 		$this->load->model('event/event_model');
+		$this->load->model('discount/discount_model');
         $this->load->helper('url');
         $this->load->helper('form');
 		$this->load->helper('currency_helper');
@@ -202,6 +203,7 @@ class Appointment extends CI_Controller {
 				$data['time_interval'] = $this->settings_model->get_time_interval();
 				$data['patients'] = $this->patient_model->get_patient();
 				$data['treatments']=$this->treatment_model->get_treatments();
+				$data['discounts'] = $this->discount_model->get_discounts();
 				$data['def_dateformate'] = $this->settings_model->get_date_formate();
 				$data['def_timeformate'] = $this->settings_model->get_time_formate();
 				if ($patient_id) {
@@ -265,6 +267,7 @@ class Appointment extends CI_Controller {
 				$patient_id = $appointment['patient_id'];
 				$data['curr_patient']=$this->patient_model->get_patient_detail($patient_id);
 				$data['patients']=$this->patient_model->get_patient();
+				$data['discounts'] = $this->discount_model->get_discounts();
 				$doctor_id = $appointment['userid'];
 				$data['doctors'] = $this->admin_model->get_doctor();
 				$data['selected_doctor_id'] = $doctor_id;
