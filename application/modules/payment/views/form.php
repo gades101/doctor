@@ -33,10 +33,33 @@
 			price=<?= $curr_treatment['price']; ?>;
 		<?php } ?>
 		<?php if (isset($patients)) { ?>
+
+			var discounts=[<?php $i = 0;
+			foreach ($discounts as $d) {
+				if ($i > 0) { echo ",";}
+				echo '{amount:"' . $d['amount'] . '",percent:"' . $d['percent'] . '"}';
+				$i++;
+			}
+			?>];		
+			var calc_discount= function(user_disc, user_amount){
+				var curr_disc=user_disc;
+				discounts.every(function(item){
+					if(+item.percent>+user_disc){
+						if(+item.amount<=+user_amount){
+							curr_disc=item.percent;
+							return false;
+						}
+						return true;
+					}
+					else return false;
+				});
+				return curr_disc;
+			}
+
 			var searcharrpatient=[<?php $i = 0;
 			foreach ($patients as $p) {
 				if ($i > 0) { echo ",";}
-				echo '{value:"' . $p['first_name'] . " " . $p['middle_name'] . " " . $p['last_name'] . '",id:"' . $p['patient_id'] . '",discount:"' . $p['discount'] . '"}';
+				echo '{value:"' . $p['first_name'] . " " . $p['middle_name'] . " " . $p['last_name'] . '",id:"' . $p['patient_id'] . '",discount:"' . $p['discount'] . '",all_paid:"' . $p['all_paid'] .'"}';
 				$i++;
 			}?>];
 			$("#patient_name").autocomplete({
@@ -46,7 +69,7 @@
 
 				select: function(event,ui){
 					//do something
-					$("#discount").val(ui.item ? ui.item.discount : '');
+					$("#discount").val(calc_discount(ui.item.discount,ui.item.all_paid));
 					$("#patient_id").val(ui.item ? ui.item.id : '');
 					var this_patient_id = ui.item.id, amount=price ? price*((100-ui.item.discount)/100) : '';
 					$("#pay_amount").val(amount);
@@ -74,6 +97,7 @@
 			$i++;
 		}
 		?>];
+
 		$("#treatment").autocomplete({
 			autoFocus: true,
 			source: searchtreatment,
@@ -179,7 +203,7 @@
 			<div class="col-md-2">
 				<div class="form-group">
 					<label for="title">Знижка %</label>
-					<input type="text"  name="discount" id="discount" class="form-control" value="<?= $discount ?>" />
+					<input type="text"  name="discount" id="discount" class="form-control" value="<?= $discount; ?>" />
 				</div>
 			</div>
 			<div class="col-md-12">
@@ -211,6 +235,15 @@
 					</select>
 				</div>
 			</div>
+
+			<div class="col-md-12">
+				<div class="form-group">
+					<label for="new_payment">
+						 Закрити платіж досроково
+						 <input type="checkbox" name="close_payment" id="close_payment" class=""/>
+					</label>
+				</div>
+			</div>			
 			<div class="col-md-12">
 				<div class="form-group">
 					<label for="title">Примітки</label>
@@ -223,7 +256,8 @@
 					<input class="btn btn-primary" type="submit" value="<?php echo $this->lang->line('add');?>" name="submit" />
 					<?php }else{ ?>
 					<input class="btn btn-primary" type="submit" value="<?php echo $this->lang->line('edit');?>" name="submit" />
-					<a class="btn btn-danger" href="<?=base_url() . "index.php/payment/del/" . $payment->payment_id;?>">Видалити</a>					<?php } ?>
+					<a class="btn btn-danger" href="<?=base_url() . "index.php/payment/del/" . $payment->payment_id;?>">Видалити</a> 
+					<?php } ?>
 				</div>
 			</div>
 			<?php

@@ -8,6 +8,7 @@ class Payment extends CI_Controller {
 		$this->load->model('patient/patient_model');
 		$this->load->model('admin/admin_model');
 		$this->load->model('treatment/treatment_model');
+		$this->load->model('discount/discount_model');
 		$this->load->model('settings/settings_model');
 		$this->load->model('menu_model');
 
@@ -62,6 +63,7 @@ class Payment extends CI_Controller {
 				else $data['patients'] = $this->patient_model->get_patient();
 				$data['currency_postfix'] = $this->settings_model->get_currency_postfix();
 				$data['doctors'] = $this->admin_model->get_doctor();
+				$data['discounts'] = $this->discount_model->get_discounts();
 				$data['selected_doctor_id'] = NULL;
 				$data['def_dateformate'] = $this->settings_model->get_date_formate();
 				$this->load->view('templates/header');
@@ -135,6 +137,17 @@ class Payment extends CI_Controller {
 		$data=$this->payment_model->get_curr_payments($patient_id);
 		echo json_encode($data);
 		//else return json_encode($data);
+	}
+
+	public function close_payment($payment_id){
+        session_start();
+		//Check if user has logged in
+		if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
+            redirect('login/index/');
+        } else {
+            $this->payment_model->close_payment($payment_id);
+            $this->index();
+        }		
 	}
 }
 ?>

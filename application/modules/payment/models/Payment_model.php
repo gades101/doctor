@@ -22,11 +22,11 @@ class Payment_model extends CI_Model {
 		$data['userid'] = $this->input->post('userid');
 		$data['apps_remaining']=($this->input->post('apps_remaining')=="") ? 1 : $this->input->post('apps_remaining');
 		$data['notes'] = $this->input->post('notes');
+		$this->db->insert('payment', $data);
 		$this->db->set('all_paid','all_paid + '.$data['paid'],false);
 		$this->db->where('patient_id', $data['patient_id']);
 		$this->db->update('patient');
 		//file_put_contents('t1.txt',print_r($this->db->last_query(),true));
-		$this->db->insert('payment', $data);
     }
 
 	function new_payment_from_app($treatment) {
@@ -42,6 +42,9 @@ class Payment_model extends CI_Model {
 		$data['apps_remaining']=($treatment['count']=="") ? 0 : $treatment['count']-1;
 		$this->db->insert('payment', $data);
 		$_POST['payment_id']=$this->db->insert_id();
+		$this->db->set('all_paid','all_paid + '.$data['paid'],false);
+		$this->db->where('patient_id', $data['patient_id']);
+		$this->db->update('patient');
     }
 	
 	function get_payment($payment_id){
@@ -51,7 +54,7 @@ class Payment_model extends CI_Model {
 
 	function get_curr_payments($patient_id,$payment_id=0){
 		//$query = $this->db->get_where('payment', array('patient_id' => $patient_id, 'count > 0'));
-		$this->db->select("p.payment_id, p.patient_id, p.treatment_id, p.pay_date, p.pay_amount, p.apps_remaining, c.first_name, c.middle_name, t.treatment",FALSE);
+		$this->db->select("p.payment_id, p.patient_id, p.treatment_id, p.pay_date, p.pay_amount, p.paid, p.apps_remaining, c.first_name, c.middle_name, t.treatment",FALSE);
 		$this->db->from('ck_payment p');
 		$this->db->join('ck_treatments t', 'p.treatment_id = t.id', 'left');
 		$this->db->join('ck_doctor d', 'p.userid = d.userid', 'left');

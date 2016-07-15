@@ -249,6 +249,7 @@ $(window).load(function(){
 				var link="<?=base_url();?>"+"index.php/payment/edit/"+item.payment_id;
 				var row=$('<tr></tr>').append($('<td></td>').text(i))
 				.append($('<td></td>').text(item.pay_date))
+				.append($('<td></td>').text(item.paid))
 				.append($('<td></td>').text(item.pay_amount))
 				.append($('<td></td>').text(item.treatment))
 				.append($('<td></td>').text(item.first_name+" "+item.middle_name))
@@ -340,6 +341,7 @@ function goToApp(link){
 						<span class="tblHead btn-danger" onclick=displayPage(1) style="min-width:20%"/>Особисті дані пацієнта</span>
 						<span class="tblHead btn-danger" onclick=displayPage(2) />Прийоми</span>
 						<span class="tblHead btn-danger" onclick=displayPage(3) />Оплати</span>
+						<span style="float:right" >Всього оплачено: <?= $patient['all_paid']; ?> грн.</span>
 					<?php } else { ?>
 						<span class="" style="min-width:20%"/>Особисті дані пацієнта</span>					
 					<?php } ?>				
@@ -513,6 +515,7 @@ function goToApp(link){
 								<th class='appTime'>№</th>
 								<th class='' >Дата оплати</th>
 								<th class=''>Сума оплати</th>
+								<th class=''>Вартість процедури</th>
 								<th class=''>Процедура</th>
 								<th class=''>Терапевт</th>
 								<th class=''>Непризначених зайнять </th>
