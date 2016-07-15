@@ -83,7 +83,6 @@ class Payment_model extends CI_Model {
 			$this->db->where('patient_id', $data['patient_id']);
 			$this->db->update('patient');
 		}
-
 	}
 	function edit_payment_count($payment_id,$payment_id_orig){
 		if($payment_id!=$payment_id_orig){

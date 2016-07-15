@@ -235,7 +235,7 @@
 					</select>
 				</div>
 			</div>
-
+			<?php  if(!isset($payment)){ ?>
 			<div class="col-md-12">
 				<div class="form-group">
 					<label for="new_payment">
@@ -243,7 +243,8 @@
 						 <input type="checkbox" name="close_payment" id="close_payment" class=""/>
 					</label>
 				</div>
-			</div>			
+			</div>	
+			<?php } ?>		
 			<div class="col-md-12">
 				<div class="form-group">
 					<label for="title">Примітки</label>
