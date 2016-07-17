@@ -5,7 +5,7 @@ $( window ).load(function() {
 			return confirm("Ви впевнені");
 		});
 		
-    $('#treatments').dataTable();	
+    $('#discounts').dataTable();	
 	
 } )
 </script>
@@ -40,7 +40,7 @@ $( window ).load(function() {
 				</div>
 				<div class="panel-body">
 					<?php if ($discounts) { ?>
-						<table class="table table-striped table-bordered table-hover dataTable no-footer" id="treatments" >
+						<table class="table table-striped table-bordered table-hover dataTable no-footer" id="discounts" >
 						<thead>
 							<tr>
 								<th>Сума</th>

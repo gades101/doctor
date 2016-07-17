@@ -150,10 +150,29 @@
 				if(price){
 					value=(100-tval)/100;
 					$('#pay_amount').val((price*value).toFixed(2));
+					$('#paid').val((price*value).toFixed(2));
 				}
 			}
-			else $('#discount').val("");
-		})
+			else {$('#discount').val("");
+				$('#pay_amount').val(price.toFixed(2));
+				$('#paid').val(price.toFixed(2));
+			}
+		});
+		<?php if(isset($payment)) { ?>
+			$("#close_payment").click(function() {
+				var pay=$('#close_payment'),apps_remaining="<?= $payment->apps_remaining; ?>",pay_amount="<?= $payment->pay_amount; ?>";
+				if (pay.prop('checked')==true){
+					$('#apps_remaining').val('0');
+					$('#pay_amount').val($('#paid').val());
+					$('#treatment').prop('readonly',true);
+				}
+				else {
+					$('#apps_remaining').val(apps_remaining);
+					$('#pay_amount').val(pay_amount);
+					$('#treatment').prop('readonly',false);
+				}
+			});		
+		<?php } ?>
 	});
 </script>
 <div id="page-inner">
@@ -172,7 +191,6 @@
 
 			<input type="hidden" name="payment_type" value="bill_payment" />
 			<input type="hidden" name="treatment_id" id="treatment_id" value="<?php if(isset($curr_treatment)){echo $curr_treatment['id']; } ?>"/>
-			<input type="hidden" name="apps_remaining" id="apps_remaining" value="<?php if(isset($curr_treatment)){echo $curr_treatment['count']; } ?>"/>
 
 
 			<div class="col-md-12">
@@ -202,10 +220,18 @@
 			</div>
 			<div class="col-md-2">
 				<div class="form-group">
-					<label for="title">Знижка %</label>
+					<label for="discount">Знижка %</label>
 					<input type="text"  name="discount" id="discount" class="form-control" value="<?= $discount; ?>" />
 				</div>
 			</div>
+			<?php if(isset($payment)){?>
+			<div class="col-md-2">
+				<div class="form-group">
+					<label for="apps_remaining">Залишилось зайнять</label>
+					<input type="text"  name="apps_remaining" id="apps_remaining" readonly=true class="form-control" value="<?= $payment->apps_remaining; ?>" />
+				</div>
+			</div>
+			<?php } ?>
 			<div class="col-md-12">
 				<div class="form-group">
 					<label for="title"><?php echo $this->lang->line('payment_date');?></label>
@@ -235,7 +261,7 @@
 					</select>
 				</div>
 			</div>
-			<?php  if(!isset($payment)){ ?>
+			<?php  if(isset($payment)){ ?>
 			<div class="col-md-12">
 				<div class="form-group">
 					<label for="new_payment">

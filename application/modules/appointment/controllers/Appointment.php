@@ -196,6 +196,8 @@ class Appointment extends CI_Controller {
 			$this->form_validation->set_rules('start_time', 'Start Time', 'required');
 			$this->form_validation->set_rules('end_time', 'End Time', 'required');
 			$this->form_validation->set_rules('appointment_date', 'Date', 'required');
+            $this->form_validation->set_rules('paid', 'Сплачено', 'trim|numeric');
+
 
 			if ($this->form_validation->run() === FALSE){
 				$data['clinic_start_time'] = $this->settings_model->get_clinic_start_time();
@@ -253,6 +255,8 @@ class Appointment extends CI_Controller {
 			$this->form_validation->set_rules('start_time', 'Start Time', 'required');
 			$this->form_validation->set_rules('end_time', 'End Time', 'required');
 			$this->form_validation->set_rules('appointment_date', 'Date', 'required');
+            $this->form_validation->set_rules('paid', 'Сплачено', 'trim|numeric');
+
 			$dep=$_SESSION['dep'];
 			if ($this->form_validation->run() === FALSE){
 				if(isset($_SESSION['saved'])) {
@@ -331,6 +335,7 @@ class Appointment extends CI_Controller {
 		{
             $this->form_validation->set_rules('first_name', 'First Name', 'required');
             $this->form_validation->set_rules('last_name', 'Last Name', 'required');
+
 
             if ($this->form_validation->run() === FALSE) {
 				$this->load->view('templates/header');

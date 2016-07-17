@@ -99,7 +99,8 @@ class Payment extends CI_Controller {
 
 			if ($this->form_validation->run() === FALSE) {
 				$data['patients'] = $this->patient_model->get_patient();
-				$data['treatments'] = $this->treatment_model->get_treatments();				
+				$data['treatments'] = $this->treatment_model->get_treatments();		
+				$data['discounts'] = $this->discount_model->get_discounts();				
 				$payment = $this->payment_model->get_payment($payment_id);
 				$data['payment'] = $payment;
 				$data['payment_id'] = $payment->payment_id;

@@ -63,8 +63,8 @@ class Discount extends CI_Controller {
         if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
             redirect('login/index');
         } else {
-			$this->form_validation->set_rules('amount', 'Сума', 'trim|required|xss_clean');
-            $this->form_validation->set_rules('percent', 'Відсоток', 'trim|required|xss_clean');
+			$this->form_validation->set_rules('amount', 'Сума', 'trim|required|numeric');
+            $this->form_validation->set_rules('percent', 'Відсоток', 'trim|required|numeric');
 			$data['currency_postfix'] = $this->settings_model->get_currency_postfix();
 			if ($this->form_validation->run() === FALSE) {
 				$data['discount'] = $this->discount_model->get_edit_discount($amount,$percent);

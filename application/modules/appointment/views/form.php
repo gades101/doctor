@@ -373,7 +373,21 @@ $(window).load(function(){
 				$('#treatment_id').val("");
 				$('#treatment').val("").prop('disabled',false);
 			}
-		});	
+		});
+		$('#discount').on('input', function(){
+			var tval=$(this).val(),re=new RegExp("^[0-9]{0,2}$");
+			if (re.test(tval)){
+				if(price){
+					value=(100-tval)/100;
+					$('#pay_amount').val((price*value).toFixed(2));
+					$('#paid').val((price*value).toFixed(2));
+				}
+			}
+			else {$('#discount').val("");
+				$('#pay_amount').val(price.toFixed(2));
+				$('#paid').val(price.toFixed(2));
+			}
+		});
 });
 
 function openReason(onof) {
@@ -552,7 +566,7 @@ function openReason(onof) {
 					<div id="pay_block" class="panel-body" style="display:none">
 							<div class="col-md-3">
 								<label for="discount">Знижка %</label>
-								<input type="text" name="discount" id="discount" disabled=true value="<?php if(isset($curr_patient)){echo $curr_patient['discount']; } ?>" class="form-control"/>
+								<input type="text" name="discount" id="discount" value="<?php if(isset($curr_patient)){echo $curr_patient['discount']; } ?>" class="form-control"/>
 							</div>
 							<div class="col-md-3">
 								<label for="paid">Сплачено (грн.)</label>

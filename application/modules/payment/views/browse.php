@@ -1,5 +1,16 @@
-<?//php phpinfo();
-?>
+<script type="text/javascript" charset="utf-8">
+
+$( window ).load(function() {
+	$('.confirmDelete').click(function(){
+			return confirm("Ви впевнені");
+		});
+		
+    $('#payments').dataTable({
+		"pageLength": 50
+	});	
+	
+} )
+</script>
 <div id="page-inner">
 	<div class="row">
 		<div class="col-md-12">
@@ -16,7 +27,7 @@
 					</a>
 					<p></p>
 					<div class="table-responsive">
-						<table class="table table-striped table-bordered table-hover" id="patient_table">
+						<table class="table table-striped table-bordered table-hover" id="payments">
 							<thead>
 								<tr>
 									<th><?php echo $this->lang->line("id");?></th>
@@ -25,6 +36,7 @@
 									<th><?php echo $this->lang->line("doctor");?></th>
 									<th>Сплачено (грн.)</th>
 									<th>Загальна сума (грн.)</th>
+									<th>Залишилось зайнять</th>
 									<th><?php echo $this->lang->line("payment_mode");?></th>
 									<th><?php echo $this->lang->line("edit");?></th>
 								</tr>
@@ -45,6 +57,7 @@
 										<td><?php echo $payment['username']; ?></td>
 										<td><?php echo $payment['paid']; ?></td>
 										<td><?php echo $payment['pay_amount']; ?></td>
+										<td><?php echo $payment['apps_remaining']; ?></td>
 										<td><?php if($payment['pay_mode'] == "cheque") {echo "Безготівковий розрах.";} else echo "Готівка"?></td>
 										<td><a href="<?= site_url('payment/edit/'.$payment['payment_id']);?>" class="btn btn-sm btn-primary square-btn-adjust"><?php echo $this->lang->line("edit");?></a></td>
 									</tr>

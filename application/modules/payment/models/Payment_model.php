@@ -76,6 +76,7 @@ class Payment_model extends CI_Model {
 		$data['pay_mode'] = $this->input->post('pay_mode');
 		$data['pay_date'] = $this->input->post('pay_date');
 		$data['notes'] = $this->input->post('notes');
+		$data['apps_remaining']=$this->input->post('apps_remaining');
 		$this->db->where('payment_id', $payment_id);
 		$this->db->update('payment', $data);
 		if($old_paid!=$data['paid']){
