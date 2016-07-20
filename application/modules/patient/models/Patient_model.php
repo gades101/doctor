@@ -28,7 +28,7 @@ class Patient_model extends CI_Model {
         $data['reference_by'] = $this->input->post('reference_by');
 		$data['gender'] = $this->input->post('gender');
 		$data['diagnosis']= $this->input->post('diagnosis');
-		$data['diagnosis']= $this->input->post('discount');
+		$data['discount']= $this->input->post('discount');
 
 		if($this->input->post('dob')){
 			$data['dob'] = date('Y-m-d',strtotime($this->input->post('dob')));
