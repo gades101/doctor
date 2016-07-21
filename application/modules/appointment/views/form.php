@@ -367,11 +367,11 @@ $(window).load(function(){
 			if(this.value!=0){
 				var opt=this.children[this.selectedIndex];
 				$('#treatment_id').val(opt.dataset.treatment);
-				$('#treatment').val(opt.textContent).prop('disabled',true);
+				$('#treatment').val(opt.textContent).prop('readonly',true);
 			}
 			else{
 				$('#treatment_id').val("");
-				$('#treatment').val("").prop('disabled',false);
+				$('#treatment').val("").prop('readonly',false);
 			}
 		});
 		$('#discount').on('input', function(){
@@ -536,7 +536,7 @@ function openReason(onof) {
 					<div class="col-md-12">
 						<div class="form-group">
 							<label for="treatment">Процедура</label>
-							<input type="text" name="treatment" value="<?=$curr_treatment_name;?>" <?php if($curr_payment_id!=0) echo "disabled=true"; ?> id="treatment" class="form-control "/>
+							<input type="text" name="treatment" value="<?=$curr_treatment_name;?>" <?php if($curr_payment_id!=0) echo "readonly=true"; ?> id="treatment" class="form-control "/>
 							<?php echo form_error('treatment','<div class="alert alert-danger">','</div>'); ?>
 						</div>
 					</div>
