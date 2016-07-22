@@ -1,4 +1,4 @@
-<!--display on Click of Appointment page  -->
+<!--  display on Click of Appointment page  -->
 <script src="<?= base_url() ?>assets/js/fliplightbox.min.js"></script>
 <script type="text/javascript">
 <?php if (isset($appointment)){ ?>
