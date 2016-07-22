@@ -367,7 +367,7 @@ $(window).load(function(){
 			if(this.value!=0){
 				var opt=this.children[this.selectedIndex];
 				$('#treatment_id').val(opt.dataset.treatment);
-				$('#treatment').val(opt.textContent).prop('disabled',true);
+				$('#treatment').val(opt.textContent).prop('readonly',true);
 			}
 			else{
 				$('#treatment_id').val("");
@@ -536,7 +536,11 @@ function openReason(onof) {
 					<div class="col-md-12">
 						<div class="form-group">
 							<label for="treatment">Процедура</label>
+<<<<<<< HEAD
 							<input type="text" name="treatment" id="treatment" class="form-control" value="<?=$curr_treatment_name;?>" <?php if($curr_payment_id!=0) echo "readonly=true"; ?> />
+=======
+							<input type="text" name="treatment" value="<?=$curr_treatment_name;?>" <?php if($curr_payment_id!=0) echo "readonly=true"; ?> id="treatment" class="form-control "/>
+>>>>>>> 16c55ecdb1e5117a864869969e1549da50335cda
 							<?php echo form_error('treatment','<div class="alert alert-danger">','</div>'); ?>
 						</div>
 					</div>
