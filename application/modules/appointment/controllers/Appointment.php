@@ -250,7 +250,7 @@ class Appointment extends CI_Controller {
             redirect('login/index');
         } else {
 			$this->form_validation->set_rules('patient_id', 'Пацієнт', 'required');
-			$this->form_validation->set_rules('treatment', 'Процедура', 'required');
+			//$this->form_validation->set_rules('treatment', 'Процедура', 'required');
 			$this->form_validation->set_rules('doctor_id', 'Doctor Name', 'required');
 			$this->form_validation->set_rules('start_time', 'Start Time', 'required');
 			$this->form_validation->set_rules('end_time', 'End Time', 'required');
