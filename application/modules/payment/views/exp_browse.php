@@ -6,9 +6,7 @@ $( window ).load(function() {
 		});
 		
     $('#payments').dataTable({
-		"pageLength": 50,
-		//"ordering":  false
-		"order":  []
+		"pageLength": 50
 	});	
 	
 } )

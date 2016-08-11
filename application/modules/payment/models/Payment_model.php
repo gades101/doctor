@@ -7,7 +7,7 @@ class Payment_model extends CI_Model {
     }
 
     public function list_payments() {
-        $this->db->order_by("pay_date");
+        $this->db->order_by("payment_id","desc");
         $query = $this->db->get('view_payment');
         return $query->result_array();
     }
