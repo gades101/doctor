@@ -47,6 +47,50 @@ class Payment extends CI_Controller {
 			$this->load->view('templates/footer');
         }
     }
+    public function expense() {
+
+		if ( $this->is_session_started() === FALSE ){
+			session_start();
+		}
+		//Check if user has logged in
+		if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
+			redirect('login/index');
+        } else {
+            $this->form_validation->set_rules('expense_date', 'expense_date', 'trim|required');
+ 	  		$data['def_dateformate'] = $this->settings_model->get_date_formate();
+            if ($this->form_validation->run() === FALSE) {
+				$data['expenses'] = $this->payment_model->list_expenses();
+				$this->load->view('templates/header');
+				$this->load->view('templates/menu');
+				$this->load->view('exp_browse',$data);
+				$this->load->view('templates/footer');
+			} else {
+				$this->payment_model->insert_expense();
+				$data['expenses'] = $this->payment_model->list_expenses();
+				$this->load->view('templates/header');
+				$this->load->view('templates/menu');
+				$this->load->view('exp_browse',$data);
+				$this->load->view('templates/footer');
+			}
+        }
+    }
+    public function expense_categories() {
+
+		if ( $this->is_session_started() === FALSE ){
+			session_start();
+		}
+		//Check if user has logged in
+		if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
+			redirect('login/index');
+        } else {
+			$data['payments'] = $this->payment_model->list_payments();
+			$data['currency_postfix'] = $this->settings_model->get_currency_postfix();
+			$this->load->view('templates/header');
+			$this->load->view('templates/menu');
+			$this->load->view('browse',$data);
+			$this->load->view('templates/footer');
+        }
+    }
 
 	public function insert($curr_patient_id=NULL,$called_from = 'bill') {
         session_start();

@@ -2,73 +2,88 @@
 
 $( window ).load(function() {
 	$('.confirmDelete').click(function(){
-			return confirm("Ви впевнені");
+			return confirm("Are you sure you want to delete?");
 		});
 		
-    $('#payments').dataTable({
-		"pageLength": 50
-	});	
+    $('#expenses').dataTable();	
+	$('#expense_date').datetimepicker({
+			timepicker:false,
+			format: '<?=$def_dateformate; ?>',
+			scrollInput:false,
+
+	});
 	
 } )
 </script>
 <div id="page-inner">
 	<div class="row">
 		<div class="col-md-12">
-			<!-- Advanced Tables -->
 			<div class="panel panel-primary">
 				<div class="panel-heading">
-					Платежі
+					Додати витрату
 				</div>
 				<div class="panel-body">
-					<a title="<?php echo $this->lang->line("add")." ".$this->lang->line("payment");?>"
-						href="<?php echo base_url()."index.php/payment/insert/0/payment" ?>"
-						class="btn btn-primary square-btn-adjust"/>
-							<?php echo $this->lang->line("add")." ".$this->lang->line("payment");?>
-					</a>
-					<p></p>
-					<div class="table-responsive">
-						<table class="table table-striped table-bordered table-hover" id="payments">
-							<thead>
-								<tr>
-									<th><?php echo $this->lang->line("id");?></th>
-									<th><?php echo $this->lang->line("date");?></th>
-									<th><?php echo $this->lang->line("patient");?></th>
-									<th><?php echo $this->lang->line("doctor");?></th>
-									<th>Сплачено (грн.)</th>
-									<th>Загальна сума (грн.)</th>
-									<th>Залишилось зайнять</th>
-									<th><?php echo $this->lang->line("payment_mode");?></th>
-									<th><?php echo $this->lang->line("edit");?></th>
-								</tr>
-							</thead>
-							<tbody>
-								<?php $i=1; ?>
-								<?php foreach ($payments as $payment):  ?>
-									<?php if(isset($payment['pay_date']) && $payment['pay_date'] != '0000-00-00'){?>
-									<?php $payment_date = $payment['pay_date']; ?>
-									<?php /*$payment_date = date('d-m-Y',strtotime($payment['pay_date']));*/ ?>
-									<?php }else{ ?>
-									<?php $payment_date = "--"; ?>
-									<?php } ?>
-									<tr <?php if ($i%2 == 0) { echo "class='even'"; } else { echo "class='odd'"; }?> >
-										<td><?php echo $payment['payment_id']; ?></td>
-										<td><?php echo $payment_date; ?></td>
-										<td><a href="<?= site_url('patient/edit/'.$payment['patient_id'].'/patient');?>"><?=$payment['first_name'].' '.$payment['middle_name']; ?></a></td>
-										<td><?php echo $payment['username']; ?></td>
-										<td><?php echo $payment['paid']; ?></td>
-										<td><?php echo $payment['pay_amount']; ?></td>
-										<td><?php echo $payment['apps_remaining']; ?></td>
-										<td><?php if($payment['pay_mode'] == "cheque") {echo "Безготівковий розрах.";} else echo "Готівка"?></td>
-										<td><a href="<?= site_url('payment/edit/'.$payment['payment_id']);?>" class="btn btn-sm btn-primary square-btn-adjust"><?php echo $this->lang->line("edit");?></a></td>
-									</tr>
-									<?php $i++; ?>
-								<?php endforeach?>
-							</tbody>
-						</table>
-					</div>
+					<?php echo form_open('payment/expense'); ?>
+						<div class="form-group input-group col-md3">
+							<label for="expense_date">Дата</label>
+							<input type="text" class="form-control" name="expense_date" id="expense_date" value=""/>
+							<?php echo form_error('expense_date','<div class="alert alert-danger">','</div>'); ?>
+						</div>
+						<div class="form-group input-group col-md3">
+							<label for="expense_cat">Категорія</label>
+							<input type="text" class="form-control"  name="cat_id" id="expense_cat" value=""/>
+							<?php echo form_error('expense_cat','<div class="alert alert-danger">','</div>'); ?>
+						</div>
+						<div class="form-group input-group">
+							<label for="expense_user">Користувач</label>
+							<input type="text" class="form-control"  name="user_id" id="expense_user" value=""/>
+							<?php echo form_error('expense_user','<div class="alert alert-danger">','</div>'); ?>
+						</div>
+						<div class="form-group input-group">
+							<label for="expense_sum">Сума</label>
+							<input type="text" class="form-control"  name="sum" id="expense_sum" value=""/>
+							<?php echo form_error('expense_price','<div class="alert alert-danger">','</div>'); ?>
+						</div>
+						<div class="form-group input-group">
+							<label for="expense_title">Опис</label>
+							<input type="text" name="goal" id="expense_title" value="" class="form-control"/>
+							<?php echo form_error('expense_title','<div class="alert alert-danger">','</div>'); ?>
+						</div>						
+						<div class="form-group input-group">
+							<button type="submit" name="submit" class="btn btn-primary"><?php echo $this->lang->line('add');?></button>
+						</div>
+					</form>
 				</div>
-			</div>
-			<!--End Advanced Tables -->
-		</div>
-	</div>
-</div>
+			</div>	
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					Витрати
+				</div>
+				<div class="panel-body">
+					<?php if ($expenses) { ?>
+						<table class="table table-striped table-bordered table-hover dataTable no-footer" id="expenses" >
+						<thead>
+							<tr>
+								<th><?php echo $this->lang->line('no');?></th>
+								<th><?php echo $this->lang->line('expense_goal');?></th>
+								<th><?php echo $this->lang->line('expense_sum');?></th>
+								<th><?php echo $this->lang->line('edit');?></th>
+								<th><?php echo $this->lang->line('delete');?></th>
+							</tr>
+						</thead>
+						<tbody>
+						<?php $i=1; $j=1 ?>
+						<?php foreach ($expenses as $expense):  ?>
+						<tr <?php if ($i%2 == 0) { echo "class='even'"; } else {echo "class='odd'";}?> >
+							<td><?php echo $j; ?></td>
+							<td><?php echo $expense['goal']; ?></td>
+							<td><?php echo $expense['sum']; ?></td>               
+							<td><a class="btn btn-primary btn-sm" href="<?php echo site_url("payment/edit_expense/" . $expense['id']); ?>"><?php echo $this->lang->line('edit');?></a></td>
+							<td><a class="btn btn-danger btn-sm confirmDelete" title="<?php echo $this->lang->line('delete_expense')." : " . $expense['expense'] ?>" href="<?php echo site_url("payment/delete_expense/" . $expense['id']); ?>"><?php echo $this->lang->line('delete');?></a></td>
+            </tr>
+            <?php $i++; $j++;?>
+            <?php endforeach ?>
+        </tbody>
+    </table>
+</div>  
+<?php } ?>

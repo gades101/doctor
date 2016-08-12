@@ -26,7 +26,6 @@ class Payment_model extends CI_Model {
 		$this->db->set('all_paid','all_paid + '.$data['paid'],false);
 		$this->db->where('patient_id', $data['patient_id']);
 		$this->db->update('patient');
-		//file_put_contents('t1.txt',print_r($this->db->last_query(),true));
     }
 
 	function new_payment_from_app($treatment) {
@@ -35,7 +34,6 @@ class Payment_model extends CI_Model {
 		$data['treatment_id'] = $treatment['id'];
 		$data['paid'] = $this->input->post('paid');	
 		$data['pay_amount'] = $this->input->post('pay_amount');		
-		//$data['pay_amount'] = ($this->input->post('discount')) ? ($treatment['price']*(100-$this->input->post('discount'))/100) : $treatment['price'];
 		$data['pay_date'] = date('Y-m-d');
 		$data['pay_mode'] = 'cash';
 		$data['userid'] = $this->input->post('doctor_id');
@@ -113,5 +111,19 @@ class Payment_model extends CI_Model {
         return FALSE;
 		}
 	 }
+    public function list_expenses() {
+        $this->db->order_by("id","desc");
+        $query = $this->db->get('expense');
+        return $query->result_array();
+    }
+ 	function insert_expense() {
+		$data = array();
+		$data['user_id'] = $this->input->post('user_id');
+		$data['expense_date'] = date('Y-m-d',strtotime($this->input->post('expense_date')));
+		$data['goal'] = $this->input->post('goal');
+		$data['sum'] = $this->input->post('sum');
+		$data['cat_id'] = $this->input->post('cat_id');
+		$this->db->insert('expense', $data);
+    }
 }
 ?>
