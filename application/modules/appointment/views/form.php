@@ -1,4 +1,4 @@
-<!--display on Click of Appointment page -->
+<!--  display on Click of Appointment page  -->
 <script src="<?= base_url() ?>assets/js/fliplightbox.min.js"></script>
 <script type="text/javascript">
 <?php if (isset($appointment)){ ?>
@@ -28,7 +28,7 @@
 			},
 		});
 	}
-	
+
 <?php } ?>
 $(window).load(function(){
 	var price;
@@ -536,7 +536,7 @@ function openReason(onof) {
 					<div class="col-md-12">
 						<div class="form-group">
 							<label for="treatment">Процедура</label>
-							<input type="text" name="treatment" value="<?=$curr_treatment_name;?>" <?php if($curr_payment_id!=0) echo "readonly=true"; ?> id="treatment" class="form-control "/>
+							<input type="text" name="treatment" id="treatment" class="form-control" value="<?=$curr_treatment_name;?>" <?php if($curr_payment_id!=0) echo "readonly=true"; ?> />
 							<?php echo form_error('treatment','<div class="alert alert-danger">','</div>'); ?>
 						</div>
 					</div>
