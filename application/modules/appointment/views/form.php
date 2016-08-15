@@ -56,7 +56,7 @@ $(window).load(function(){
 				if($('#treatment_id').val() && $('#patient_id').val()){
 					//$('#discount').prop('disabled',false);
 					$('#payment_id').val(0).prop('disabled',true);
-					$('#treatment').prop('disabled',false);
+					$('#treatment').prop('readonly',false);
 					$('#pay_block').show();
 				}
 				else{
@@ -67,7 +67,7 @@ $(window).load(function(){
 			else {
 				$('#pay_block').hide();
 				//$('#discount').prop('disabled',true).val('');
-				$('#payment_id').prop('disabled',false);
+				$('#payment_id').prop('readonly',false);
 			}
 		});
 
