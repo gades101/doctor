@@ -125,5 +125,16 @@ class Payment_model extends CI_Model {
 		$data['cat_id'] = $this->input->post('cat_id');
 		$this->db->insert('expense', $data);
     }
+    public function list_expense_cat() {
+        $this->db->order_by("id");
+        $query = $this->db->get('expense_categories');
+        return $query->result_array();
+    }
+ 	function insert_expense_cat() {
+		$data = array();
+		$data['title'] = $this->input->post('title');
+		$data['parent_id'] = $this->input->post('parent_id');
+		$this->db->insert('expense_category', $data);
+    }
 }
 ?>

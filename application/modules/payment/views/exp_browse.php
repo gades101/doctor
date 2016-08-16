@@ -65,8 +65,8 @@ $( window ).load(function() {
 						<thead>
 							<tr>
 								<th><?php echo $this->lang->line('no');?></th>
-								<th><?php echo $this->lang->line('expense_goal');?></th>
-								<th><?php echo $this->lang->line('expense_sum');?></th>
+								<th>Призначення</th>
+								<th>Сума</th>
 								<th><?php echo $this->lang->line('edit');?></th>
 								<th><?php echo $this->lang->line('delete');?></th>
 							</tr>
@@ -79,11 +79,15 @@ $( window ).load(function() {
 							<td><?php echo $expense['goal']; ?></td>
 							<td><?php echo $expense['sum']; ?></td>               
 							<td><a class="btn btn-primary btn-sm" href="<?php echo site_url("payment/edit_expense/" . $expense['id']); ?>"><?php echo $this->lang->line('edit');?></a></td>
-							<td><a class="btn btn-danger btn-sm confirmDelete" title="<?php echo $this->lang->line('delete_expense')." : " . $expense['expense'] ?>" href="<?php echo site_url("payment/delete_expense/" . $expense['id']); ?>"><?php echo $this->lang->line('delete');?></a></td>
-            </tr>
-            <?php $i++; $j++;?>
-            <?php endforeach ?>
-        </tbody>
-    </table>
-</div>  
-<?php } ?>
+							<td><a class="btn btn-danger btn-sm confirmDelete" href="<?php echo site_url("payment/delete_expense/" . $expense['id']); ?>"><?php echo $this->lang->line('delete');?></a></td>
+			            </tr>
+			            <?php $i++; $j++;?>
+			            <?php endforeach ?>
+			    	    </tbody>
+			  			</table>
+			  		<?php } ?>
+				</div> 
+			</div>
+		</div>
+	</div>
+</div>   

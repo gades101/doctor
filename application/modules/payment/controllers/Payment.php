@@ -83,11 +83,11 @@ class Payment extends CI_Controller {
 		if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
 			redirect('login/index');
         } else {
-			$data['payments'] = $this->payment_model->list_payments();
+			$data['expense_cat'] = $this->payment_model->list_expense_cat();
 			$data['currency_postfix'] = $this->settings_model->get_currency_postfix();
 			$this->load->view('templates/header');
 			$this->load->view('templates/menu');
-			$this->load->view('browse',$data);
+			$this->load->view('exp_categories',$data);
 			$this->load->view('templates/footer');
         }
     }
