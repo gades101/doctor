@@ -83,12 +83,22 @@ class Payment extends CI_Controller {
 		if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
 			redirect('login/index');
         } else {
-			$data['expense_cat'] = $this->payment_model->list_expense_cat();
+            $this->form_validation->set_rules('title', 'Категорія', 'trim|required');
 			$data['currency_postfix'] = $this->settings_model->get_currency_postfix();
-			$this->load->view('templates/header');
-			$this->load->view('templates/menu');
-			$this->load->view('exp_categories',$data);
-			$this->load->view('templates/footer');
+            if ($this->form_validation->run() === FALSE) {
+				$data['expense_categories'] = $this->payment_model->list_expense_cat();
+				$this->load->view('templates/header');
+				$this->load->view('templates/menu');
+				$this->load->view('exp_categories',$data);
+				$this->load->view('templates/footer');
+			} else {
+				$this->payment_model->insert_expense_cat();
+				$data['expense_categories'] = $this->payment_model->list_expense_cat();
+				$this->load->view('templates/header');
+				$this->load->view('templates/menu');
+				$this->load->view('exp_categories',$data);
+				$this->load->view('templates/footer');
+			}
         }
     }
 
