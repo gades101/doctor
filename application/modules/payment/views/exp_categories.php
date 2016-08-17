@@ -19,13 +19,26 @@ $( window ).load(function() {
 				<div class="panel-body">
 					<?php echo form_open('payment/expense_categories'); ?>
 						<div class="form-group input-group col-md3">
+							<label for="id">Категорія id</label>
+							<input type="text" class="form-control"  name="id" id="id" value=""/>
+							<?php echo form_error('id','<div class="alert alert-danger">','</div>'); ?>
+						</div>
+						<div class="form-group input-group col-md3">
 							<label for="title">Категорія</label>
 							<input type="text" class="form-control"  name="title" id="title" value=""/>
 							<?php echo form_error('title','<div class="alert alert-danger">','</div>'); ?>
 						</div>
+						
+
 						<div class="form-group input-group">
 							<label for="parent_id">Призначити підкатегорією для</label>
-							<input type="text" class="form-control"  name="parent_id" id="parent_id" value=""/>
+								<select id='payment_id' name='payment_id' class="form-control">
+									<option value='0'>Без оплати</option>
+									<?php if(isset($expense_categories)){
+										foreach($expense_categories as $cat){ ?>
+											<option value="<?php echo $cat['id']; ?>"  data-cat=""  /><?= $cat['id'].' '.$cat['title'].')'; ?></option>				
+									<?php } } ?>
+								</select>
 						</div>					
 						<div class="form-group input-group">
 							<button type="submit" name="submit" class="btn btn-primary"><?php echo $this->lang->line('add');?></button>

@@ -133,10 +133,12 @@ class Payment_model extends CI_Model {
  	function insert_expense_cat() {
 		$data = array();
 		$data['title'] = $this->input->post('title');
-		if( $this->input->post('parent_id'))$data['parent_id'] = $this->input->post('parent_id');
+		if( $this->input->post('parent_id')){
+			$pid=$this->input->post('parent_id');
+			if(is_int($pid))$pid.='.';
+			$data['id']=$pid.sprinf("02d",$data['id']);			
+		}
 		$this->db->insert('expense_categories', $data);
-		//file_put_contents('t1.txt', print_r('asdasd',true));
-		file_put_contents('t1.txt', print_r($this->db->error(),true));
     }
 }
 ?>
