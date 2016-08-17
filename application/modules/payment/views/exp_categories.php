@@ -5,7 +5,7 @@ $( window ).load(function() {
 			return confirm("Are you sure you want to delete?");
 		});
 		
-    $('#expenses').dataTable();	
+    $('#expense_categories').dataTable();	
 	
 } )
 </script>
@@ -17,7 +17,7 @@ $( window ).load(function() {
 					Додати категорію витрат
 				</div>
 				<div class="panel-body">
-					<?php echo form_open('payment/expense'); ?>
+					<?php echo form_open('payment/expense_categories'); ?>
 						<div class="form-group input-group col-md3">
 							<label for="title">Категорія</label>
 							<input type="text" class="form-control"  name="title" id="title" value=""/>
@@ -38,8 +38,8 @@ $( window ).load(function() {
 					Витрати
 				</div>
 				<div class="panel-body">
-					<?php if ($expenses) { ?>
-						<table class="table table-striped table-bordered table-hover dataTable no-footer" id="expenses" >
+					<?php if ($expense_categories) { ?>
+						<table class="table table-striped table-bordered table-hover dataTable no-footer" id="expense_categories" >
 						<thead>
 							<tr>
 								<th><?php echo $this->lang->line('no');?></th>
@@ -50,12 +50,12 @@ $( window ).load(function() {
 						</thead>
 						<tbody>
 						<?php $i=1; $j=1 ?>
-						<?php foreach ($expenses as $expense):  ?>
+						<?php foreach ($expense_categories as $expense):  ?>
 						<tr <?php if ($i%2 == 0) { echo "class='even'"; } else {echo "class='odd'";}?> >
 							<td><?php echo $j; ?></td>
 							<td><?php echo $expense['title']; ?></td>               
 							<td><a class="btn btn-primary btn-sm" href="<?php echo site_url("payment/edit_expense_cat/" . $expense['id']); ?>"><?php echo $this->lang->line('edit');?></a></td>
-							<td><a class="btn btn-danger btn-sm confirmDelete" title="<?php echo $this->lang->line('delete_expense_cat')." : " . $expense['expense'] ?>" href="<?php echo site_url("payment/delete_expense_cat/" . $expense['id']); ?>"><?php echo $this->lang->line('delete');?></a></td>
+							<td><a class="btn btn-danger btn-sm confirmDelete" title="<?php echo $this->lang->line('delete_expense_cat')." : " . $expense['title'] ?>" href="<?php echo site_url("payment/delete_expense_cat/" . $expense['id']); ?>"><?php echo $this->lang->line('delete');?></a></td>
 			            </tr>
 			            <?php $i++; $j++;?>
 			            <?php endforeach ?>
