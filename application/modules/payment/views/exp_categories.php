@@ -33,7 +33,7 @@ $( window ).load(function() {
 						<div class="form-group input-group">
 							<label for="parent_id">Призначити підкатегорією для</label>
 								<select id='payment_id' name='payment_id' class="form-control">
-									<option value='0'>Без оплати</option>
+									<option value='0'>--/--</option>
 									<?php if(isset($expense_categories)){
 										foreach($expense_categories as $cat){ ?>
 											<option value="<?php echo $cat['id']; ?>"  data-cat=""  /><?= $cat['id'].' '.$cat['title'].')'; ?></option>				
@@ -65,7 +65,7 @@ $( window ).load(function() {
 						<?php $i=1; $j=1 ?>
 						<?php foreach ($expense_categories as $expense):  ?>
 						<tr <?php if ($i%2 == 0) { echo "class='even'"; } else {echo "class='odd'";}?> >
-							<td><?php echo $j; ?></td>
+							<td><?php echo $expense['id']; ?></td>
 							<td><?php echo $expense['title']; ?></td>               
 							<td><a class="btn btn-primary btn-sm" href="<?php echo site_url("payment/edit_expense_cat/" . $expense['id']); ?>"><?php echo $this->lang->line('edit');?></a></td>
 							<td><a class="btn btn-danger btn-sm confirmDelete" title="<?php echo $this->lang->line('delete_expense_cat')." : " . $expense['title'] ?>" href="<?php echo site_url("payment/delete_expense_cat/" . $expense['id']); ?>"><?php echo $this->lang->line('delete');?></a></td>

@@ -208,10 +208,7 @@ $(window).load(function(){
 		var calc_discount= function(user_disc, user_amount){
 			var curr_disc=user_disc;
 			discounts.every(function(discount){
-			console.log(discount);
 				if(+discount.percent>+user_disc){
-					console.log(user_amount);
-
 					if(+discount.amount<=+user_amount){
 						curr_disc=discount.percent;
 						return false;

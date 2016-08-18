@@ -138,6 +138,7 @@ class Payment_model extends CI_Model {
 			if(is_int($pid))$pid.='.';
 			$data['id']=$pid.sprinf("02d",$data['id']);			
 		}
+		else $data['id']=$this->input->post('id');
 		$this->db->insert('expense_categories', $data);
     }
 }
