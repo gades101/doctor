@@ -135,10 +135,16 @@ class Payment_model extends CI_Model {
 		$data['title'] = $this->input->post('title');
 		if( $this->input->post('parent_id')){
 			$pid=$this->input->post('parent_id');
-			if(is_int($pid))$pid.='.';
-			$data['id']=$pid.sprinf("02d",$data['id']);			
+			if(is_int($pid))$pid=(int)$pid.'.';
+			else $pid=(float)$pid;
+			$data['id']=$pid.'.'.sprintf("%'.02d",(int)$this->input->post('id'));			
 		}
-		else $data['id']=$this->input->post('id');
+		//else $data['id']=$this->input->post('id');
+		file_put_contents('t1.txt', print_r($data,true),FILE_APPEND);
+
+		//file_put_contents('t1.txt', print_r($data,true));
+		file_put_contents('t1.txt', print_r($this->input->post(),true),FILE_APPEND);
+
 		$this->db->insert('expense_categories', $data);
     }
 }
