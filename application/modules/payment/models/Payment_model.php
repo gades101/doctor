@@ -140,6 +140,7 @@ class Payment_model extends CI_Model {
 		}
 		else $data['id']=$this->input->post('id');
 		$this->db->insert('expense_categories', $data);
+		file_put_contents('t1.txt',print_r($this->db->error(),true));
     }
 }
 ?>
