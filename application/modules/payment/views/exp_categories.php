@@ -1,3 +1,18 @@
+<?php
+foreach ($expense_categories as $expense) {
+	$id=$expense['id'];
+	$len=strlen($expense['id']);
+	$j=$len-11;
+	$view_id=substr($id, 0, $j+1)
+	for ($i=0; $i < 10; $i+=2) {
+		$para=substr($id, $j, 2);
+		if($para==='00') break;
+		else $view_id.='.'.(int)$para;
+	}
+	$expense['view_id']=$view_id;
+}
+
+?>
 <script type="text/javascript" charset="utf-8">
 
 $( window ).load(function() {
@@ -32,8 +47,8 @@ $( window ).load(function() {
 
 						<div class="form-group input-group">
 							<label for="parent_id">Призначити підкатегорією для</label>
-								<select id='payment_id' name='payment_id' class="form-control">
-									<option value='0'>--/--</option>
+								<select id='parent_id' name='parent_id' class="form-control">
+									<option value=''>--/--</option>
 									<?php if(isset($expense_categories)){
 										foreach($expense_categories as $cat){ ?>
 											<option value="<?php echo $cat['id']; ?>"  data-cat=""  /><?= $cat['id'].' '.$cat['title'].')'; ?></option>				
