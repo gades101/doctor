@@ -1,16 +1,26 @@
 <?php
-foreach ($expense_categories as $expense) {
+foreach ($expense_categories as $key => $expense) {
 	$id=$expense['id'];
 	$len=strlen($expense['id']);
-	$j=$len-11;
-	$view_id=substr($id, 0, $j+1)
+	$j=$len-10;
+	$view_id=substr($id, 0, $j-1);
+
 	for ($i=0; $i < 10; $i+=2) {
 		$para=substr($id, $j, 2);
+		//file_put_contents('t1.txt',print_r($para,true)." ",FILE_APPEND);
 		if($para==='00') break;
-		else $view_id.='.'.(int)$para;
+		else {
+			$view_id.='.'.(int)$para;
+			$j+=2;
+			//file_put_contents('t1.txt',print_r($view_id,true)." ",FILE_APPEND);
+
+		}
 	}
-	$expense['view_id']=$view_id;
+	$expense_categories[$key]['view_id']=$view_id;
+	//file_put_contents('t1.txt',print_r($expense,true),FILE_APPEND);
+
 }
+	//file_put_contents('t1.txt',print_r($expense_categories,true));
 
 ?>
 <script type="text/javascript" charset="utf-8">
@@ -80,7 +90,7 @@ $( window ).load(function() {
 						<?php $i=1; $j=1 ?>
 						<?php foreach ($expense_categories as $expense):  ?>
 						<tr <?php if ($i%2 == 0) { echo "class='even'"; } else {echo "class='odd'";}?> >
-							<td><?php echo $expense['id']; ?></td>
+							<td><?php echo $expense['view_id']; ?></td>
 							<td><?php echo $expense['title']; ?></td>               
 							<td><a class="btn btn-primary btn-sm" href="<?php echo site_url("payment/edit_expense_cat/" . $expense['id']); ?>"><?php echo $this->lang->line('edit');?></a></td>
 							<td><a class="btn btn-danger btn-sm confirmDelete" title="<?php echo $this->lang->line('delete_expense_cat')." : " . $expense['title'] ?>" href="<?php echo site_url("payment/delete_expense_cat/" . $expense['id']); ?>"><?php echo $this->lang->line('delete');?></a></td>

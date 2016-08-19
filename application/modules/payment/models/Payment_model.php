@@ -130,23 +130,45 @@ class Payment_model extends CI_Model {
         $query = $this->db->get('expense_categories');
         return $query->result_array();
     }
+	function find_exp_cat_new_id($parent_id=NULL){
+		if($parent_id){
+			$this->db->order_by("id","desc");
+			$this->db->where('parent_id', $parent_id);
+			$query =$this->db->get('expense_categories','id');
+			$id=$query->row_array();
+			if($id){
+				file_put_contents('t1.txt',print_r($id,true));
+			//file_put_contents('t1.txt',print_r($this->db->error(),true));
+				$id=$id['id'];
+				$last=substr($id,-1)+1;
+				substr_replace($id,$last,1,-1);
+			}
+			else $id=(float)$parent_id.".01";
+			return $id;
+		}
+		else {
+			$this->db->order_by("id","desc");
+			$query =$this->db->get('expense_categories','id');
+			$id=$query->row_array();
+			$id=intval($id['id'])+1;
+			return $id;		
+		}
+	
+	}
  	function insert_expense_cat() {
 		$data = array();
+		
 		$data['title'] = $this->input->post('title');
 		if( $this->input->post('parent_id')){
-			$pid=$this->input->post('parent_id');
-			if(is_int($pid))$pid=(int)$pid.'.';
-			else $pid=(float)$pid;
-			$data['id']=$pid.'.'.sprintf("%'.02d",(int)$this->input->post('id'));			
+			//$pid=$this->input->post('parent_id');
+			//if(is_int($pid)){$pid=(int)$pid.'.';		
+			//else {$pid=(float)$pid;
+			$data['id']=$this->find_exp_cat_new_id($this->input->post('parent_id'));		
+			//$data['id']=$pid.sprintf("%'.02d",(int)$this->input->post('id'));			
 		}
-		//else $data['id']=$this->input->post('id');
-		file_put_contents('t1.txt', print_r($data,true),FILE_APPEND);
-
-		//file_put_contents('t1.txt', print_r($data,true));
-		file_put_contents('t1.txt', print_r($this->input->post(),true),FILE_APPEND);
-
+		else $data['id']=$this->find_exp_cat_new_id(); /*$data['id']=$this->input->post('id');*/
 		$this->db->insert('expense_categories', $data);
-		file_put_contents('t1.txt',print_r($this->db->error(),true));
     }
+
 }
 ?>
