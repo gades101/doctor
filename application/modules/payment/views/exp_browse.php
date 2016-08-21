@@ -5,7 +5,10 @@ $( window ).load(function() {
 			return confirm("Are you sure you want to delete?");
 		});
 		
-    $('#expenses').dataTable();	
+    $('#expenses').dataTable({
+		"pageLength": 50,
+		"order":  []
+	});	
 	$('#expense_date').datetimepicker({
 			timepicker:false,
 			format: '<?=$def_dateformate; ?>',

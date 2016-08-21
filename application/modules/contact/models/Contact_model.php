@@ -18,13 +18,13 @@ class Contact_model extends CI_Model {
     public function insert_contact(){
 	
 		if($this->input->post('first_name') != false){	
-            $data['first_name'] = $this->input->post('first_name');
+			$data['first_name'] = strtr($this->input->post('first_name'),'"',"'");
 		}
 		if($this->input->post('middle_name') != false){	
-            $data['middle_name'] = $this->input->post('middle_name');
+			$data['middle_name'] = strtr($this->input->post('middle_name'),'"',"'");
 		}
 		if($this->input->post('last_name') != false){	
-            $data['last_name'] = $this->input->post('last_name');
+		$	data['last_name'] = strtr($this->input->post('last_name'),'"',"'");
 		}
 		if($this->input->post('phone_number') != false){	
             $data['phone_number'] = $this->input->post('phone_number');
@@ -64,9 +64,9 @@ class Contact_model extends CI_Model {
     }
         
 	function update_contact($name = NULL){
-		$data['first_name']   = $this->input->post('first_name');
-		$data['middle_name']  = $this->input->post('middle_name');
-		$data['last_name']    = $this->input->post('last_name');
+		$data['first_name'] = strtr($this->input->post('first_name'),'"',"'");
+		$data['middle_name'] = strtr($this->input->post('middle_name'),'"',"'");
+		$data['last_name'] = strtr($this->input->post('last_name'),'"',"'");
 		$data['phone_number'] = $this->input->post('phone_number');
 		$data['display_name'] = $this->input->post('display_name');
 		$data['details'] = $this->input->post('details');

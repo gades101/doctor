@@ -7,20 +7,15 @@ foreach ($expense_categories as $key => $expense) {
 
 	for ($i=0; $i < 10; $i+=2) {
 		$para=substr($id, $j, 2);
-		//file_put_contents('t1.txt',print_r($para,true)." ",FILE_APPEND);
 		if($para==='00') break;
 		else {
 			$view_id.='.'.(int)$para;
 			$j+=2;
-			//file_put_contents('t1.txt',print_r($view_id,true)." ",FILE_APPEND);
 
 		}
 	}
 	$expense_categories[$key]['view_id']=$view_id;
-	//file_put_contents('t1.txt',print_r($expense,true),FILE_APPEND);
-
 }
-	//file_put_contents('t1.txt',print_r($expense_categories,true));
 
 ?>
 <script type="text/javascript" charset="utf-8">
@@ -30,7 +25,10 @@ $( window ).load(function() {
 			return confirm("Are you sure you want to delete?");
 		});
 		
-    $('#expense_categories').dataTable();	
+    $('#expense_categories').dataTable({
+		"pageLength": 50,
+		"order":  []	
+	});	
 	
 } )
 </script>
@@ -44,12 +42,7 @@ $( window ).load(function() {
 				<div class="panel-body">
 					<?php echo form_open('payment/expense_categories'); ?>
 						<div class="form-group input-group col-md3">
-							<label for="id">Категорія id</label>
-							<input type="text" class="form-control"  name="id" id="id" value=""/>
-							<?php echo form_error('id','<div class="alert alert-danger">','</div>'); ?>
-						</div>
-						<div class="form-group input-group col-md3">
-							<label for="title">Категорія</label>
+							<label for="title">Назва Категорії</label>
 							<input type="text" class="form-control"  name="title" id="title" value=""/>
 							<?php echo form_error('title','<div class="alert alert-danger">','</div>'); ?>
 						</div>
@@ -58,10 +51,10 @@ $( window ).load(function() {
 						<div class="form-group input-group">
 							<label for="parent_id">Призначити підкатегорією для</label>
 								<select id='parent_id' name='parent_id' class="form-control">
-									<option value=''>--/--</option>
+									<option value='0'>...</option>
 									<?php if(isset($expense_categories)){
 										foreach($expense_categories as $cat){ ?>
-											<option value="<?php echo $cat['id']; ?>"  data-cat=""  /><?= $cat['id'].' '.$cat['title'].')'; ?></option>				
+											<option value="<?php echo $cat['id']; ?>"  data-cat=""  /><?= $cat['view_id'].' '.$cat['title']; ?></option>				
 									<?php } } ?>
 								</select>
 						</div>					
@@ -83,7 +76,6 @@ $( window ).load(function() {
 								<th><?php echo $this->lang->line('no');?></th>
 								<th>Назва категорії</th>
 								<th><?php echo $this->lang->line('edit');?></th>
-								<th><?php echo $this->lang->line('delete');?></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -93,7 +85,6 @@ $( window ).load(function() {
 							<td><?php echo $expense['view_id']; ?></td>
 							<td><?php echo $expense['title']; ?></td>               
 							<td><a class="btn btn-primary btn-sm" href="<?php echo site_url("payment/edit_expense_cat/" . $expense['id']); ?>"><?php echo $this->lang->line('edit');?></a></td>
-							<td><a class="btn btn-danger btn-sm confirmDelete" title="<?php echo $this->lang->line('delete_expense_cat')." : " . $expense['title'] ?>" href="<?php echo site_url("payment/delete_expense_cat/" . $expense['id']); ?>"><?php echo $this->lang->line('delete');?></a></td>
 			            </tr>
 			            <?php $i++; $j++;?>
 			            <?php endforeach ?>

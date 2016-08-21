@@ -12,7 +12,7 @@ class Treatment_model extends CI_Model {
     }
     
     public function add_treatment() {
-        $data['treatment'] = $this->input->post('treatment');
+		$data['treatment'] = strtr($this->input->post('treatment'),'"',"'");
         $data['price'] = $this->input->post('treatment_price');
         $this->db->insert('treatments',$data);
     }
@@ -24,7 +24,7 @@ class Treatment_model extends CI_Model {
     }
     
     public function edit_treatment($id){
-        $data['treatment'] = $this->input->post('treatment');
+		$data['treatment'] = strtr($this->input->post('treatment'),'"',"'");
         $data['price'] = $this->input->post('treatment_price');
         $data['count'] = $this->input->post('treatment_count');
         $this->db->where('id', $id);

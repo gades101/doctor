@@ -62,8 +62,8 @@ class Treatment extends CI_Controller {
         if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
             redirect('login/index');
         } else {
-			$this->form_validation->set_rules('treatment', 'Treatment Name', 'trim|required|xss_clean');
-            $this->form_validation->set_rules('treatment_price', 'Treatment Price', 'trim|required|xss_clean');
+			$this->form_validation->set_rules('treatment', 'Ë³êóâàííÿ', 'trim|required|xss_clean');
+            $this->form_validation->set_rules('treatment_price', 'Ñóìà', 'trim|required|xss_clean');
 			$data['currency_postfix'] = $this->settings_model->get_currency_postfix();
 			if ($this->form_validation->run() === FALSE) {
 				$data['treatment'] = $this->treatment_model->get_edit_treatment($id);

@@ -7,8 +7,6 @@ class Payment extends CI_Controller {
 		$this->load->model('payment_model');
 		$this->load->model('patient/patient_model');
 		$this->load->model('admin/admin_model');
-		$this->load->model('treatment/treatment_model');
-		$this->load->model('discount/discount_model');
 		$this->load->model('settings/settings_model');
 		$this->load->model('menu_model');
 
@@ -47,7 +45,7 @@ class Payment extends CI_Controller {
 			$this->load->view('templates/footer');
         }
     }
-    public function expense() {
+    public function expenses() {
 
 		if ( $this->is_session_started() === FALSE ){
 			session_start();
@@ -59,6 +57,7 @@ class Payment extends CI_Controller {
             $this->form_validation->set_rules('expense_date', 'expense_date', 'trim|required');
  	  		$data['def_dateformate'] = $this->settings_model->get_date_formate();
             if ($this->form_validation->run() === FALSE) {
+				$data['doctors'] = $this->admin_model->get_doctor();
 				$data['expenses'] = $this->payment_model->list_expenses();
 				$this->load->view('templates/header');
 				$this->load->view('templates/menu');
@@ -67,10 +66,7 @@ class Payment extends CI_Controller {
 			} else {
 				$this->payment_model->insert_expense();
 				$data['expenses'] = $this->payment_model->list_expenses();
-				$this->load->view('templates/header');
-				$this->load->view('templates/menu');
-				$this->load->view('exp_browse',$data);
-				$this->load->view('templates/footer');
+				redirect('payment/expenses');
 			}
         }
     }
@@ -93,15 +89,34 @@ class Payment extends CI_Controller {
 				$this->load->view('templates/footer');
 			} else {
 				$this->payment_model->insert_expense_cat();
-				$data['expense_categories'] = $this->payment_model->list_expense_cat();
-				$this->load->view('templates/header');
-				$this->load->view('templates/menu');
-				$this->load->view('exp_categories',$data);
-				$this->load->view('templates/footer');
+				redirect('payment/expense_categories');
 			}
         }
     }
-
+	public function edit_expense_cat($id) {
+        if ( $this->is_session_started() === FALSE ){
+			session_start();
+		}
+        if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
+            redirect('login/index');
+        } else {
+			$this->form_validation->set_rules('title', 'Назва Категорії', 'trim|required');
+			if ($this->form_validation->run() === FALSE) {
+				$data['exp_category'] = $this->payment_model->get_edit_exp_category($id);
+				$this->load->view('templates/header');
+				$this->load->view('templates/menu');
+				$this->load->view('edit_category', $data);
+				$this->load->view('templates/footer');
+			} else {
+                $this->payment_model->edit_exp_category($id);
+				$data['expense_categories'] = $this->payment_model->list_expense_cat();                
+                $this->load->view('templates/header');
+                $this->load->view('templates/menu');
+                $this->load->view('exp_categories', $data);
+                $this->load->view('templates/footer');
+            }
+        }
+    }
 	public function insert($curr_patient_id=NULL,$called_from = 'bill') {
         session_start();
 		//Check if user has logged in
@@ -127,21 +142,12 @@ class Payment extends CI_Controller {
 			}else{
 				$this->payment_model->insert_payment();
 				$this->index();
-				/*$called_from = $this->input->post('called_from');
-				$visit_id = $this->input->post('visit_id');
-				$patient_id = $this->input->post('patient_id');
-				if($called_from == 'bill'){
-					redirect('patient/bill/'.$visit_id.'/'.$patient_id);
-				}else{
-					$this->index();
-				}*/
 			}
         }
     }
 
 	public function edit($payment_id){
 		session_start();
-
 		//Check if user has logged in
 		if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
             redirect('login/index');

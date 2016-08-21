@@ -136,14 +136,17 @@ class Payment_model extends CI_Model {
 			$this->db->where('parent_id', $parent_id);
 			$query =$this->db->get('expense_categories','id');
 			$id=$query->row_array();
+			$parent_id=(float)$parent_id;
 			if($id){
-				file_put_contents('t1.txt',print_r($id,true));
-			//file_put_contents('t1.txt',print_r($this->db->error(),true));
-				$id=$id['id'];
+				$id=(float)$id['id'];
+				if(strlen($id-floor($id))%2!=0)$id.='0';
 				$last=substr($id,-1)+1;
-				substr_replace($id,$last,1,-1);
+				$id=substr_replace($id,$last,-1);					
 			}
-			else $id=(float)$parent_id.".01";
+			else {
+				if($id-floor($parent_id)=='0')$parent_id.=".";
+				$id=$parent_id."01";
+			}
 			return $id;
 		}
 		else {
@@ -153,12 +156,11 @@ class Payment_model extends CI_Model {
 			$id=intval($id['id'])+1;
 			return $id;		
 		}
-	
 	}
  	function insert_expense_cat() {
 		$data = array();
-		
-		$data['title'] = $this->input->post('title');
+		$data['title'] = strtr($this->input->post('title'),'"',"'");
+		$data['parent_id']=$this->input->post('parent_id');
 		if( $this->input->post('parent_id')){
 			//$pid=$this->input->post('parent_id');
 			//if(is_int($pid)){$pid=(int)$pid.'.';		
@@ -169,6 +171,14 @@ class Payment_model extends CI_Model {
 		else $data['id']=$this->find_exp_cat_new_id(); /*$data['id']=$this->input->post('id');*/
 		$this->db->insert('expense_categories', $data);
     }
-
+	function get_edit_exp_category($id){
+		$query = $this->db->get_where('expense_categories', array('id' => $id));
+        return $query->row_array();
+	}
+	function edit_exp_category($exp_catgory_id){
+		$data['title'] = strtr($this->input->post('title'),'"',"'");
+		$this->db->where('id', $exp_catgory_id);
+		$this->db->update('expense_categories', $data);	
+	}
 }
 ?>
