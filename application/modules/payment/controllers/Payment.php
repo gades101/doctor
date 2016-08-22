@@ -45,7 +45,7 @@ class Payment extends CI_Controller {
 			$this->load->view('templates/footer');
         }
     }
-    public function expenses() {
+    public function expense() {
 
 		if ( $this->is_session_started() === FALSE ){
 			session_start();
@@ -57,7 +57,8 @@ class Payment extends CI_Controller {
             $this->form_validation->set_rules('expense_date', 'expense_date', 'trim|required');
  	  		$data['def_dateformate'] = $this->settings_model->get_date_formate();
             if ($this->form_validation->run() === FALSE) {
-				$data['doctors'] = $this->admin_model->get_doctor();
+				$data['users'] = $this->admin_model->get_work_users();
+				$data['expense_categories'] = $this->payment_model->list_expense_cat();
 				$data['expenses'] = $this->payment_model->list_expenses();
 				$this->load->view('templates/header');
 				$this->load->view('templates/menu');
@@ -66,7 +67,7 @@ class Payment extends CI_Controller {
 			} else {
 				$this->payment_model->insert_expense();
 				$data['expenses'] = $this->payment_model->list_expenses();
-				redirect('payment/expenses');
+				redirect('payment/expense');
 			}
         }
     }

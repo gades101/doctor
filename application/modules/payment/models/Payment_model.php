@@ -136,8 +136,6 @@ class Payment_model extends CI_Model {
 			$this->db->where('parent_id', $parent_id);
 			$query =$this->db->get('expense_categories','id');
 			$id=$query->row_array();
-		//file_put_contents('t1.txt', print_r($id,true)."asdasd");
-
 			$parent_id=(float)$parent_id;
 			if($id){
 				$id=(float)$id['id'];
@@ -148,8 +146,6 @@ class Payment_model extends CI_Model {
 			else {
 				if($parent_id-floor($parent_id)=='0'){
 					$parent_id.=".";
-		file_put_contents('t1.txt', print_r($id,true)."olollll");
-
 				}
 				$id=$parent_id."01";
 			}
@@ -160,8 +156,6 @@ class Payment_model extends CI_Model {
 			$query =$this->db->get('expense_categories','id');
 			$id=$query->row_array();
 			$id=intval($id['id'])+1;
-		//file_put_contents('t1.txt', print_r($id,true)."no_pid");
-
 			return $id;		
 		}
 	}
@@ -177,7 +171,6 @@ class Payment_model extends CI_Model {
 			//$data['id']=$pid.sprintf("%'.02d",(int)$this->input->post('id'));			
 		}
 		else $data['id']=$this->find_exp_cat_new_id(); /*$data['id']=$this->input->post('id');*/
-		//file_put_contents('t1.txt', print_r($data,true));
 		$this->db->insert('expense_categories', $data);
     }
 	function get_edit_exp_category($id){

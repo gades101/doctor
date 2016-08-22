@@ -515,14 +515,14 @@ function openReason(onof) {
 							<?php echo form_error('appointment_date','<div class="alert alert-danger">','</div>'); ?>
 						</div>
 					</div>
-					<div class="col-md-2">
+					<div class="col-md-3">
 						<div class="form-group">
 							<label for="start_time"><?php echo $this->lang->line('start_time');?></label>
 							<input type="text" name="start_time" id="start_time" value="<?=date($def_timeformate,strtotime($start_time)); ?>" class="form-control"/>
 							<?php echo form_error('start_time','<div class="alert alert-danger">','</div>'); ?>
 						</div>
 					</div>
-					<div class="col-md-2">
+					<div class="col-md-3">
 						<div class="form-group">
 							<label for="end_time"><?=$this->lang->line('end_time');?></label>
 							<input type="text" name="end_time" id="end_time" value="<?= date($def_timeformate,strtotime($end_time)); ?>" class="form-control"/>
