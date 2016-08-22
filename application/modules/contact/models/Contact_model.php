@@ -24,7 +24,7 @@ class Contact_model extends CI_Model {
 			$data['middle_name'] = strtr($this->input->post('middle_name'),'"',"'");
 		}
 		if($this->input->post('last_name') != false){	
-		$	data['last_name'] = strtr($this->input->post('last_name'),'"',"'");
+			$data['last_name'] = strtr($this->input->post('last_name'),'"',"'");
 		}
 		if($this->input->post('phone_number') != false){	
             $data['phone_number'] = $this->input->post('phone_number');
