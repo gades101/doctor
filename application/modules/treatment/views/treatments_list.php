@@ -4,9 +4,11 @@ $( window ).load(function() {
 	$('.confirmDelete').click(function(){
 			return confirm("Are you sure you want to delete?");
 		});
-		
-    $('#treatments').dataTable();	
-	
+			
+    $('#treatments').dataTable({
+		"pageLength": 50,
+		"order":  []
+	});		
 } )
 </script>
 <div id="page-inner">
@@ -48,9 +50,10 @@ $( window ).load(function() {
 						<table class="table table-striped table-bordered table-hover dataTable no-footer" id="treatments" >
 						<thead>
 							<tr>
-								<th><?php echo $this->lang->line('no');?></th>
+								<th>id</th>
 								<th><?php echo $this->lang->line('treatment_name');?></th>
 								<th><?php echo $this->lang->line('treatment_charges');?></th>
+								<th>Кількість</th>
 								<th><?php echo $this->lang->line('edit');?></th>
 								<th><?php echo $this->lang->line('delete');?></th>
 							</tr>
@@ -59,9 +62,10 @@ $( window ).load(function() {
 						<?php $i=1; $j=1 ?>
 						<?php foreach ($treatments as $treatment):  ?>
 						<tr <?php if ($i%2 == 0) { echo "class='even'"; } else {echo "class='odd'";}?> >
-							<td><?php echo $j; ?></td>
+							<td><?php echo $treatment['id']; ?></td>
 							<td><?php echo $treatment['treatment']; ?></td>
-							<td class="right"><?php echo currency_format($treatment['price']);if($currency_postfix) echo $currency_postfix['currency_postfix']; ?></td>                
+							<td class="right"><?php echo currency_format($treatment['price']);if($currency_postfix) echo $currency_postfix['currency_postfix']; ?></td>
+							<td><?php echo $treatment['count']; ?></td>							
 							<td><a class="btn btn-primary btn-sm" title="Visit" href="<?php echo site_url("treatment/edit_treatment/" . $treatment['id']); ?>"><?php echo $this->lang->line('edit');?></a></td>
 							<td><a class="btn btn-danger btn-sm confirmDelete" title="<?php echo $this->lang->line('delete_treatment')." : " . $treatment['treatment'] ?>" href="<?php echo site_url("treatment/delete_treatment/" . $treatment['id']); ?>"><?php echo $this->lang->line('delete');?></a></td>
             </tr>

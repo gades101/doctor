@@ -100,7 +100,6 @@ class Payment_model extends CI_Model {
 		$this->db->set('payment_id',0,false);
 		$this->db->where('payment_id', $payment_id);
 		$this->db->update('appointment');
-
     }
 	 function get_all_payments_by_patient($patient_id){
 		$query = $this->db->get_where('payment',array('patient_id'=>$patient_id));
@@ -112,8 +111,11 @@ class Payment_model extends CI_Model {
 		}
 	 }
     public function list_expenses() {
-        $this->db->order_by("id","desc");
-        $query = $this->db->get('expense');
+		$this->db->select("e.id, e.user_id, e.cat_id, e.expense_date, e.goal, e.sum, ck_users.name",FALSE);
+		$this->db->from('ck_expense e');
+		$this->db->join('ck_users', 'e.user_id = ck_users.userid', 'left');
+		$this->db->order_by('e.id','desc');
+        $query = $this->db->get();
         return $query->result_array();
     }
  	function insert_expense() {
@@ -125,6 +127,24 @@ class Payment_model extends CI_Model {
 		$data['cat_id'] = $this->input->post('cat_id');
 		$this->db->insert('expense', $data);
     }
+    function delete_expense($id) {
+        $this->db->delete('expense', array('id' => $id));
+    }
+	function get_edit_expense($id){
+		$query = $this->db->get_where('expense', array('id' => $id));
+        return $query->row_array();
+	}
+	function edit_expense($id){  	 	 	 	 	
+		$data['id'] = $id;
+		$data['expense_date'] =  date("Y-m-d",strtotime($this->input->post('expense_date')));
+		$data['user_id'] = $this->input->post('user_id');
+		$data['cat_id'] = $this->input->post('cat_id');
+		$data['goal'] = $this->input->post('goal');
+		$data['sum'] = $this->input->post('sum');
+		$this->db->where('id', $id);
+		$this->db->update('expense', $data);
+		//file_put_contents('t1.txt',print_r($this->db->error(),true));
+	}
     public function list_expense_cat() {
         $this->db->order_by("id");
         $query = $this->db->get('expense_categories');

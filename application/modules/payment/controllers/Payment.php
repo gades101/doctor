@@ -46,7 +46,6 @@ class Payment extends CI_Controller {
         }
     }
     public function expense() {
-
 		if ( $this->is_session_started() === FALSE ){
 			session_start();
 		}
@@ -69,6 +68,46 @@ class Payment extends CI_Controller {
 				$data['expenses'] = $this->payment_model->list_expenses();
 				redirect('payment/expense');
 			}
+        }
+    }
+	public function edit_expense($id) {
+        if ( $this->is_session_started() === FALSE ){
+			session_start();
+		}
+        if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
+            redirect('login/index');
+        } else {
+			$this->form_validation->set_rules('cat_id', 'Категорія', 'trim|required');
+ 	  		$data['def_dateformate'] = $this->settings_model->get_date_formate();
+			if ($this->form_validation->run() === FALSE) {
+				$data['users'] = $this->admin_model->get_work_users();
+				$data['expense_categories'] = $this->payment_model->list_expense_cat();
+				$data['edit_expense'] = $this->payment_model->get_edit_expense($id);
+				//file_put_contents('t1.txt',print_r($data,true));
+				$this->load->view('templates/header');
+				$this->load->view('templates/menu');
+				$this->load->view('edit_expense', $data);
+				$this->load->view('templates/footer');
+			} else {
+                $this->payment_model->edit_expense($id);
+				$data['users'] = $this->admin_model->get_work_users();
+				$data['expense_categories'] = $this->payment_model->list_expense_cat();
+				$data['expenses'] = $this->payment_model->list_expenses();             
+                $this->load->view('templates/header');
+                $this->load->view('templates/menu');
+                $this->load->view('exp_browse', $data);
+                $this->load->view('templates/footer');
+            }
+        }
+    }
+    public function delete_expense($id) {
+        session_start();
+		//Check if user has logged in
+		if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
+            redirect('login/index/');
+        } else {
+            $this->payment_model->delete_expense($id);
+            $this->expense();
         }
     }
     public function expense_categories() {

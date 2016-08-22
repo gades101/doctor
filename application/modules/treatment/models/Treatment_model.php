@@ -7,13 +7,15 @@ class Treatment_model extends CI_Model {
     }
 
     public function get_treatments(){
-        $result = $this->db->get('treatments');
-        return $result->result_array();
+        $this->db->order_by("id","desc");
+        $query = $this->db->get('treatments');
+        return $query->result_array();
     }
     
     public function add_treatment() {
 		$data['treatment'] = strtr($this->input->post('treatment'),'"',"'");
         $data['price'] = $this->input->post('treatment_price');
+        $data['count'] = $this->input->post('treatment_count');
         $this->db->insert('treatments',$data);
     }
     
