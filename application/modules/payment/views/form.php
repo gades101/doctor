@@ -224,14 +224,12 @@
 					<input type="text"  name="discount" id="discount" class="form-control" value="<?= $discount; ?>" />
 				</div>
 			</div>
-			<?php if(isset($payment)){?>
 			<div class="col-md-2">
 				<div class="form-group">
 					<label for="apps_remaining">Залишилось зайнять</label>
-					<input type="text"  name="apps_remaining" id="apps_remaining" readonly=true class="form-control" value="<?= $payment->apps_remaining; ?>" />
+					<input type="text"  name="apps_remaining" id="apps_remaining" readonly=true class="form-control" value="<?php if(isset($payment)) echo $payment->apps_remaining; ?>" />
 				</div>
 			</div>
-			<?php } ?>
 			<div class="col-md-12">
 				<div class="form-group">
 					<label for="title"><?php echo $this->lang->line('payment_date');?></label>

@@ -8,6 +8,8 @@ class Payment extends CI_Controller {
 		$this->load->model('patient/patient_model');
 		$this->load->model('admin/admin_model');
 		$this->load->model('settings/settings_model');
+		$this->load->model('treatment/treatment_model');
+		$this->load->model('discount/discount_model');				
 		$this->load->model('menu_model');
 
 		$this->load->helper('form');
