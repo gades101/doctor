@@ -181,6 +181,7 @@ class Appointment extends CI_Controller {
 			$data['min'] = $min;
 			$time = $hour . ":" . $min;
             $appointment_dt = date("Y-m-d", gmmktime(0, 0, 0, $month, $day, $year));
+			$data['date_str']=$year.'/'.$month.'/'.$day;
             $data['appointment_date'] = $appointment_dt;
 			$data['appointment_time'] = $time;
 			$data['appointment_id']=0;

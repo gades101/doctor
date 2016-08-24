@@ -595,7 +595,7 @@ function openReason(onof) {
 					<div class="col-md-12">
 						<div class="form-group">
 							<button class="btn btn-primary" type="submit" name="submit" /><?php echo $this->lang->line('save');?></button>
-							<a class="btn btn-primary" href="<?=base_url() . "index.php/appointment/index/".$dep;?>"><?=$this->lang->line('back_to_app');?></a>
+							<a class="btn btn-primary" href="<?=base_url() . "index.php/appointment/index/".$dep.'/'.$date_str;?>"><?=$this->lang->line('back_to_app');?></a>
 						</div>
 					</div>
 
@@ -632,7 +632,7 @@ function openReason(onof) {
 							<a class="btn btn-primary" href="<?=base_url() . "index.php/appointment/change_status/" . $appointment_id . "/Consultation";?>">Консультація</a>
 						<?php } ?>
 						<!--<?php if (!isset($doctor)) { ?>
-							<a class="btn btn-danger" href="<?=base_url() . "index.php/appointment/del/" . $aappointment_id;?>">Видалити запис</a>
+							<a class="btn btn-danger" href="<?=base_url() . "index.php/appointment/del/" . $appointment_id;?>">Видалити запис</a>
 						<?php } ?>-->
 					<?php } ?>
 
