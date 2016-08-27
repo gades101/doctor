@@ -252,5 +252,23 @@ class Payment extends CI_Controller {
             $this->index();
         }		
 	}
+
+    public function payment_report($year=NULL,$month=NULL,$day=NULL) {
+		if ( $this->is_session_started() === FALSE ){
+			session_start();
+		}
+		//Check if user has logged in
+		if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
+			redirect('login/index');
+        } else {
+				$data['users'] = $this->admin_model->get_work_users();
+				$data['expense_categories'] = $this->payment_model->list_expense_cat();
+				$data['expenses'] = $this->payment_model->list_expenses();
+				$this->load->view('templates/header');
+				$this->load->view('templates/menu');
+				$this->load->view('exp_browse',$data);
+				$this->load->view('templates/footer');
+        }
+    }
 }
 ?>
