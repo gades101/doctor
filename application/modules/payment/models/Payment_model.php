@@ -9,6 +9,9 @@ class Payment_model extends CI_Model {
     public function list_payments() {
         $this->db->order_by("payment_id","desc");
         $query = $this->db->get('view_payment');
+   		file_put_contents('t1.txt', print_r($this->db->error(),true));
+   		file_put_contents('t1.txt', print_r($query,true));
+
         return $query->result_array();
     }
 	function insert_payment() {
@@ -201,6 +204,14 @@ class Payment_model extends CI_Model {
 		$data['title'] = strtr($this->input->post('title'),'"',"'");
 		$this->db->where('id', $exp_catgory_id);
 		$this->db->update('expense_categories', $data);	
+	}
+	function create_report(){
+        $start_date = date("Y-m-d", strtotime($this->input->post('report_from_date')))." 00:00:00";
+        $end_date = date("Y-m-d", strtotime($this->input->post('report_to_date')))." 23:59:59";
+		$query="SELECT sum(pay_amount) total_payment, (SELECT sum(sum) total_expense FROM " . $this->db->dbprefix('expense') . " WHERE expense_date >=? and expense_date <?) total_expense FROM " . $this->db->dbprefix('payment') . " WHERE pay_date >=? and pay_date <?";
+
+		$res=$this->db->query($query,array($start_date,$end_date,$start_date,$end_date));
+		return $res->row_array();
 	}
 }
 ?>

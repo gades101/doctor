@@ -3,73 +3,69 @@
 $( window ).load(function() {
 	$('.confirmDelete').click(function(){
 			return confirm("Ви впевнені");
-		});
-		
-    $('#payments').dataTable({
-		"pageLength": 50,
-		"order":  []
+	});
+	$('#report_from_date').datetimepicker({
+		timepicker:false,
+		format: 'd-m-Y',
+		scrollInput:false,
 	});	
-	
+	$('#report_to_date').datetimepicker({
+		timepicker:false,
+		format: 'd-m-Y',
+		scrollInput:false,
+	});	
 } )
 </script>
+<?php
+	$start_date = date($def_dateformate);
+	$end_date = date($def_dateformate, mktime(0,0,0,date("m"),date("d")+1,date("Y")));
+?>
 <div id="page-inner">
 	<div class="row">
 		<div class="col-md-12">
-			<!-- Advanced Tables -->
 			<div class="panel panel-primary">
 				<div class="panel-heading">
-					Платежі
+					Звіт по платежам
 				</div>
 				<div class="panel-body">
-					<a title="<?php echo $this->lang->line("add")." ".$this->lang->line("payment");?>"
-						href="<?php echo base_url()."index.php/payment/insert/0/payment" ?>"
-						class="btn btn-primary square-btn-adjust"/>
-							<?php echo $this->lang->line("add")." ".$this->lang->line("payment");?>
-					</a>
-					<p></p>
-					<div class="table-responsive">
-						<table class="table table-striped table-bordered table-hover" id="payments">
-							<thead>
-								<tr>
-									<th><?php echo $this->lang->line("id");?></th>
-									<th><?php echo $this->lang->line("date");?></th>
-									<th><?php echo $this->lang->line("patient");?></th>
-									<th><?php echo $this->lang->line("doctor");?></th>
-									<th>Сплачено (грн.)</th>
-									<th>Загальна сума (грн.)</th>
-									<th>Залишилось зайнять</th>
-									<th><?php echo $this->lang->line("payment_mode");?></th>
-									<th><?php echo $this->lang->line("edit");?></th>
-								</tr>
-							</thead>
-							<tbody>
-								<?php $i=1; ?>
-								<?php foreach ($payments as $payment):  ?>
-									<?php if(isset($payment['pay_date']) && $payment['pay_date'] != '0000-00-00'){?>
-									<?php $payment_date = $payment['pay_date']; ?>
-									<?php /*$payment_date = date('d-m-Y',strtotime($payment['pay_date']));*/ ?>
-									<?php }else{ ?>
-									<?php $payment_date = "--"; ?>
-									<?php } ?>
-									<tr <?php if ($i%2 == 0) { echo "class='even'"; } else { echo "class='odd'"; }?> >
-										<td><?php echo $payment['payment_id']; ?></td>
-										<td><?php echo $payment_date; ?></td>
-										<td><a href="<?= site_url('patient/edit/'.$payment['patient_id'].'/patient');?>"><?=$payment['first_name'].' '.$payment['middle_name']; ?></a></td>
-										<td><?php echo $payment['username']; ?></td>
-										<td><?php echo $payment['paid']; ?></td>
-										<td><?php echo $payment['pay_amount']; ?></td>
-										<td><?php echo $payment['apps_remaining']; ?></td>
-										<td><?php if($payment['pay_mode'] == "cheque") {echo "Безготівковий розрах.";} else echo "Готівка"?></td>
-										<td><a href="<?= site_url('payment/edit/'.$payment['payment_id']);?>" class="btn btn-sm btn-primary square-btn-adjust"><?php echo $this->lang->line("edit");?></a></td>
-									</tr>
-									<?php $i++; ?>
-								<?php endforeach?>
-							</tbody>
-						</table>
+					<?php echo form_open('payment/payment_report'); ?>
+					<div class="col-md-12">
+						<div class="col-md-4">					
+							<label for="report_from_date"><?php echo $this->lang->line("from_date");?></label>
+						</div>
+						<div class="col-md-4">					
+							<label for="report_to_date"><?php echo $this->lang->line("to_date")?></label>
+						</div>			
 					</div>
+					<div class="col-md-12">					
+						<div class="col-md-4">
+							<div class="form-group">
+								<input type="date" name="report_from_date" id="report_from_date" value="<?=$start_date;?>" class="form-control"/>
+								<?php echo form_error('report_from_date','<div class="alert alert-danger">','</div>'); ?>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="form-group">
+								<input type="date" name="report_to_date" id="report_to_date" value="<?=$end_date;?>" class="form-control" />
+								<?php echo form_error('report_to_date','<div class="alert alert-danger">','</div>'); ?>
+							</div>
+						</div>
+						<input class="btn btn-primary" type="submit" value="Вивести" name="submit" />
+					</div>
+					<?php echo form_close(); ?>
+					<?php if(isset($report)){?>
+						<div class="col-md-12">
+							<strong>Оплати: <?=$report['total_payment'];?></strong>
+						</div>
+						<div class="col-md-12">
+							<strong>Витрати: <?=$report['total_expense'];?></strong>
+						</div>
+						<div class="col-md-12">
+							<strong>Залишок: <?=$report['total_payment']-$report['total_expense'];?></strong>
+						</div>									
+					<?php } ?>
 				</div>
 			</div>
-			<!--End Advanced Tables -->
 		</div>
 	</div>
 </div>

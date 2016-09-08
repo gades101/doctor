@@ -133,6 +133,7 @@
 			format: '<?=$def_dateformate;?>',
 			scrollInput:false,
 		});
+
 		$( "#pay_mode" ).change(function() {
 			if($( "#pay_mode" ).val() == 'cheque'){
 				$( "#cheque_number" ).parent().parent().show();

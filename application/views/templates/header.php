@@ -45,8 +45,9 @@
 		<link href="<?= base_url() ?>assets/css/lightbox.css" rel="stylesheet" />
 		<!-- Sketch SCRIPTS-->
 		<script src="<?= base_url() ?>assets/js/sketch.js"></script>
-		<!-- CUSTOM SCRIPTS -->
+		<!-- CUSTOM SCRIPTS--> 
 		<script src="<?= base_url() ?>assets/js/custom.js"></script>
+		
     </head>
     <body>
         <?php

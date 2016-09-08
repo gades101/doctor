@@ -17,8 +17,12 @@ class Payment extends CI_Controller {
 		$this->load->helper('url');
 
 		$this->load->library('form_validation');
-
 		$this->lang->load('main');
+        $prefs = array(
+            'show_next_prev' => TRUE,
+			'next_prev_url' => base_url() . 'index.php/payment',
+        );
+        $this->load->library('calendar', $prefs);
     }
 	public function is_session_started(){
 		if ( php_sapi_name() !== 'cli' ) {
@@ -261,14 +265,45 @@ class Payment extends CI_Controller {
 		if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
 			redirect('login/index');
         } else {
-				$data['users'] = $this->admin_model->get_work_users();
-				$data['expense_categories'] = $this->payment_model->list_expense_cat();
-				$data['expenses'] = $this->payment_model->list_expenses();
+			$this->form_validation->set_rules('report_from_date', 'Від ', 'required');
+			$this->form_validation->set_rules('report_to_date', 'До', 'required');
+			if ($this->form_validation->run() === FALSE) {
+ 	  			$data['def_dateformate'] = $this->settings_model->get_date_formate();
 				$this->load->view('templates/header');
 				$this->load->view('templates/menu');
-				$this->load->view('exp_browse',$data);
+				$this->load->view('pay_report',$data);
+				$this->load->view('templates/footer');
+			} else {
+ 	  			$data['def_dateformate'] = $this->settings_model->get_date_formate();
+                $data['report'] = $this->payment_model->create_report();
+                $this->load->view('templates/header');
+                $this->load->view('templates/menu');
+                $this->load->view('pay_report', $data);
+                $this->load->view('templates/footer');
+            }
+
+
+
+
+        }
+    }
+
+    public function dir_payment_report($year=NULL,$month=NULL,$day=NULL) {
+		if ( $this->is_session_started() === FALSE ){
+			session_start();
+		}
+		//Check if user has logged in
+		if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
+			redirect('login/index');
+        } else {
+
+				$this->load->view('templates/header');
+				$this->load->view('templates/menu');
+				$this->load->view('pay_report',$data);
 				$this->load->view('templates/footer');
         }
     }
+
+
 }
 ?>
