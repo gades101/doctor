@@ -9,7 +9,8 @@ class Payment extends CI_Controller {
 		$this->load->model('admin/admin_model');
 		$this->load->model('settings/settings_model');
 		$this->load->model('treatment/treatment_model');
-		$this->load->model('discount/discount_model');				
+		$this->load->model('discount/discount_model');	
+        $this->load->model('doctor/doctor_model');			
 		$this->load->model('menu_model');
 
 		$this->load->helper('form');
@@ -51,6 +52,85 @@ class Payment extends CI_Controller {
 			$this->load->view('templates/footer');
         }
     }
+	public function insert($curr_patient_id=NULL,$called_from = 'bill') {
+        session_start();
+		//Check if user has logged in
+		if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
+            redirect('login/index');
+        } else {
+			$this->form_validation->set_rules('patient_id', 'Patient', 'required');
+            //$this->form_validation->set_rules('bill_id', 'Bill Id', 'required');
+
+			if ($this->form_validation->run() === FALSE) {
+				$data['treatments'] = $this->treatment_model->get_treatments();
+				if ($curr_patient_id) 	$data['curr_patient'] = $this->patient_model->get_patient_detail($curr_patient_id);
+				else $data['patients'] = $this->patient_model->get_patient();
+				$data['currency_postfix'] = $this->settings_model->get_currency_postfix();
+				$data['users'] = $this->admin_model->get_work_users();
+				$data['departments'] = $this->doctor_model->get_all_departments();
+				$data['discounts'] = $this->discount_model->get_discounts();
+				$data['selected_doctor_id'] = NULL;
+				$data['def_dateformate'] = $this->settings_model->get_date_formate();
+				file_put_contents('t1.txt', print_r($data,true));
+				$this->load->view('templates/header');
+				$this->load->view('templates/menu');
+				$this->load->view('form',$data);
+				$this->load->view('templates/footer');
+			}else{
+				$this->payment_model->insert_payment();
+				$this->index();
+			}
+        }
+    }
+
+	public function edit($payment_id){
+		session_start();
+		//Check if user has logged in
+		if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
+            redirect('login/index');
+        } else {
+			$this->form_validation->set_rules('patient_id', 'Patient', 'required');
+			$this->form_validation->set_rules('pay_amount', 'Payment Amount', 'required');
+			$this->form_validation->set_rules('pay_date', 'Payment Date', 'required');
+			$this->form_validation->set_rules('pay_mode', 'Payment Mode', 'required');
+
+			if ($this->form_validation->run() === FALSE) {
+				$data['patients'] = $this->patient_model->get_patient();
+				$data['treatments'] = $this->treatment_model->get_treatments();		
+				$data['discounts'] = $this->discount_model->get_discounts();				
+				$payment = $this->payment_model->get_payment($payment_id);
+				$data['payment'] = $payment;
+				$data['payment_id'] = $payment->payment_id;
+				$data['patient_id'] = $payment->patient_id;
+				$data['patient'] = $this->patient_model->get_patient_detail($data['patient_id']);
+				$data['def_dateformate'] = $this->settings_model->get_date_formate();
+				//25-12-15
+				$data['called_from'] = "";
+				$data['curr_treatment']=$this->treatment_model->get_edit_treatment($payment->treatment_id);
+				$data['users'] = $this->admin_model->get_work_users();
+				$data['departments'] = $this->doctor_model->get_all_departments();
+				$data['selected_doctor_id']=$payment->userid;			
+				$this->load->view('templates/header');
+				$this->load->view('templates/menu');
+				$this->load->view('form',$data);
+				$this->load->view('templates/footer');
+			}else{
+				$this->payment_model->edit_payment($payment_id);
+				$this->index();
+			}
+
+		}
+	}
+    public function del($payment_id) {
+        session_start();
+		//Check if user has logged in
+		if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
+            redirect('login/index/');
+        } else {
+            $this->payment_model->delete_payment($payment_id);
+            $this->index();
+        }
+    }
     public function expense() {
 		if ( $this->is_session_started() === FALSE ){
 			session_start();
@@ -65,6 +145,7 @@ class Payment extends CI_Controller {
 				$data['users'] = $this->admin_model->get_work_users();
 				$data['expense_categories'] = $this->payment_model->list_expense_cat();
 				$data['expenses'] = $this->payment_model->list_expenses();
+				$data['departments'] = $this->doctor_model->get_all_departments();
 				$this->load->view('templates/header');
 				$this->load->view('templates/menu');
 				$this->load->view('exp_browse',$data);
@@ -87,6 +168,7 @@ class Payment extends CI_Controller {
  	  		$data['def_dateformate'] = $this->settings_model->get_date_formate();
 			if ($this->form_validation->run() === FALSE) {
 				$data['users'] = $this->admin_model->get_work_users();
+				$data['departments'] = $this->doctor_model->get_all_departments();
 				$data['expense_categories'] = $this->payment_model->list_expense_cat();
 				$data['edit_expense'] = $this->payment_model->get_edit_expense($id);
 				//file_put_contents('t1.txt',print_r($data,true));
@@ -97,6 +179,7 @@ class Payment extends CI_Controller {
 			} else {
                 $this->payment_model->edit_expense($id);
 				$data['users'] = $this->admin_model->get_work_users();
+				$data['departments'] = $this->doctor_model->get_all_departments();
 				$data['expense_categories'] = $this->payment_model->list_expense_cat();
 				$data['expenses'] = $this->payment_model->list_expenses();             
                 $this->load->view('templates/header');
@@ -162,82 +245,6 @@ class Payment extends CI_Controller {
                 $this->load->view('templates/footer');
             }
         }
-    }
-	public function insert($curr_patient_id=NULL,$called_from = 'bill') {
-        session_start();
-		//Check if user has logged in
-		if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
-            redirect('login/index');
-        } else {
-			$this->form_validation->set_rules('patient_id', 'Patient', 'required');
-            //$this->form_validation->set_rules('bill_id', 'Bill Id', 'required');
-
-			if ($this->form_validation->run() === FALSE) {
-				$data['treatments'] = $this->treatment_model->get_treatments();
-				if ($curr_patient_id) 	$data['curr_patient'] = $this->patient_model->get_patient_detail($curr_patient_id);
-				else $data['patients'] = $this->patient_model->get_patient();
-				$data['currency_postfix'] = $this->settings_model->get_currency_postfix();
-				$data['doctors'] = $this->admin_model->get_doctor();
-				$data['discounts'] = $this->discount_model->get_discounts();
-				$data['selected_doctor_id'] = NULL;
-				$data['def_dateformate'] = $this->settings_model->get_date_formate();
-				$this->load->view('templates/header');
-				$this->load->view('templates/menu');
-				$this->load->view('form',$data);
-				$this->load->view('templates/footer');
-			}else{
-				$this->payment_model->insert_payment();
-				$this->index();
-			}
-        }
-    }
-
-	public function edit($payment_id){
-		session_start();
-		//Check if user has logged in
-		if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
-            redirect('login/index');
-        } else {
-			$this->form_validation->set_rules('patient_id', 'Patient', 'required');
-			$this->form_validation->set_rules('pay_amount', 'Payment Amount', 'required');
-			$this->form_validation->set_rules('pay_date', 'Payment Date', 'required');
-			$this->form_validation->set_rules('pay_mode', 'Payment Mode', 'required');
-
-			if ($this->form_validation->run() === FALSE) {
-				$data['patients'] = $this->patient_model->get_patient();
-				$data['treatments'] = $this->treatment_model->get_treatments();		
-				$data['discounts'] = $this->discount_model->get_discounts();				
-				$payment = $this->payment_model->get_payment($payment_id);
-				$data['payment'] = $payment;
-				$data['payment_id'] = $payment->payment_id;
-				$data['patient_id'] = $payment->patient_id;
-				$data['patient'] = $this->patient_model->get_patient_detail($data['patient_id']);
-				$data['def_dateformate'] = $this->settings_model->get_date_formate();
-				//25-12-15
-				$data['called_from'] = "";
-				$data['curr_treatment']=$this->treatment_model->get_edit_treatment($payment->treatment_id);
-				$data['doctors'] = $this->admin_model->get_doctor();
-				$data['selected_doctor_id']=$payment->userid;			
-				$this->load->view('templates/header');
-				$this->load->view('templates/menu');
-				$this->load->view('form',$data);
-				$this->load->view('templates/footer');
-			}else{
-				$this->payment_model->edit_payment($payment_id);
-				$this->index();
-			}
-
-		}
-	}
-    public function del($payment_id) {
-        session_start();
-		//Check if user has logged in
-		if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
-            redirect('login/index/');
-        } else {
-            $this->payment_model->delete_payment($payment_id);
-            $this->index();
-        }
     }	
 	
 	public function payment_ajax_info($patient_id){
@@ -265,10 +272,11 @@ class Payment extends CI_Controller {
 		if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
 			redirect('login/index');
         } else {
-			$this->form_validation->set_rules('report_from_date', 'Від ', 'required');
-			$this->form_validation->set_rules('report_to_date', 'До', 'required');
+			$this->form_validation->set_rules('start_date', 'Від ', 'required');
+			$this->form_validation->set_rules('end_date', 'До', 'required');
 			if ($this->form_validation->run() === FALSE) {
  	  			$data['def_dateformate'] = $this->settings_model->get_date_formate();
+				$data['departments'] = $this->doctor_model->get_all_departments();
 				$this->load->view('templates/header');
 				$this->load->view('templates/menu');
 				$this->load->view('pay_report',$data);
@@ -276,6 +284,10 @@ class Payment extends CI_Controller {
 			} else {
  	  			$data['def_dateformate'] = $this->settings_model->get_date_formate();
                 $data['report'] = $this->payment_model->create_report();
+                $data['start_date'] = $this->input->post('start_date');
+                $data['end_date'] = $this->input->post('end_date');
+   				file_put_contents('t1.txt', print_r($data,true));
+
                 $this->load->view('templates/header');
                 $this->load->view('templates/menu');
                 $this->load->view('pay_report', $data);

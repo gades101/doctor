@@ -9,9 +9,6 @@ class Payment_model extends CI_Model {
     public function list_payments() {
         $this->db->order_by("payment_id","desc");
         $query = $this->db->get('view_payment');
-   		file_put_contents('t1.txt', print_r($this->db->error(),true));
-   		file_put_contents('t1.txt', print_r($query,true));
-
         return $query->result_array();
     }
 	function insert_payment() {
@@ -20,11 +17,12 @@ class Payment_model extends CI_Model {
 		$data['treatment_id'] = $this->input->post('treatment_id');
 		$data['paid'] = $this->input->post('paid');
 		$data['pay_amount'] = $this->input->post('pay_amount');
-		$data['pay_date'] = date('Y-m-d',strtotime($this->input->post('pay_date')));
+		$data['pay_date'] = date('Y-m-d H:i',strtotime($this->input->post('pay_date')));
 		$data['pay_mode'] = $this->input->post('pay_mode');
-		$data['userid'] = $this->input->post('userid');
+		$data['userid'] = $this->input->post('user_id');
 		$data['apps_remaining']=($this->input->post('apps_remaining')=="") ? 1 : $this->input->post('apps_remaining');
 		$data['notes'] = $this->input->post('notes');
+		$data['department_id'] = $this->input->post('department_id');
 		$this->db->insert('payment', $data);
 		$this->db->set('all_paid','all_paid + '.$data['paid'],false);
 		$this->db->where('patient_id', $data['patient_id']);
@@ -41,6 +39,7 @@ class Payment_model extends CI_Model {
 		$data['pay_mode'] = 'cash';
 		$data['userid'] = $this->input->post('doctor_id');
 		$data['apps_remaining']=($treatment['count']=="") ? 0 : $treatment['count']-1;
+		$data['department_id'] = $this->input->post('department_id');
 		$this->db->insert('payment', $data);
 		$_POST['payment_id']=$this->db->insert_id();
 		$this->db->set('all_paid','all_paid + '.$data['paid'],false);
@@ -78,6 +77,7 @@ class Payment_model extends CI_Model {
 		$data['pay_date'] = $this->input->post('pay_date');
 		$data['notes'] = $this->input->post('notes');
 		$data['apps_remaining']=$this->input->post('apps_remaining');
+		$data['department_id'] = $this->input->post('department_id');
 		$this->db->where('payment_id', $payment_id);
 		$this->db->update('payment', $data);
 		if($old_paid!=$data['paid']){
@@ -114,7 +114,7 @@ class Payment_model extends CI_Model {
 		}
 	 }
     public function list_expenses() {
-		$this->db->select("e.id, e.user_id, e.cat_id, e.expense_date, e.goal, e.sum, ck_users.name",FALSE);
+		$this->db->select("e.id, e.user_id, e.cat_id, DATE_FORMAT(e.expense_date, '%Y-%m-%d %H:%i') AS expense_date, e.goal, e.sum, ck_users.name",FALSE);
 		$this->db->from('ck_expense e');
 		$this->db->join('ck_users', 'e.user_id = ck_users.userid', 'left');
 		$this->db->order_by('e.id','desc');
@@ -124,10 +124,12 @@ class Payment_model extends CI_Model {
  	function insert_expense() {
 		$data = array();
 		$data['user_id'] = $this->input->post('user_id');
-		$data['expense_date'] = date('Y-m-d',strtotime($this->input->post('expense_date')));
+		$data['expense_date'] = date('Y-m-d H:i',strtotime($this->input->post('expense_date')));
 		$data['goal'] = $this->input->post('goal');
 		$data['sum'] = $this->input->post('sum');
 		$data['cat_id'] = $this->input->post('cat_id');
+		$data['department_id'] = $this->input->post('department_id');
+		//file_put_contents('t1.txt', print_r($data,true));
 		$this->db->insert('expense', $data);
     }
     function delete_expense($id) {
@@ -144,9 +146,9 @@ class Payment_model extends CI_Model {
 		$data['cat_id'] = $this->input->post('cat_id');
 		$data['goal'] = $this->input->post('goal');
 		$data['sum'] = $this->input->post('sum');
+		$data['department_id'] = $this->input->post('department_id');
 		$this->db->where('id', $id);
 		$this->db->update('expense', $data);
-		//file_put_contents('t1.txt',print_r($this->db->error(),true));
 	}
     public function list_expense_cat() {
         $this->db->order_by("id");
@@ -206,12 +208,22 @@ class Payment_model extends CI_Model {
 		$this->db->update('expense_categories', $data);	
 	}
 	function create_report(){
-        $start_date = date("Y-m-d", strtotime($this->input->post('report_from_date')))." 00:00:00";
-        $end_date = date("Y-m-d", strtotime($this->input->post('report_to_date')))." 23:59:59";
-		$query="SELECT sum(pay_amount) total_payment, (SELECT sum(sum) total_expense FROM " . $this->db->dbprefix('expense') . " WHERE expense_date >=? and expense_date <?) total_expense FROM " . $this->db->dbprefix('payment') . " WHERE pay_date >=? and pay_date <?";
-
-		$res=$this->db->query($query,array($start_date,$end_date,$start_date,$end_date));
-		return $res->row_array();
+        $start_date = date("Y-m-d H:i", strtotime($this->input->post('start_date')));
+        $end_date = date("Y-m-d H:i", strtotime($this->input->post('end_date')));
+ 		$departments = $this->doctor_model->get_all_departments();
+ 		$i=0; $query_str="";
+ 		foreach ($departments as $dep) {
+ 			$id=$dep['department_id'];
+ 			if ($i!=0) $query_str.=" UNION ";
+ 			$query_str.="SELECT ".$this->db->escape($dep['department_name'])." department_name, sum(p.paid) pay_summ, (SELECT sum(e.sum) summ FROM ck_expense e WHERE e.expense_date >=".$this->db->escape($start_date)." and e.expense_date <".$this->db->escape($end_date)." AND e.department_id=$id) exp_summ  FROM ck_payment p  WHERE p.pay_date >=". $this->db->escape($start_date)." and p.pay_date < ". $this->db->escape($end_date)." AND p.department_id=$id";
+ 			$i+=1;
+ 		}
+       
+    	//$query="SELECT sum(p.paid) summ, p.department_id FROM ck_payment p WHERE p.pay_date >= ? and p.pay_date < ? GROUP BY department_id UNION SELECT sum(e.sum) summ, e.department_id FROM ck_expense e WHERE e.expense_date >= ? and e.expense_date < ? GROUP BY department_id ORDER BY department_id";
+		//$res=$this->db->query($query,array($start_date,$end_date,$start_date,$end_date));
+		$res=$this->db->query($query_str);
+		//file_put_contents('t1.txt', print_r($this->db->last_query(),true));
+		return $res->result_array();
 	}
 }
 ?>

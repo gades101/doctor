@@ -9,14 +9,18 @@
 		$paid=$payment->paid;
 		$discount=$patient['discount'];
 		$notes=$payment->notes;
+		$curr_department=$payment->department_id;
+		$curr_user=$payment->userid;
 	} else {
 		$pay_mode = "cash";
-		$pay_date=date("d-m-Y");
+		$pay_date=date("d-m-Y H:i");
 		$pay_amount=0;
 		$paid=0;
 		$discount="";
 		$curr_treatment_name="";
 		$notes="";
+		$curr_department=1;
+		$curr_user="";
 	}
 	if (isset($curr_patient)){
 		$patient_id=$curr_patient['patient_id'];
@@ -129,8 +133,8 @@
 		});		
 		
 		$('#pay_date').datetimepicker({
-			timepicker:false,
-			format: '<?=$def_dateformate;?>',
+			timepicker:true,
+			format: 'd-m-Y H:i',
 			scrollInput:false,
 		});
 
@@ -159,6 +163,11 @@
 				$('#paid').val(price.toFixed(2));
 			}
 		});
+
+		$('#user_id').on('change', function(){
+			$('#department_id').val($(this).children('option:selected').data('department_id'));
+		});	
+
 		<?php if(isset($payment)) { ?>
 			$("#close_payment").click(function() {
 				var pay=$('#close_payment'),apps_remaining="<?= $payment->apps_remaining; ?>",pay_amount="<?= $payment->pay_amount; ?>";
@@ -189,8 +198,7 @@
 			<?php  }else{ ?>
 			<?php echo form_open('payment/insert/') ?>
 			<?php  } ?>
-
-			<input type="hidden" name="payment_type" value="bill_payment" />
+			<input type="hidden" name="department_id" value="" />
 			<input type="hidden" name="treatment_id" id="treatment_id" value="<?php if(isset($curr_treatment)){echo $curr_treatment['id']; } ?>"/>
 
 
@@ -237,20 +245,25 @@
 					<input type="text" name="pay_date" id="pay_date" class="form-control" value="<?=$pay_date;?>" />
 				</div>
 			</div>
-			
-			<div class="col-md-6">
-				<div class="form-group">
-					<label for="doctor"><?php echo $this->lang->line('doctor');?></label>
-					<?php
-						$doctor_detail = array();
-						foreach ($doctors as $doctor_list){
-							$doctor_detail[$doctor_list['userid']] = $doctor_list['name'];
-						}
-					?>
-					<?php echo form_dropdown('userid', $doctor_detail, $selected_doctor_id,'class="form-control"'); ?>
-				</div>
+			<div class="col-md-6 form-group">
+				<label for="user_id">Користувач</label>
+				<select id='user_id' name='user_id' class="form-control" value="<?php if(isset($payment)) echo $payment->userid; ?>">
+					<?php foreach($users as $user){ ?>									
+						<option value="<?php echo $user['userid']; ?>" data-department_id="<?= $user['department_id']; ?>" <?php if($user['userid']==$curr_user) echo 'selected=true';?> /><?= $user['name']; ?></option>				
+					<?php } ?>
+				</select>
 			</div>
-			
+            <div class="col-md-6 form-group">
+	            <label for="user_id">Відділення</label>
+	            <?php
+	                $department_list = array();
+	                foreach ($departments as $department){
+	                    $department_list[$department['department_id']] = $department['department_name'];
+	                }
+	                ?>
+	                <?php echo form_dropdown('department_id', $department_list,$curr_department,'id="department_id" class="form-control"'); ?>
+	                <?php echo form_error('department_id','<div class="alert alert-danger">','</div>'); ?>
+	        </div>			
 			<div class="col-md-12">
 				<div class="form-group">
 					<label for="title"><?php echo $this->lang->line('payment_mode');?></label>

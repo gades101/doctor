@@ -10,7 +10,7 @@
 						<input type="hidden" name="department_id" class="inline" value="<?=$departments['department_id']?>"/>						
 						<div class="col-md-6">
 							<div class="form-group">
-								<label for="department_name"><?php echo $this->lang->line("department") . ' ' . $this->lang->line("name");?> </label>
+								<label for="department_name"><?php echo $this->lang->line("department");?> </label>
 								<input type="input" name="department_name" class="form-control" value="<?=$departments['department_name']?>"/>
 								<?php echo form_error('department_name','<div class="alert alert-danger">','</div>'); ?>
 							</div>

@@ -11,7 +11,7 @@
 		$notes=$payment->notes;
 	} else {
 		$pay_mode = "cash";
-		$pay_date=date("d-m-Y");
+		$pay_date=date("d-m-Y H:i");
 		$pay_amount=0;
 		$paid=0;
 		$discount="";
@@ -129,8 +129,8 @@
 		});		
 		
 		$('#pay_date').datetimepicker({
-			timepicker:false,
-			format: '<?=$def_dateformate;?>',
+			timepicker:true,
+			format: 'd-m-Y H:i',
 			scrollInput:false,
 		});
 		$( "#pay_mode" ).change(function() {
@@ -158,6 +158,7 @@
 				$('#paid').val(price.toFixed(2));
 			}
 		});
+
 		<?php if(isset($payment)) { ?>
 			$("#close_payment").click(function() {
 				var pay=$('#close_payment'),apps_remaining="<?= $payment->apps_remaining; ?>",pay_amount="<?= $payment->pay_amount; ?>";

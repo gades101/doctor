@@ -29,11 +29,14 @@ $( window ).load(function() {
 		"order":  []
 	});	
 	$('#expense_date').datetimepicker({
-			timepicker:false,
-			format: '<?=$def_dateformate; ?>',
+			timepicker:true,
+			format: 'd-m-Y H:i',
 			scrollInput:false,
 
 	});
+	$('#user_id').on('change', function(){
+		$('#department_id').val($(this).children('option:selected').data('department_id'));
+	});	
 	
 } )
 </script>
@@ -46,12 +49,13 @@ $( window ).load(function() {
 				</div>
 				<div class="panel-body">
 					<?php echo form_open('payment/expense'); ?>
+						<input type="hidden" name="department_id" value="" />
 						<div class="col-md-2 form-group" >
 							<label for="expense_date">Дата</label>
 							<input type="text" class="form-control" name="expense_date" id="expense_date" value=""/>
 							<?php echo form_error('expense_date','<div class="alert alert-danger">','</div>'); ?>
 						</div>
-						<div class="col-md-4">
+						<div class="col-md-4 form-group">
 							<label for="cat_id">Категорія</label>
 							<?php
 								$cat_list = array();
@@ -62,23 +66,31 @@ $( window ).load(function() {
 							<?php echo form_dropdown('cat_id', $cat_list,array(),'class="form-control"'); ?>
 							<?php echo form_error('cat_id','<div class="alert alert-danger">','</div>'); ?>
 						</div>
-						<div class="col-md-6">
+						<div class="col-md-6 form-group">
 							<label for="user_id">Користувач</label>
-							<?php
-								$user_list = array();
-								foreach ($users as $user){
-									$user_list[$user['userid']] = $user['name'];
-								}
-							?>
-							<?php echo form_dropdown('user_id', $user_list,array(),'class="form-control"'); ?>
-							<?php echo form_error('user_id','<div class="alert alert-danger">','</div>'); ?>
-						</div>
-						<div class="col-md-12">
-							<div class="form-group input-group">
+								<select id='user_id' name='user_id' class="form-control">
+									<?php foreach($users as $user){ ?>									
+											<option value="<?php echo $user['userid']; ?>"  data-department_id="<?= $user['department_id']; ?>"  /><?= $user['name']; ?></option>				
+									<?php } ?>
+								</select>
+						</div>	
+						<div class="col-md-6">
+							<div class="form-group">
 								<label for="expense_sum">Сума</label>
 								<input type="text" class="form-control"  name="sum" id="expense_sum" value=""/>
 								<?php echo form_error('expense_price','<div class="alert alert-danger">','</div>'); ?>
 							</div>
+						</div>
+						<div class="col-md-6 form-group">
+							<label for="departmentr_id">Відділення</label>
+							<?php
+								$department_list = array();
+								foreach ($departments as $department){
+									$department_list[$department['department_id']] = $department['department_name'];
+								}
+							?>
+							<?php echo form_dropdown('department_id', $department_list,1,'id="department_id" class="form-control"'); ?>
+							<?php echo form_error('department_id','<div class="alert alert-danger">','</div>'); ?>
 						</div>
 						<div class="col-md-12 form-group">
 							<label for="expense_title">Призначення</label>
@@ -103,6 +115,7 @@ $( window ).load(function() {
 								<th><?php echo $this->lang->line('no');?></th>
 								<th>Користувач</th>
 								<th>Призначення</th>
+								<th>Дата</th>
 								<th>Сума</th>
 								<th><?php echo $this->lang->line('edit');?></th>
 								<th><?php echo $this->lang->line('delete');?></th>
@@ -115,6 +128,7 @@ $( window ).load(function() {
 							<td><?php echo $j; ?></td>
 							<td><?php echo $expense['name']; ?></td>
 							<td><?php echo $expense['goal']; ?></td>
+							<td><?php echo $expense['expense_date']; ?></td> 
 							<td><?php echo $expense['sum']; ?></td>               
 							<td><a class="btn btn-primary btn-sm" href="<?php echo site_url("payment/edit_expense/" . $expense['id']); ?>"><?php echo $this->lang->line('edit');?></a></td>
 							<td><a class="btn btn-danger btn-sm confirmDelete" href="<?php echo site_url("payment/delete_expense/" . $expense['id']); ?>"><?php echo $this->lang->line('delete');?></a></td>

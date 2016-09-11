@@ -57,6 +57,7 @@ $(window).load(function(){
 					//$('#discount').prop('disabled',false);
 					$('#payment_id').val(0).prop('disabled',true);
 					$('#treatment').prop('readonly',false);
+					$('#department_id').val($('#doctor_id').children('option:selected').data('department_id'));
 					$('#pay_block').show();
 				}
 				else{
@@ -385,6 +386,9 @@ $(window).load(function(){
 				$('#paid').val(price.toFixed(2));
 			}
 		});
+		$('#doctor_id').on('change', function(){
+			$('#department_id').val($(this).children('option:selected').data('department_id'));
+		});	
 });
 
 function openReason(onof) {
@@ -465,6 +469,7 @@ function openReason(onof) {
 					<input type="hidden" name="patient_id" id="patient_id" value="<?php if(isset($curr_patient)){echo $curr_patient['patient_id']; } ?>"/>
 					<input type="hidden" name="treatment_id" id="treatment_id" value="<?php if(isset($curr_treatment)){echo $curr_treatment['id']; } ?>"/>
 					<input type="hidden" name="payment_id_orig" id="payment_id_orig" value="<?= $curr_payment_id; ?>"/>
+					<input type="hidden" name="department_id" id="department_id" value=""/>
 
 					<div class="panel panel-success">
 						<div class="panel-heading">
@@ -488,18 +493,16 @@ function openReason(onof) {
 							</div>
 						</div>
 					</div>
-					<div class="col-md-6">
-						<div class="form-group">
-							<label for="doctor"><?php echo $this->lang->line('doctor');?></label>
-							<?php
-								$doctor_detail = array();
-								foreach ($doctors as $doctor_list){
-									$doctor_detail[$doctor_list['userid']] = $doctor_list['name'];
-								}
-							?>
-							<?php echo form_dropdown('doctor_id', $doctor_detail, $selected_doctor_id,'class="form-control"'); ?>
-						</div>
+
+					<div class="col-md-6 form-group">
+						<label for="user_id"><?php echo $this->lang->line('doctor');?></label>
+						<select id='doctor_id' name='doctor_id' class="form-control">
+							<?php foreach($doctors as $doctor){ ?>									
+								<option value="<?php echo $doctor['userid']; ?>"  data-department_id="<?= $doctor['department_id']; ?>" <?php if($doctor['userid']==$selected_doctor_id) echo 'selected=true';?> /><?= $doctor['name']; ?></option>				
+							<?php } ?>
+						</select>
 					</div>
+
 					<?php if(!isset($appointment)) {?>
 					<div class="col-md-4">
 						<div class="form-group">

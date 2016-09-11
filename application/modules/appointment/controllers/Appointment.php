@@ -218,7 +218,8 @@ class Appointment extends CI_Controller {
 					$data['selected_doctor_id'] = $doctor_id;
 					$data['doctors'][0]=$data['doctor'];
 				}else{
-					$data['doctors'] = $this->admin_model->get_doctor();
+					$data['doctors'] = $this->admin_model->get_work_users();
+					//$data['doctors'] = $this->admin_model->get_doctor();
 				}
 				$data['selected_doctor_id'] = $doctor_id;
 				$this->load->view('templates/header');

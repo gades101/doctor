@@ -4,68 +4,93 @@ $( window ).load(function() {
 	$('.confirmDelete').click(function(){
 			return confirm("Ви впевнені");
 	});
-	$('#report_from_date').datetimepicker({
-		timepicker:false,
-		format: 'd-m-Y',
+	$('#start_date').datetimepicker({
+		timepicker:true,
+		format: 'd-m-Y H:i',
 		scrollInput:false,
 	});	
-	$('#report_to_date').datetimepicker({
-		timepicker:false,
-		format: 'd-m-Y',
+	$('#end_date').datetimepicker({
+		timepicker:true,
+		format: 'd-m-Y H:i',
 		scrollInput:false,
 	});	
 } )
 </script>
 <?php
-	$start_date = date($def_dateformate);
-	$end_date = date($def_dateformate, mktime(0,0,0,date("m"),date("d")+1,date("Y")));
+	$start_date = (isset($start_date)) ? ($start_date) : date($def_dateformate) . " 00:00";
+	$end_date = (isset($end_date)) ? ($end_date) : date($def_dateformate, mktime(0,0,0,date("m"),date("d")+1,date("Y"))) . " 00:00";
 ?>
 <div id="page-inner">
 	<div class="row">
-		<div class="col-md-12">
-			<div class="panel panel-primary">
+		<div class="col-md-12">	
+			<div class="panel panel-primary">		
 				<div class="panel-heading">
-					Звіт по платежам
+					Звіт по платежам/витратам
 				</div>
 				<div class="panel-body">
 					<?php echo form_open('payment/payment_report'); ?>
 					<div class="col-md-12">
 						<div class="col-md-4">					
-							<label for="report_from_date"><?php echo $this->lang->line("from_date");?></label>
+							<label for="start_date"><?php echo $this->lang->line("from_date");?></label>
 						</div>
 						<div class="col-md-4">					
-							<label for="report_to_date"><?php echo $this->lang->line("to_date")?></label>
+							<label for="end_date"><?php echo $this->lang->line("to_date");?></label>
 						</div>			
 					</div>
 					<div class="col-md-12">					
 						<div class="col-md-4">
 							<div class="form-group">
-								<input type="date" name="report_from_date" id="report_from_date" value="<?=$start_date;?>" class="form-control"/>
-								<?php echo form_error('report_from_date','<div class="alert alert-danger">','</div>'); ?>
+								<input type="text" name="start_date" id="start_date" value="<?=$start_date;?>" class="form-control"/>
+								<?php echo form_error('start_date','<div class="alert alert-danger">','</div>'); ?>
 							</div>
 						</div>
 						<div class="col-md-4">
 							<div class="form-group">
-								<input type="date" name="report_to_date" id="report_to_date" value="<?=$end_date;?>" class="form-control" />
-								<?php echo form_error('report_to_date','<div class="alert alert-danger">','</div>'); ?>
+								<input type="text" name="end_date" id="end_date" value="<?=$end_date;?>" class="form-control" />
+								<?php echo form_error('end_date','<div class="alert alert-danger">','</div>'); ?>
 							</div>
 						</div>
 						<input class="btn btn-primary" type="submit" value="Вивести" name="submit" />
 					</div>
 					<?php echo form_close(); ?>
-					<?php if(isset($report)){?>
-						<div class="col-md-12">
-							<strong>Оплати: <?=$report['total_payment'];?></strong>
-						</div>
-						<div class="col-md-12">
-							<strong>Витрати: <?=$report['total_expense'];?></strong>
-						</div>
-						<div class="col-md-12">
-							<strong>Залишок: <?=$report['total_payment']-$report['total_expense'];?></strong>
-						</div>									
-					<?php } ?>
+				</div>
+			</div>			
+			<?php if(isset($report)){?>
+			<div class="panel panel-primary">
+				<div class="panel-body">
+					<div class="table-responsive">
+						<table class="table table-striped table-bordered table-hover dataTable no-footer" id="pay_report">
+							<thead>
+								<tr>
+									<th>Відділення</th>
+									<th>Оплати (грн.)</th>
+									<th>Витрати (грн.)</th>
+									<th>Різниця (грн.)</th>
+								</tr>
+							</thead>
+							<tbody>
+								<?php 
+									$total_pay=0.00;$total_exp=0.00;
+									foreach($report as $elem):?>
+									<tr>
+										<td><?=$elem['department_name'];?></td>
+										<td><?php echo $elem['pay_summ']+0; $total_pay+=$elem['pay_summ']; ?></td>
+										<td><?php echo $elem['exp_summ']+0; $total_exp+=$elem['exp_summ'];?></td>
+										<td><?= $elem['pay_summ']-$elem['exp_summ'];?></td>	
+									</tr>
+								<?php endforeach?>	
+									<tr>
+										<td>Усі відділення</td>	
+										<td><?=$total_pay;?></td>
+										<td><?=$total_exp;?></td>		
+										<td><?=$total_pay-$total_exp;?></td>																		
+									</tr>												
+							</tbody>
+						</table>
+					</div>	
 				</div>
 			</div>
+			<?php } ?>
 		</div>
 	</div>
 </div>
