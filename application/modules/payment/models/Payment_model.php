@@ -225,5 +225,17 @@ class Payment_model extends CI_Model {
 		//file_put_contents('t1.txt', print_r($this->db->last_query(),true));
 		return $res->result_array();
 	}
+	function create_dir_report(){
+		$start_date = date("Y-m-d H:i", strtotime($this->input->post('start_date')));
+    	$end_date = date("Y-m-d H:i", strtotime($this->input->post('end_date')));
+    	//if($this->input->post('start_date')<$this->input->post('end_date')){}
+    	$date=" p.pay_date >=". $this->db->escape($start_date)." and p.pay_date < ". $this->db->escape($end_date)." ";
+		$user=($this->input->post('user_id'))?" AND p.user_id=$this->input->post('user_id') ":"";
+		$treatment=($this->input->post('treatment_id'))?" AND p.treatment_id=$this->input->post('treatment_id') ":"";
+ 		$departments = ($this->input->post('department_id'))?" AND p.department_id=$this->input->post('department_id') ":"";
+ 		$query_str="SELECT ".$this->db->escape($dep['department_name'])." department_name, sum(p.paid) pay_summ,  FROM ck_payment p  WHERE  AND p.department_id=$id";    
+		$res=$this->db->query($query_str);
+		return $res->result_array();
+	}
 }
 ?>
