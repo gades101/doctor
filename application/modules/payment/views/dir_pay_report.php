@@ -14,6 +14,50 @@ $( window ).load(function() {
 		format: 'd-m-Y H:i',
 		scrollInput:false,
 	});	
+
+
+
+		var searchtreatment=[<?php $i = 0;
+		foreach ($treatments as $treatment) {
+			if ($i > 0) { echo ",";}
+			echo '{value:"' . $treatment['treatment'] . '",id:"' . $treatment['id'] . '",price:"' . $treatment['price'] . '",count:"' . $treatment['count'] . '"}';
+			$i++;
+		}
+		?>];
+
+		$("#treatment").autocomplete({
+			autoFocus: true,
+			source: searchtreatment,
+			minLength: 1,//search after one characters
+
+			select: function(event,ui){
+				//do something
+				$("#treatment_id").val(ui.item ? ui.item.id : '');
+				$("#treatment").val(ui.item ? ui.item.treatment : '');
+				$("#apps_remaining").val(ui.item ? ui.item.count : '');
+				var amount=ui.item ? ui.item.price*((100-$("#discount").val())/100) : '';
+				$("#pay_amount").val(amount);
+				$("#paid").val(amount);
+				price=ui.item ? ui.item.price : '';
+			},
+			change: function(event, ui) {
+				 if (ui.item == null) {
+					$("#treatment_id").val('');
+					$("#treatment").val('');
+					}
+			},
+			response: function(event, ui) {
+				if (ui.content.length === 0)
+				{
+					$("#treatment_id").val('');
+					$("#treatment").val('');
+				}
+			}
+		});	
+
+
+
+
 } )
 </script>
 <?php
@@ -29,6 +73,7 @@ $( window ).load(function() {
 				</div>
 				<div class="panel-body">
 					<?php echo form_open('payment/payment_report'); ?>
+					<input type="hidden" name="treatment_id" id="treatment_id" value=""/>
 					<div class="col-md-12">
 						<div class="col-md-4">					
 							<label for="start_date"><?php echo $this->lang->line("from_date");?></label>
@@ -52,6 +97,25 @@ $( window ).load(function() {
 						</div>
 						<input class="btn btn-primary" type="submit" value="Вивести" name="submit" />
 					</div>
+					<div class="col-md-6 form-group">
+						<label for="operation">Оплати/Витрати</label>
+						<select id='operation' name='operation' class="form-control" value="">								
+							<option value="1" selected=true />Оплати</option>
+							<option value="2" />Витрати</option>								
+						</select>
+					</div>	
+					<div class="col-md-12">
+						<label for="treatment"><?php echo $this->lang->line('treatment');?></label>
+						<input name="treatment" id="treatment" type="text" class="form-control" value=""/><br />
+					</div>
+					<div class="col-md-6 form-group">
+						<label for="user_id">Користувач</label>
+						<select id='user_id' name='user_id' class="form-control" value="">
+							<?php foreach($users as $user){ ?>									
+								<option value="<?php echo $user['userid']; ?>" data-department_id="<?= $user['department_id']; ?>" /><?= $user['name']; ?></option>				
+							<?php } ?>
+						</select>
+					</div>				
 					<?php echo form_close(); ?>
 				</div>
 			</div>			

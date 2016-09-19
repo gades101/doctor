@@ -327,5 +327,7 @@ class Payment extends CI_Controller {
                 $this->load->view('pay_report', $data);
                 $this->load->view('templates/footer');
             }
+        }
+    }
 }
 ?>
