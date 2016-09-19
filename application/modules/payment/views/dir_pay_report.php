@@ -1,4 +1,54 @@
 <script type="text/javascript" charset="utf-8">
+var page_num=1, page_2=false;
+
+
+function displayPage(page_num){
+	if (page_num==1){
+		page_num=1;
+		$("#page_1").show();
+		$("#page_2").hide();
+	}
+	if (page_num==2){
+		page_num=2;
+		$("#page_2").show();
+		$("#page_1").hide();
+		if(page_2!=true){
+			page_2=true;
+			$.ajax({
+				type: "POST",
+				url: "<?php echo base_url(); ?>index.php/payment/payment_ajax_report/"+page_num,
+				dataType: "json",
+				success: function(data){
+					page_build(page_num,data);
+				}
+			});
+		}
+	}
+}
+
+
+
+$(function() {
+	$('#main_form').submit(function(e) {
+	var $form = $(this);
+	$.ajax({
+	  type: $form.attr('method'),
+	  url: "<?php echo base_url(); ?>index.php/payment/payment_ajax_report/"+page_num,
+	  data: $form.serialize()
+	}).done(function(response) {
+	  console.log(response);
+	}).fail(function() {
+	  console.log('fail');
+	});
+	//отмена действия по умолчанию для кнопки submit
+	e.preventDefault(); 
+	});
+});
+
+
+
+
+
 
 $( window ).load(function() {
 	$('.confirmDelete').click(function(){
@@ -17,43 +67,43 @@ $( window ).load(function() {
 
 
 
-		var searchtreatment=[<?php $i = 0;
-		foreach ($treatments as $treatment) {
-			if ($i > 0) { echo ",";}
-			echo '{value:"' . $treatment['treatment'] . '",id:"' . $treatment['id'] . '",price:"' . $treatment['price'] . '",count:"' . $treatment['count'] . '"}';
-			$i++;
-		}
-		?>];
+	var searchtreatment=[<?php $i = 0;
+	foreach ($treatments as $treatment) {
+		if ($i > 0) { echo ",";}
+		echo '{value:"' . $treatment['treatment'] . '",id:"' . $treatment['id'] . '",price:"' . $treatment['price'] . '",count:"' . $treatment['count'] . '"}';
+		$i++;
+	}
+	?>];
 
-		$("#treatment").autocomplete({
-			autoFocus: true,
-			source: searchtreatment,
-			minLength: 1,//search after one characters
+	$("#treatment").autocomplete({
+		autoFocus: true,
+		source: searchtreatment,
+		minLength: 1,//search after one characters
 
-			select: function(event,ui){
-				//do something
-				$("#treatment_id").val(ui.item ? ui.item.id : '');
-				$("#treatment").val(ui.item ? ui.item.treatment : '');
-				$("#apps_remaining").val(ui.item ? ui.item.count : '');
-				var amount=ui.item ? ui.item.price*((100-$("#discount").val())/100) : '';
-				$("#pay_amount").val(amount);
-				$("#paid").val(amount);
-				price=ui.item ? ui.item.price : '';
-			},
-			change: function(event, ui) {
-				 if (ui.item == null) {
-					$("#treatment_id").val('');
-					$("#treatment").val('');
-					}
-			},
-			response: function(event, ui) {
-				if (ui.content.length === 0)
-				{
-					$("#treatment_id").val('');
-					$("#treatment").val('');
+		select: function(event,ui){
+			//do something
+			$("#treatment_id").val(ui.item ? ui.item.id : '');
+			$("#treatment").val(ui.item ? ui.item.treatment : '');
+			$("#apps_remaining").val(ui.item ? ui.item.count : '');
+			var amount=ui.item ? ui.item.price*((100-$("#discount").val())/100) : '';
+			$("#pay_amount").val(amount);
+			$("#paid").val(amount);
+			price=ui.item ? ui.item.price : '';
+		},
+		change: function(event, ui) {
+			 if (ui.item == null) {
+				$("#treatment_id").val('');
+				$("#treatment").val('');
 				}
+		},
+		response: function(event, ui) {
+			if (ui.content.length === 0)
+			{
+				$("#treatment_id").val('');
+				$("#treatment").val('');
 			}
-		});	
+		}
+	});	
 
 
 
@@ -69,54 +119,66 @@ $( window ).load(function() {
 		<div class="col-md-12">	
 			<div class="panel panel-primary">		
 				<div class="panel-heading">
-					Звіт по платежам/витратам
+					<span class="tblHead btn-danger" onclick=displayPage(1) style="min-width:20%"/>Звіт по платежам/витратам</span>
+					<span class="tblHead btn-danger" onclick=displayPage(2) />Звіт по пацієнтам</span>
 				</div>
-				<div class="panel-body">
-					<?php echo form_open('payment/payment_report'); ?>
-					<input type="hidden" name="treatment_id" id="treatment_id" value=""/>
-					<div class="col-md-12">
-						<div class="col-md-4">					
-							<label for="start_date"><?php echo $this->lang->line("from_date");?></label>
-						</div>
-						<div class="col-md-4">					
-							<label for="end_date"><?php echo $this->lang->line("to_date");?></label>
-						</div>			
-					</div>
-					<div class="col-md-12">					
-						<div class="col-md-4">
-							<div class="form-group">
-								<input type="text" name="start_date" id="start_date" value="<?=$start_date;?>" class="form-control"/>
-								<?php echo form_error('start_date','<div class="alert alert-danger">','</div>'); ?>
+					<div class="panel-body">
+						<?php echo form_open('payment/payment_report',array('id'=>'main_form')); ?>
+						<input type="hidden" name="treatment_id" id="treatment_id" value=""/>	
+							<div class="col-md-12 form-group">							
+								<div class="col-md-4">
+									<div class="form-group">
+										<label for="start_date"><?php echo $this->lang->line("from_date");?></label>
+										<input type="text" name="start_date" id="start_date" value="<?=$start_date;?>" class="form-control"/>
+										<?php echo form_error('start_date','<div class="alert alert-danger">','</div>'); ?>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="form-group">
+										<label for="end_date"><?php echo $this->lang->line("to_date");?></label>								
+										<input type="text" name="end_date" id="end_date" value="<?=$end_date;?>" class="form-control" />
+										<?php echo form_error('end_date','<div class="alert alert-danger">','</div>'); ?>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="form-group">
+										<label for="ok" style="height: 14px"> </label>
+										<input id="ok" class="btn btn-primary form-control" type="submit" value="Вивести" name="submit" />
+									</div>
+								</div>
 							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="form-group">
-								<input type="text" name="end_date" id="end_date" value="<?=$end_date;?>" class="form-control" />
-								<?php echo form_error('end_date','<div class="alert alert-danger">','</div>'); ?>
+						<div id="page_1" class="col-md-12">
+							<div class="col-md-4 form-group">
+								<label for="operation">Оплати/Витрати</label>
+								<select id='operation' name='operation' class="form-control" value="">								
+									<option value="1" selected=true />Оплати</option>
+									<option value="2" />Витрати</option>								
+								</select>
+							</div>	
+							<div class="col-md-4">
+								<label for="treatment"><?php echo $this->lang->line('treatment');?></label>
+								<input name="treatment" id="treatment" type="text" class="form-control" value=""/><br />
 							</div>
-						</div>
-						<input class="btn btn-primary" type="submit" value="Вивести" name="submit" />
-					</div>
-					<div class="col-md-6 form-group">
-						<label for="operation">Оплати/Витрати</label>
-						<select id='operation' name='operation' class="form-control" value="">								
-							<option value="1" selected=true />Оплати</option>
-							<option value="2" />Витрати</option>								
-						</select>
-					</div>	
-					<div class="col-md-12">
-						<label for="treatment"><?php echo $this->lang->line('treatment');?></label>
-						<input name="treatment" id="treatment" type="text" class="form-control" value=""/><br />
-					</div>
-					<div class="col-md-6 form-group">
-						<label for="user_id">Користувач</label>
-						<select id='user_id' name='user_id' class="form-control" value="">
-							<?php foreach($users as $user){ ?>									
-								<option value="<?php echo $user['userid']; ?>" data-department_id="<?= $user['department_id']; ?>" /><?= $user['name']; ?></option>				
-							<?php } ?>
-						</select>
-					</div>				
-					<?php echo form_close(); ?>
+							<div class="col-md-4 form-group">
+								<label for="user_id">Користувач</label>
+								<select id='user_id' name='user_id' class="form-control" value="">
+									<option value="">Усі</option>
+									<?php foreach($users as $user){ ?>									
+										<option value="<?php echo $user['userid']; ?>" data-department_id="<?= $user['department_id']; ?>" /><?= $user['name']; ?></option>				
+									<?php } ?>
+								</select>
+							</div>	
+							<div class="col-md-6 form-group">
+								<label for="department_id">Відділ</label>
+								<select id='department_id' name='department_id' class="form-control" value="">
+									<option value="">Усі</option>
+									<?php foreach($departments as $department){ ?>									
+										<option value="<?= $department['department_id']; ?>" /><?= $department['department_name']; ?></option>				
+									<?php } ?>
+								</select>
+							</div>
+						</div>				
+						<?php echo form_close(); ?>
 				</div>
 			</div>			
 			<?php if(isset($report)){?>

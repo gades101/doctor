@@ -315,13 +315,12 @@ class Payment extends CI_Controller {
 				$this->load->view('templates/footer');
 			} else {
 				$data['users'] = $this->admin_model->get_work_users();
+				$data['departments'] = $this->doctor_model->get_all_departments();
 				$data['treatments'] = $this->treatment_model->get_treatments();
  	  			$data['def_dateformate'] = $this->settings_model->get_date_formate();
                 $data['report'] = $this->payment_model->create_dir_report();
                 $data['start_date'] = $this->input->post('start_date');
                 $data['end_date'] = $this->input->post('end_date');
-   				file_put_contents('t1.txt', print_r($data,true));
-
                 $this->load->view('templates/header');
                 $this->load->view('templates/menu');
                 $this->load->view('pay_report', $data);
@@ -329,5 +328,19 @@ class Payment extends CI_Controller {
             }
         }
     }
+
+
+    public function payment_ajax_report($page_num=NULL){
+		if ($page_num==1){
+			$data=$this->payment_model->create_dir_report();
+			echo json_encode($data);
+   			//file_put_contents('t1.txt', print_r($this->input->post(),true));
+			}
+		if ($page_num==3){
+		}
+    }
+
+
+
 }
 ?>
