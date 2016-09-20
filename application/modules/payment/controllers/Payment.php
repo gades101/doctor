@@ -332,11 +332,12 @@ class Payment extends CI_Controller {
 
     public function payment_ajax_report($page_num=NULL){
 		if ($page_num==1){
-			$data=$this->payment_model->create_dir_report();
-			echo json_encode($data);
-   			//file_put_contents('t1.txt', print_r($this->input->post(),true));
+			$data=$this->payment_model->create_dir_report($page_num);
+			echo $data[0]['summ'];
 			}
-		if ($page_num==3){
+		if ($page_num==2){
+			$data=$this->payment_model->create_dir_report($page_num);			
+			echo json_encode($data);
 		}
     }
 

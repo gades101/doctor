@@ -27,18 +27,46 @@ function displayPage(page_num){
 }
 
 
+function page_build(page_num,data){
+	if(page_num==1){
+		data=(report=="")?0:data;
+		$('#summ').text('Сума: '+data+' грн.');
+	}
+	if (page_num==2){
+		var tab=$('#page_2_tbody'),field_class,curr_date="<?=date('Y-m-d')?>",curr_time="<?=date('H:i')?>";
+		var i=1;
+		data.forEach(function(item){
+			var link="<?=base_url();?>"+"index.php/payment/edit/"+item.payment_id;
+			var row=$('<tr></tr>').append($('<td></td>').text(i))
+			.append($('<td></td>').text(item.pay_date))
+			.append($('<td></td>').text(item.paid))
+			.append($('<td></td>').text(item.pay_amount))
+			.append($('<td></td>').text(item.treatment))
+			.append($('<td></td>').text(item.first_name+" "+item.middle_name))
+			.append($('<td></td>').text(item.apps_remaining));
+			tab.append(row);
+			i++;
+		});
+		$("#patient_payments").dataTable({
+			"pageLength": 50
+		});
+	}		
+}
+
+
+
 
 $(function() {
 	$('#main_form').submit(function(e) {
 	var $form = $(this);
 	$.ajax({
-	  type: $form.attr('method'),
-	  url: "<?php echo base_url(); ?>index.php/payment/payment_ajax_report/"+page_num,
-	  data: $form.serialize()
+		type: $form.attr('method'),
+	  	url: "<?php echo base_url(); ?>index.php/payment/payment_ajax_report/"+page_num,
+	  	data: $form.serialize()
 	}).done(function(response) {
-	  console.log(response);
+	  	page_build(page_num,response);
 	}).fail(function() {
-	  console.log('fail');
+	  	console.log('fail');
 	});
 	//отмена действия по умолчанию для кнопки submit
 	e.preventDefault(); 
@@ -180,43 +208,30 @@ $( window ).load(function() {
 						</div>				
 						<?php echo form_close(); ?>
 				</div>
-			</div>			
-			<?php if(isset($report)){?>
+			</div>
+			<div class="panel panel-primary">
+				<div class="panel-body">
+					<div id='summ'></div>
+				</div>
+			</div>		
 			<div class="panel panel-primary">
 				<div class="panel-body">
 					<div class="table-responsive">
-						<table class="table table-striped table-bordered table-hover dataTable no-footer" id="pay_report">
+						<table class="table table-striped table-bordered table-hover dataTable no-footer" id="">
 							<thead>
 								<tr>
-									<th>Відділення</th>
-									<th>Оплати (грн.)</th>
-									<th>Витрати (грн.)</th>
-									<th>Різниця (грн.)</th>
+									<th>№</th>
+									<th>Користувач</th>
+									<th>Сума (грн.)</th>
 								</tr>
 							</thead>
-							<tbody>
-								<?php 
-									$total_pay=0.00;$total_exp=0.00;
-									foreach($report as $elem):?>
-									<tr>
-										<td><?=$elem['department_name'];?></td>
-										<td><?php echo $elem['pay_summ']+0; $total_pay+=$elem['pay_summ']; ?></td>
-										<td><?php echo $elem['exp_summ']+0; $total_exp+=$elem['exp_summ'];?></td>
-										<td><?= $elem['pay_summ']-$elem['exp_summ'];?></td>	
-									</tr>
-								<?php endforeach?>	
-									<tr>
-										<td>Усі відділення</td>	
-										<td><?=$total_pay;?></td>
-										<td><?=$total_exp;?></td>		
-										<td><?=$total_pay-$total_exp;?></td>																		
-									</tr>												
+							<tbody id="page_2_tbody">
+														
 							</tbody>
 						</table>
 					</div>	
 				</div>
 			</div>
-			<?php } ?>
 		</div>
 	</div>
 </div>

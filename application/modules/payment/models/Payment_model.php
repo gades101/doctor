@@ -218,21 +218,30 @@ class Payment_model extends CI_Model {
  			$query_str.="SELECT ".$this->db->escape($dep['department_name'])." department_name, sum(p.paid) pay_summ, (SELECT sum(e.sum) summ FROM ck_expense e WHERE e.expense_date >=".$this->db->escape($start_date)." and e.expense_date <".$this->db->escape($end_date)." AND e.department_id=$id) exp_summ  FROM ck_payment p  WHERE p.pay_date >=". $this->db->escape($start_date)." and p.pay_date < ". $this->db->escape($end_date)." AND p.department_id=$id";
  			$i+=1;
  		}
-       
-    	//$query="SELECT sum(p.paid) summ, p.department_id FROM ck_payment p WHERE p.pay_date >= ? and p.pay_date < ? GROUP BY department_id UNION SELECT sum(e.sum) summ, e.department_id FROM ck_expense e WHERE e.expense_date >= ? and e.expense_date < ? GROUP BY department_id ORDER BY department_id";
-		//$res=$this->db->query($query,array($start_date,$end_date,$start_date,$end_date));
 		$res=$this->db->query($query_str);
 		return $res->result_array();
 	}
-	function create_dir_report(){
+	function create_dir_report($page){
 		$start_date = date("Y-m-d H:i", strtotime($this->input->post('start_date')));
     	$end_date = date("Y-m-d H:i", strtotime($this->input->post('end_date')));
-    	//if($this->input->post('start_date')<$this->input->post('end_date')){}
-    	$date=" p.pay_date >=". $this->db->escape($start_date)." and p.pay_date < ". $this->db->escape($end_date)." ";
-		$user=($this->input->post('user_id'))?" AND p.userid=".$this->input->post('user_id')." " :"";
-		$treatment=($this->input->post('treatment_id'))?" AND p.treatment_id=$this->input->post('treatment_id') ":"";
- 		$department = ($this->input->post('department_id'))?" AND p.department_id=$this->input->post('department_id') ":"";
- 		$query_str="SELECT sum(p.paid) pay_summ  FROM ck_payment p  WHERE".$date.$user.$treatment.$department;    
+    	if($page==1){
+	    	if($this->input->post('operation')==1){
+		    	$date=" p.pay_date >=". $this->db->escape($start_date)." and p.pay_date < ". $this->db->escape($end_date)." ";
+				$user=($this->input->post('user_id'))?" AND p.userid=".$this->input->post('user_id')." " :"";
+				$treatment=($this->input->post('treatment_id'))?" AND p.treatment_id=$this->input->post('treatment_id') ":"";
+		 		$department = ($this->input->post('department_id'))?" AND p.department_id=$this->input->post('department_id') ":"";
+		 		$query_str="SELECT sum(p.paid) summ  FROM ck_payment p  WHERE".$date.$user.$treatment.$department;
+	 		}
+	    	if($this->input->post('operation')==2){
+		    	$date=" e.expense_date >=". $this->db->escape($start_date)." AND e.expense_date < ". $this->db->escape($end_date)." ";
+				$user=($this->input->post('user_id'))?" AND e.user_id=".$this->input->post('user_id')." " :"";
+		 		$department = ($this->input->post('department_id'))?" AND e.department_id=$this->input->post('department_id') ":"";
+		 		$query_str="SELECT sum(e.sum) summ  FROM ck_expense e  WHERE".$date.$user.$department;
+			}
+		}
+    	if($page==2){
+	 		$query_str="SELECT p.all_paid,c.first_name,c.middle_name FROM ck_patient p LEFT JOIN ck_contacts c ON p.contact_id=c.contact_id WHERE p.all_paid>0 ORDER BY all_paid DESC LIMIT 5";
+	 	}
 		$res=$this->db->query($query_str);
     	//file_put_contents('t1.txt', print_r($this->db->error(),true));
 		//file_put_contents('t1.txt', print_r($res->result_array(),true));
