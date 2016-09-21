@@ -5,13 +5,13 @@ var page_num=1, page_2=false;
 function displayPage(page_num){
 	if (page_num==1){
 		page_num=1;
-		$("#page_1").show();
-		$("#page_2").hide();
+		$(".page_1").show();
+		$(".page_2").hide();
 	}
 	if (page_num==2){
 		page_num=2;
-		$("#page_2").show();
-		$("#page_1").hide();
+		$(".page_2").show();
+		$(".page_1").hide();
 		if(page_2!=true){
 			page_2=true;
 			$.ajax({
@@ -29,21 +29,19 @@ function displayPage(page_num){
 
 function page_build(page_num,data){
 	if(page_num==1){
-		data=(report=="")?0:data;
+		data=(data=="")?0:data;
 		$('#summ').text('Сума: '+data+' грн.');
 	}
 	if (page_num==2){
+		console.log(data);
+		//data=JSON.parse(data);
 		var tab=$('#page_2_tbody'),field_class,curr_date="<?=date('Y-m-d')?>",curr_time="<?=date('H:i')?>";
 		var i=1;
 		data.forEach(function(item){
-			var link="<?=base_url();?>"+"index.php/payment/edit/"+item.payment_id;
+			console.log(item);
 			var row=$('<tr></tr>').append($('<td></td>').text(i))
-			.append($('<td></td>').text(item.pay_date))
-			.append($('<td></td>').text(item.paid))
-			.append($('<td></td>').text(item.pay_amount))
-			.append($('<td></td>').text(item.treatment))
 			.append($('<td></td>').text(item.first_name+" "+item.middle_name))
-			.append($('<td></td>').text(item.apps_remaining));
+			.append($('<td></td>').text(item.all_paid));
 			tab.append(row);
 			i++;
 		});
@@ -133,7 +131,14 @@ $( window ).load(function() {
 		}
 	});	
 
-
+	$('#operation').on('change', function(){
+		if(this.value==2){
+			$('#treatment').prop('readonly',true);
+		}
+		else{
+			$('#treatment').prop('readonly',false);			
+		}
+	});
 
 
 } )
@@ -150,7 +155,7 @@ $( window ).load(function() {
 					<span class="tblHead btn-danger" onclick=displayPage(1) style="min-width:20%"/>Звіт по платежам/витратам</span>
 					<span class="tblHead btn-danger" onclick=displayPage(2) />Звіт по пацієнтам</span>
 				</div>
-					<div class="panel-body">
+					<div class="panel-body page_1">
 						<?php echo form_open('payment/payment_report',array('id'=>'main_form')); ?>
 						<input type="hidden" name="treatment_id" id="treatment_id" value=""/>	
 							<div class="col-md-12 form-group">							
@@ -209,12 +214,12 @@ $( window ).load(function() {
 						<?php echo form_close(); ?>
 				</div>
 			</div>
-			<div class="panel panel-primary">
+			<div class="panel panel-primary page_1">
 				<div class="panel-body">
 					<div id='summ'></div>
 				</div>
 			</div>		
-			<div class="panel panel-primary">
+			<div class="panel panel-primary page_2" style="display: none">
 				<div class="panel-body">
 					<div class="table-responsive">
 						<table class="table table-striped table-bordered table-hover dataTable no-footer" id="">

@@ -27,6 +27,7 @@ class Payment_model extends CI_Model {
 		$this->db->set('all_paid','all_paid + '.$data['paid'],false);
 		$this->db->where('patient_id', $data['patient_id']);
 		$this->db->update('patient');
+		file_put_contents('t1.txt', print_r($this->db->last_query(),true));
     }
 
 	function new_payment_from_app($treatment) {
@@ -240,7 +241,7 @@ class Payment_model extends CI_Model {
 			}
 		}
     	if($page==2){
-	 		$query_str="SELECT p.all_paid,c.first_name,c.middle_name FROM ck_patient p LEFT JOIN ck_contacts c ON p.contact_id=c.contact_id WHERE p.all_paid>0 ORDER BY all_paid DESC LIMIT 5";
+	 		$query_str="SELECT p.all_paid,c.first_name,c.middle_name FROM ck_patient p LEFT JOIN ck_contacts c ON p.contact_id=c.contact_id WHERE p.all_paid>0 ORDER BY all_paid DESC LIMIT 10";
 	 	}
 		$res=$this->db->query($query_str);
     	//file_put_contents('t1.txt', print_r($this->db->error(),true));
