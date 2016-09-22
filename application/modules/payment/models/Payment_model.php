@@ -229,14 +229,14 @@ class Payment_model extends CI_Model {
 	    	if($this->input->post('operation')==1){
 		    	$date=" p.pay_date >=". $this->db->escape($start_date)." and p.pay_date < ". $this->db->escape($end_date)." ";
 				$user=($this->input->post('user_id'))?" AND p.userid=".$this->input->post('user_id')." " :"";
-				$treatment=($this->input->post('treatment_id'))?" AND p.treatment_id=$this->input->post('treatment_id') ":"";
-		 		$department = ($this->input->post('department_id'))?" AND p.department_id=$this->input->post('department_id') ":"";
+				$treatment=($this->input->post('treatment_id'))?" AND p.treatment_id=".$this->input->post('treatment_id')." ":"";
+		 		$department = ($this->input->post('department_id'))?" AND p.department_id=".$this->input->post('department_id')." ":"";
 		 		$query_str="SELECT sum(p.paid) summ  FROM ck_payment p  WHERE".$date.$user.$treatment.$department;
 	 		}
 	    	if($this->input->post('operation')==2){
 		    	$date=" e.expense_date >=". $this->db->escape($start_date)." AND e.expense_date < ". $this->db->escape($end_date)." ";
 				$user=($this->input->post('user_id'))?" AND e.user_id=".$this->input->post('user_id')." " :"";
-		 		$department = ($this->input->post('department_id'))?" AND e.department_id=$this->input->post('department_id') ":"";
+		 		$department = ($this->input->post('department_id'))?" AND e.department_id=".$this->input->post('department_id')." ":"";
 		 		$query_str="SELECT sum(e.sum) summ  FROM ck_expense e  WHERE".$date.$user.$department;
 			}
 		}
@@ -244,7 +244,7 @@ class Payment_model extends CI_Model {
 	 		$query_str="SELECT p.all_paid,c.first_name,c.middle_name FROM ck_patient p LEFT JOIN ck_contacts c ON p.contact_id=c.contact_id WHERE p.all_paid>0 ORDER BY all_paid DESC LIMIT 10";
 	 	}
 		$res=$this->db->query($query_str);
-    	//file_put_contents('t1.txt', print_r($this->db->error(),true));
+    	file_put_contents('t1.txt', print_r($this->db->error(),true));
 		//file_put_contents('t1.txt', print_r($res->result_array(),true));
 		return $res->result_array();
 	}

@@ -227,13 +227,13 @@
 				<input name="pay_amount" id="pay_amount" type="text" readonly="readonly" class="form-control" value="<?php echo $pay_amount; ?>"/><br />
 				<input name="due_amount" id="due_amount" type="hidden" class="form-control" value="<?= $pay_amount; ?>"/>
 			</div>
-			<div class="col-md-2">
+			<div class="col-md-3">
 				<div class="form-group">
 					<label for="discount">Знижка %</label>
 					<input type="text"  name="discount" id="discount" class="form-control" value="<?= $discount; ?>" />
 				</div>
 			</div>
-			<div class="col-md-2">
+			<div class="col-md-4">
 				<div class="form-group">
 					<label for="apps_remaining">Залишилось зайнять</label>
 					<input type="text"  name="apps_remaining" id="apps_remaining" readonly=true class="form-control" value="<?php if(isset($payment)) echo $payment->apps_remaining; ?>" />

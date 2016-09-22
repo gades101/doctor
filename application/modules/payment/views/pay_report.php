@@ -1,6 +1,9 @@
 <script type="text/javascript" charset="utf-8">
-
 $( window ).load(function() {
+	var maxdate=false, mindate=false;
+	<?php if($_SESSION["category"] == 'Секретар'){?>
+		$('.inp_date').prop("readonly", true); maxdate=new Date();mindate=new Date(); maxdate.setMonth(maxdate.getMonth()+1);mindate.setMonth(mindate.getMonth()-1);
+	<?php } ?>
 	$('.confirmDelete').click(function(){
 			return confirm("Ви впевнені");
 	});
@@ -8,11 +11,17 @@ $( window ).load(function() {
 		timepicker:true,
 		format: 'd-m-Y H:i',
 		scrollInput:false,
+		maxDate: maxdate,
+		minDate: mindate,
+
 	});	
 	$('#end_date').datetimepicker({
 		timepicker:true,
 		format: 'd-m-Y H:i',
+		maxDate: maxdate,
 		scrollInput:false,
+		maxDate: maxdate,		
+		minDate: mindate,
 	});	
 } )
 </script>
@@ -40,13 +49,13 @@ $( window ).load(function() {
 					<div class="col-md-12">					
 						<div class="col-md-4">
 							<div class="form-group">
-								<input type="text" name="start_date" id="start_date" value="<?=$start_date;?>" class="form-control"/>
+								<input type="text" name="start_date" class="inp_date" id="start_date" value="<?=$start_date;?>" class="form-control"/>
 								<?php echo form_error('start_date','<div class="alert alert-danger">','</div>'); ?>
 							</div>
 						</div>
 						<div class="col-md-4">
 							<div class="form-group">
-								<input type="text" name="end_date" id="end_date" value="<?=$end_date;?>" class="form-control" />
+								<input type="text" name="end_date" class="inp_date" id="end_date" value="<?=$end_date;?>" class="form-control" />
 								<?php echo form_error('end_date','<div class="alert alert-danger">','</div>'); ?>
 							</div>
 						</div>

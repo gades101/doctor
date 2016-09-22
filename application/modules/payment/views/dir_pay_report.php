@@ -33,8 +33,6 @@ function page_build(page_num,data){
 		$('#summ').text('Сума: '+data+' грн.');
 	}
 	if (page_num==2){
-		console.log(data);
-		//data=JSON.parse(data);
 		var tab=$('#page_2_tbody'),field_class,curr_date="<?=date('Y-m-d')?>",curr_time="<?=date('H:i')?>";
 		var i=1;
 		data.forEach(function(item){
@@ -45,14 +43,9 @@ function page_build(page_num,data){
 			tab.append(row);
 			i++;
 		});
-		$("#patient_payments").dataTable({
-			"pageLength": 50
-		});
+		//$("#page_2_tbody").dataTable({"pageLength": 50});
 	}		
 }
-
-
-
 
 $(function() {
 	$('#main_form').submit(function(e) {
@@ -71,11 +64,6 @@ $(function() {
 	});
 });
 
-
-
-
-
-
 $( window ).load(function() {
 	$('.confirmDelete').click(function(){
 			return confirm("Ви впевнені");
@@ -90,8 +78,6 @@ $( window ).load(function() {
 		format: 'd-m-Y H:i',
 		scrollInput:false,
 	});	
-
-
 
 	var searchtreatment=[<?php $i = 0;
 	foreach ($treatments as $treatment) {
