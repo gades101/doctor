@@ -2,26 +2,26 @@
 var page_num=1, page_2=false;
 
 
-function displayPage(page_num){
-	if (page_num==1){
+function displayPage(p_num){
+	if (p_num==1){
 		page_num=1;
 		$(".page_1").show();
 		$(".page_2").hide();
 	}
-	if (page_num==2){
+	if (p_num==2){
 		page_num=2;
 		$(".page_2").show();
 		$(".page_1").hide();
 		if(page_2!=true){
 			page_2=true;
-			$.ajax({
+			/*$.ajax({
 				type: "POST",
 				url: "<?php echo base_url(); ?>index.php/payment/payment_ajax_report/"+page_num,
 				dataType: "json",
 				success: function(data){
 					page_build(page_num,data);
 				}
-			});
+			});*/
 		}
 	}
 }
@@ -35,11 +35,11 @@ function page_build(page_num,data){
 	if (page_num==2){
 		var tab=$('#page_2_tbody'),field_class,curr_date="<?=date('Y-m-d')?>",curr_time="<?=date('H:i')?>";
 		var i=1;
+		data=JSON.parse(data);tab.html("");
 		data.forEach(function(item){
-			console.log(item);
 			var row=$('<tr></tr>').append($('<td></td>').text(i))
 			.append($('<td></td>').text(item.first_name+" "+item.middle_name))
-			.append($('<td></td>').text(item.all_paid));
+			.append($('<td></td>').text(item.summ));
 			tab.append(row);
 			i++;
 		});
@@ -48,11 +48,12 @@ function page_build(page_num,data){
 }
 
 $(function() {
-	$('#main_form').submit(function(e) {
+	$('.ajax_form').submit(function(e) {
 	var $form = $(this);
 	$.ajax({
 		type: $form.attr('method'),
-	  	url: "<?php echo base_url(); ?>index.php/payment/payment_ajax_report/"+page_num,
+	  	//url: "<?php echo base_url(); ?>index.php/payment/payment_ajax_report/"+page_num,
+	  	url: $form.attr('action'),
 	  	data: $form.serialize()
 	}).done(function(response) {
 	  	page_build(page_num,response);
@@ -68,12 +69,7 @@ $( window ).load(function() {
 	$('.confirmDelete').click(function(){
 			return confirm("Ви впевнені");
 	});
-	$('#start_date').datetimepicker({
-		timepicker:true,
-		format: 'd-m-Y H:i',
-		scrollInput:false,
-	});	
-	$('#end_date').datetimepicker({
+	$('.input_date').datetimepicker({
 		timepicker:true,
 		format: 'd-m-Y H:i',
 		scrollInput:false,
@@ -142,20 +138,20 @@ $( window ).load(function() {
 					<span class="tblHead btn-danger" onclick=displayPage(2) />Звіт по пацієнтам</span>
 				</div>
 					<div class="panel-body page_1">
-						<?php echo form_open('payment/payment_report',array('id'=>'main_form')); ?>
+						<?php echo form_open('payment/payment_ajax_report/1',array('id'=>'main_form','class'=>'ajax_form')); ?>
 						<input type="hidden" name="treatment_id" id="treatment_id" value=""/>	
 							<div class="col-md-12 form-group">							
 								<div class="col-md-4">
 									<div class="form-group">
 										<label for="start_date"><?php echo $this->lang->line("from_date");?></label>
-										<input type="text" name="start_date" id="start_date" value="<?=$start_date;?>" class="form-control"/>
+										<input type="text" class="form-control input_date" name="start_date" id="start_date" value="<?=$start_date;?>"/>
 										<?php echo form_error('start_date','<div class="alert alert-danger">','</div>'); ?>
 									</div>
 								</div>
 								<div class="col-md-4">
 									<div class="form-group">
 										<label for="end_date"><?php echo $this->lang->line("to_date");?></label>								
-										<input type="text" name="end_date" id="end_date" value="<?=$end_date;?>" class="form-control" />
+										<input type="text" class="form-control input_date" name="end_date" id="end_date" value="<?=$end_date;?>" />
 										<?php echo form_error('end_date','<div class="alert alert-danger">','</div>'); ?>
 									</div>
 								</div>
@@ -207,22 +203,51 @@ $( window ).load(function() {
 			</div>		
 			<div class="panel panel-primary page_2" style="display: none">
 				<div class="panel-body">
-					<div class="table-responsive">
-						<table class="table table-striped table-bordered table-hover dataTable no-footer" id="">
-							<thead>
-								<tr>
-									<th>№</th>
-									<th>Користувач</th>
-									<th>Сума (грн.)</th>
-								</tr>
-							</thead>
-							<tbody id="page_2_tbody">
-														
-							</tbody>
-						</table>
-					</div>	
+					<?php echo form_open('payment/payment_ajax_report/2',array('class'=>'ajax_form')); ?>
+					<div class="col-md-3">
+						<div class="form-group">
+							<label for="start_date"><?php echo $this->lang->line("from_date");?></label>
+							<input type="text" class="form-control input_date" name="start_date" id="start_date_2" value="<?=$start_date;?>"/>
+							<?php echo form_error('start_date_2','<div class="alert alert-danger">','</div>'); ?>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="form-group">
+							<label for="end_date"><?php echo $this->lang->line("to_date");?></label>								
+							<input type="text" class="form-control input_date" name="end_date" id="end_date_2" value="<?=$end_date;?>" />
+							<?php echo form_error('end_date_2','<div class="alert alert-danger">','</div>'); ?>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="form-group">
+							<label for="number_of_patients">Кількість пацієнтів</label>								
+							<input type="text" class="form-control" name="number_of_patients" id="number_of_patients" value="10" />
+							<?php echo form_error('number_of_patients','<div class="alert alert-danger">','</div>'); ?>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="form-group">
+							<label for="ok_2" style="height: 14px"> </label>
+							<input id="ok_2" class="btn btn-primary form-control" type="submit" value="Вивести" name="submit" />
+						</div>
+					</div>
+					<?php echo form_close(); ?>
 				</div>
 			</div>
+			<div class="table-responsive page_2">
+				<table class="table table-striped table-bordered table-hover dataTable no-footer" id="">
+					<thead>
+						<tr>
+							<th>№</th>
+							<th>Користувач</th>
+							<th>Сума (грн.)</th>
+						</tr>
+					</thead>
+					<tbody id="page_2_tbody">
+												
+					</tbody>
+				</table>
+			</div>	
 		</div>
 	</div>
 </div>

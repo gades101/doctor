@@ -2,7 +2,7 @@
 $( window ).load(function() {
 	var maxdate=false, mindate=false;
 	<?php if($_SESSION["category"] == 'Секретар'){?>
-		$('.inp_date').prop("readonly", true); maxdate=new Date();mindate=new Date(); maxdate.setMonth(maxdate.getMonth()+1);mindate.setMonth(mindate.getMonth()-1);
+		$('.inp_date').prop("readonly", true); mindate=new Date();mindate.setMonth(mindate.getMonth()-1);
 	<?php } ?>
 	$('.confirmDelete').click(function(){
 			return confirm("Ви впевнені");

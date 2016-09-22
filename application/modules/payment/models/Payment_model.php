@@ -114,10 +114,12 @@ class Payment_model extends CI_Model {
         return FALSE;
 		}
 	 }
+
     public function list_expenses() {
-		$this->db->select("e.id, e.user_id, e.cat_id, DATE_FORMAT(e.expense_date, '%Y-%m-%d %H:%i') AS expense_date, e.goal, e.sum, ck_users.name",FALSE);
+		$this->db->select("e.id, e.user_id, DATE_FORMAT(e.expense_date, '%Y-%m-%d %H:%i') AS expense_date, e.goal, c.title, e.sum, ck_users.name",FALSE);
 		$this->db->from('ck_expense e');
 		$this->db->join('ck_users', 'e.user_id = ck_users.userid', 'left');
+		$this->db->join('ck_expense_categories c', 'e.cat_id=c.id', 'left');
 		$this->db->order_by('e.id','desc');
         $query = $this->db->get();
         return $query->result_array();
@@ -241,11 +243,14 @@ class Payment_model extends CI_Model {
 			}
 		}
     	if($page==2){
-	 		$query_str="SELECT p.all_paid,c.first_name,c.middle_name FROM ck_patient p LEFT JOIN ck_contacts c ON p.contact_id=c.contact_id WHERE p.all_paid>0 ORDER BY all_paid DESC LIMIT 10";
+		    $date="WHERE pay.pay_date >=". $this->db->escape($start_date)." AND pay.pay_date < ". $this->db->escape($end_date)." ";
+		    $limit=$this->input->post('number_of_patients');
+	 		//"SELECT p.all_paid,c.first_name,c.middle_name FROM ck_patient p LEFT JOIN ck_contacts c ON p.contact_id=c.contact_id WHERE p.all_paid>0 ".$date."ORDER BY all_paid DESC LIMIT "
+	 		$query_str="SELECT sum(pay.paid) summ, c.first_name, c.middle_name FROM ck_payment pay LEFT JOIN ck_patient pat ON pay.patient_id=pat.patient_id LEFT JOIN ck_contacts c ON pat.contact_id=c.contact_id ".$date."GROUP BY pay.patient_id ORDER BY summ DESC LIMIT ".$limit;
 	 	}
 		$res=$this->db->query($query_str);
-    	file_put_contents('t1.txt', print_r($this->db->error(),true));
-		//file_put_contents('t1.txt', print_r($res->result_array(),true));
+		//file_put_contents('t1.txt', print_r($this->db->last_query(),true));
+    	//file_put_contents('t1.txt', print_r($this->db->error(),true));
 		return $res->result_array();
 	}
 }

@@ -114,6 +114,7 @@ $( window ).load(function() {
 							<tr>
 								<th><?php echo $this->lang->line('no');?></th>
 								<th>Користувач</th>
+								<th>Категорія витрат</th>
 								<th>Призначення</th>
 								<th>Дата</th>
 								<th>Сума</th>
@@ -127,6 +128,7 @@ $( window ).load(function() {
 						<tr <?php if ($i%2 == 0) { echo "class='even'"; } else {echo "class='odd'";}?> >
 							<td><?php echo $j; ?></td>
 							<td><?php echo $expense['name']; ?></td>
+							<td><?php echo $expense['title']; ?></td>
 							<td><?php echo $expense['goal']; ?></td>
 							<td><?php echo $expense['expense_date']; ?></td> 
 							<td><?php echo $expense['sum']; ?></td>               
