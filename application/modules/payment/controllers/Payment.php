@@ -333,7 +333,8 @@ class Payment extends CI_Controller {
     public function payment_ajax_report($page_num=NULL){
 		if ($page_num==1){
 			$data=$this->payment_model->create_dir_report($page_num);
-			echo $data[0]['summ'];
+			//echo $data[0]['summ'];
+			echo json_encode($data);
 			}
 		if ($page_num==2){
 			$data=$this->payment_model->create_dir_report($page_num);			

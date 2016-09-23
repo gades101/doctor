@@ -29,11 +29,23 @@ function displayPage(p_num){
 
 function page_build(page_num,data){
 	if(page_num==1){
-		data=(data=="")?0:data;
-		$('#summ').text('Сума: '+data+' грн.');
+		var tab=$('#page_1_tbody');
+		var i=1;
+		data=JSON.parse(data);tab.html("");
+		data.forEach(function(item){
+			var row=$('<tr></tr>').append($('<td></td>').text(item.date))
+			.append($('<td></td>').text(item.name))
+			.append($('<td></td>').text(item.department))
+			.append($('<td></td>').text(item.summ));
+			tab.append(row);
+			i++;
+		});
+
+		//data=(data=="")?0:data;
+		//$('#summ').text('Сума: '+data+' грн.');
 	}
 	if (page_num==2){
-		var tab=$('#page_2_tbody'),field_class,curr_date="<?=date('Y-m-d')?>",curr_time="<?=date('H:i')?>";
+		var tab=$('#page_2_tbody');
 		var i=1;
 		data=JSON.parse(data);tab.html("");
 		data.forEach(function(item){
@@ -174,6 +186,10 @@ $( window ).load(function() {
 								<label for="treatment"><?php echo $this->lang->line('treatment');?></label>
 								<input name="treatment" id="treatment" type="text" class="form-control" value=""/><br />
 							</div>
+							<div class="col-md-4" style="display: none">
+								<label for="exp_cat">Категорія витрат</label>
+								<input name="exp_cat" id="exp_cat" type="text" class="form-control" value=""/><br />
+							</div>
 							<div class="col-md-4 form-group">
 								<label for="user_id">Користувач</label>
 								<select id='user_id' name='user_id' class="form-control" value="">
@@ -196,10 +212,20 @@ $( window ).load(function() {
 						<?php echo form_close(); ?>
 				</div>
 			</div>
-			<div class="panel panel-primary page_1">
-				<div class="panel-body">
-					<div id='summ'></div>
-				</div>
+			<div class="table-responsive page_1">
+				<table class="table table-striped table-bordered table-hover dataTable no-footer" id="">
+					<thead>
+						<tr>
+							<th>Дата</th>
+							<th>Користувач</th>
+							<th>Відділ</th>
+							<th>Сума (грн.)</th>
+						</tr>
+					</thead>
+					<tbody id="page_1_tbody">
+												
+					</tbody>
+				</table>
 			</div>		
 			<div class="panel panel-primary page_2" style="display: none">
 				<div class="panel-body">
@@ -213,7 +239,7 @@ $( window ).load(function() {
 					</div>
 					<div class="col-md-3">
 						<div class="form-group">
-							<label for="end_date"><?php echo $this->lang->line("to_date");?></label>								
+							<label for="end_date"><?php echo $this->lang->line("to_date");?></label>
 							<input type="text" class="form-control input_date" name="end_date" id="end_date_2" value="<?=$end_date;?>" />
 							<?php echo form_error('end_date_2','<div class="alert alert-danger">','</div>'); ?>
 						</div>
@@ -234,7 +260,7 @@ $( window ).load(function() {
 					<?php echo form_close(); ?>
 				</div>
 			</div>
-			<div class="table-responsive page_2">
+			<div class="table-responsive page_2" style="display: none">
 				<table class="table table-striped table-bordered table-hover dataTable no-footer" id="">
 					<thead>
 						<tr>

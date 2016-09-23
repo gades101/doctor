@@ -233,7 +233,8 @@ class Payment_model extends CI_Model {
 				$user=($this->input->post('user_id'))?" AND p.userid=".$this->input->post('user_id')." " :"";
 				$treatment=($this->input->post('treatment_id'))?" AND p.treatment_id=".$this->input->post('treatment_id')." ":"";
 		 		$department = ($this->input->post('department_id'))?" AND p.department_id=".$this->input->post('department_id')." ":"";
-		 		$query_str="SELECT sum(p.paid) summ  FROM ck_payment p  WHERE".$date.$user.$treatment.$department;
+		 		//$query_str="SELECT sum(p.paid) summ  FROM ck_payment p  WHERE".$date.$user.$treatment.$department;
+		 		$query_str="SELECT u.name, p.pay_date date, p.paid summ, d.department_name department FROM ck_payment p LEFT JOIN ck_users u ON p.userid=u.userid LEFT JOIN ck_department d ON p.department_id=d.department_id WHERE".$date.$user.$treatment.$department."ORDER BY p.payment_id DESC";
 	 		}
 	    	if($this->input->post('operation')==2){
 		    	$date=" e.expense_date >=". $this->db->escape($start_date)." AND e.expense_date < ". $this->db->escape($end_date)." ";
@@ -245,7 +246,6 @@ class Payment_model extends CI_Model {
     	if($page==2){
 		    $date="WHERE pay.pay_date >=". $this->db->escape($start_date)." AND pay.pay_date < ". $this->db->escape($end_date)." ";
 		    $limit=$this->input->post('number_of_patients');
-	 		//"SELECT p.all_paid,c.first_name,c.middle_name FROM ck_patient p LEFT JOIN ck_contacts c ON p.contact_id=c.contact_id WHERE p.all_paid>0 ".$date."ORDER BY all_paid DESC LIMIT "
 	 		$query_str="SELECT sum(pay.paid) summ, c.first_name, c.middle_name FROM ck_payment pay LEFT JOIN ck_patient pat ON pay.patient_id=pat.patient_id LEFT JOIN ck_contacts c ON pat.contact_id=c.contact_id ".$date."GROUP BY pay.patient_id ORDER BY summ DESC LIMIT ".$limit;
 	 	}
 		$res=$this->db->query($query_str);
