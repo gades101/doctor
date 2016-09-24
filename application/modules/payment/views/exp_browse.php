@@ -1,22 +1,3 @@
-<?php
-foreach ($expense_categories as $key => $expense) {
-	$id=$expense['id'];
-	$len=strlen($expense['id']);
-	$j=$len-10;
-	$view_id=substr($id, 0, $j-1);
-
-	for ($i=0; $i < 10; $i+=2) {
-		$para=substr($id, $j, 2);
-		if($para==='00') break;
-		else {
-			$view_id.='.'.(int)$para;
-			$j+=2;
-
-		}
-	}
-	$expense_categories[$key]['view_id']=$view_id;
-}
-?>
 <script type="text/javascript" charset="utf-8">
 
 $( window ).load(function() {

@@ -162,9 +162,6 @@ $(window).load(function(){
 	$('#dob').change(function(){
 		calculate_age();
 	});
-
-
-
 });
 <?php if (isset($patient_id)) { ?>
 	function displayPage(page_num){

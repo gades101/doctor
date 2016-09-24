@@ -275,12 +275,14 @@ class Appointment extends CI_Controller {
 				$data['patients']=$this->patient_model->get_patient();
 				$data['discounts'] = $this->discount_model->get_discounts();
 				$doctor_id = $appointment['userid'];
-				$data['doctors'] = $this->admin_model->get_doctor();
+				//$data['doctors'] = $this->admin_model->get_doctor();
+				$data['doctors'] = $this->admin_model->get_work_users();
 				$data['selected_doctor_id'] = $doctor_id;
 				$data['def_dateformate'] = $this->settings_model->get_date_formate();
 				$data['def_timeformate'] = $this->settings_model->get_time_formate();
 				$data['time_interval'] = $this->settings_model->get_time_interval();
 				$data['dep']=$dep;
+				$data['date_str']=date("Y").'/'.date("m").'/'.date("d");
 				$data['curr_payments']=$this->payment_model->get_curr_payments($patient_id,$appointment['payment_id']);
 				$this->load->view('templates/header');
 				$this->load->view('templates/menu');
@@ -288,6 +290,7 @@ class Appointment extends CI_Controller {
 				$this->load->view('templates/footer');
 			}else{
 				$this->payment_model->edit_payment_count($this->input->post('payment_id'),$this->input->post('payment_id_orig'));
+				file_put_contents('t1.txt', print_r($this->input->post(),true));
 				if($this->input->post('new_payment')){
 					$treatment=$this->treatment_model->get_edit_treatment($this->input->post('treatment_id'));
 					$this->payment_model->new_payment_from_app($treatment);

@@ -71,7 +71,6 @@ class Payment extends CI_Controller {
 				$data['discounts'] = $this->discount_model->get_discounts();
 				$data['selected_doctor_id'] = NULL;
 				$data['def_dateformate'] = $this->settings_model->get_date_formate();
-				file_put_contents('t1.txt', print_r($data,true));
 				$this->load->view('templates/header');
 				$this->load->view('templates/menu');
 				$this->load->view('form',$data);
@@ -104,7 +103,6 @@ class Payment extends CI_Controller {
 				$data['patient_id'] = $payment->patient_id;
 				$data['patient'] = $this->patient_model->get_patient_detail($data['patient_id']);
 				$data['def_dateformate'] = $this->settings_model->get_date_formate();
-				//25-12-15
 				$data['called_from'] = "";
 				$data['curr_treatment']=$this->treatment_model->get_edit_treatment($payment->treatment_id);
 				$data['users'] = $this->admin_model->get_work_users();
@@ -171,7 +169,6 @@ class Payment extends CI_Controller {
 				$data['departments'] = $this->doctor_model->get_all_departments();
 				$data['expense_categories'] = $this->payment_model->list_expense_cat();
 				$data['edit_expense'] = $this->payment_model->get_edit_expense($id);
-				//file_put_contents('t1.txt',print_r($data,true));
 				$this->load->view('templates/header');
 				$this->load->view('templates/menu');
 				$this->load->view('edit_expense', $data);
@@ -309,6 +306,8 @@ class Payment extends CI_Controller {
 				$data['treatments'] = $this->treatment_model->get_treatments();
  	  			$data['def_dateformate'] = $this->settings_model->get_date_formate();
 				$data['departments'] = $this->doctor_model->get_all_departments();
+				$data['expense_categories'] = $this->payment_model->list_expense_cat();
+				array_unshift($data['expense_categories'] , array("id"=>"","title"=>"Усі","view_id"=>""));
 				$this->load->view('templates/header');
 				$this->load->view('templates/menu');
 				$this->load->view('dir_pay_report',$data);

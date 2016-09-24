@@ -27,7 +27,7 @@ class Payment_model extends CI_Model {
 		$this->db->set('all_paid','all_paid + '.$data['paid'],false);
 		$this->db->where('patient_id', $data['patient_id']);
 		$this->db->update('patient');
-		file_put_contents('t1.txt', print_r($this->db->last_query(),true));
+
     }
 
 	function new_payment_from_app($treatment) {
@@ -36,7 +36,7 @@ class Payment_model extends CI_Model {
 		$data['treatment_id'] = $treatment['id'];
 		$data['paid'] = $this->input->post('paid');	
 		$data['pay_amount'] = $this->input->post('pay_amount');		
-		$data['pay_date'] = date('Y-m-d');
+		$data['pay_date'] = date('Y-m-d H:i');
 		$data['pay_mode'] = 'cash';
 		$data['userid'] = $this->input->post('doctor_id');
 		$data['apps_remaining']=($treatment['count']=="") ? 0 : $treatment['count']-1;
@@ -132,7 +132,6 @@ class Payment_model extends CI_Model {
 		$data['sum'] = $this->input->post('sum');
 		$data['cat_id'] = $this->input->post('cat_id');
 		$data['department_id'] = $this->input->post('department_id');
-		//file_put_contents('t1.txt', print_r($data,true));
 		$this->db->insert('expense', $data);
     }
     function delete_expense($id) {
@@ -156,7 +155,25 @@ class Payment_model extends CI_Model {
     public function list_expense_cat() {
         $this->db->order_by("id");
         $query = $this->db->get('expense_categories');
-        return $query->result_array();
+        $expense_categories= $query->result_array();
+		foreach ($expense_categories as $key => $expense) {
+			$id=$expense['id'];
+			$len=strlen($expense['id']);
+			$j=$len-10;
+			$view_id=substr($id, 0, $j-1);
+
+			for ($i=0; $i < 10; $i+=2) {
+				$para=substr($id, $j, 2);
+				if($para==='00') break;
+				else {
+					$view_id.='.'.(int)$para;
+					$j+=2;
+
+				}
+			}
+			$expense_categories[$key]['view_id']=$view_id;
+		}
+		return $expense_categories;
     }
 	function find_exp_cat_new_id($parent_id=NULL){
 		if($parent_id){
@@ -234,13 +251,15 @@ class Payment_model extends CI_Model {
 				$treatment=($this->input->post('treatment_id'))?" AND p.treatment_id=".$this->input->post('treatment_id')." ":"";
 		 		$department = ($this->input->post('department_id'))?" AND p.department_id=".$this->input->post('department_id')." ":"";
 		 		//$query_str="SELECT sum(p.paid) summ  FROM ck_payment p  WHERE".$date.$user.$treatment.$department;
-		 		$query_str="SELECT u.name, p.pay_date date, p.paid summ, d.department_name department FROM ck_payment p LEFT JOIN ck_users u ON p.userid=u.userid LEFT JOIN ck_department d ON p.department_id=d.department_id WHERE".$date.$user.$treatment.$department."ORDER BY p.payment_id DESC";
+		 		$query_str="SELECT u.name, p.pay_date date, p.paid summ, d.department_name department, t.treatment FROM ck_payment p LEFT JOIN ck_users u ON p.userid=u.userid LEFT JOIN ck_department d ON p.department_id=d.department_id LEFT JOIN ck_treatments t ON p.treatment_id=t.id WHERE".$date.$user.$treatment.$department."ORDER BY p.payment_id DESC";
 	 		}
 	    	if($this->input->post('operation')==2){
 		    	$date=" e.expense_date >=". $this->db->escape($start_date)." AND e.expense_date < ". $this->db->escape($end_date)." ";
 				$user=($this->input->post('user_id'))?" AND e.user_id=".$this->input->post('user_id')." " :"";
 		 		$department = ($this->input->post('department_id'))?" AND e.department_id=".$this->input->post('department_id')." ":"";
-		 		$query_str="SELECT sum(e.sum) summ  FROM ck_expense e  WHERE".$date.$user.$department;
+		 		$exp_category = ($this->input->post('cat_id'))?" AND e.cat_id=".$this->input->post('cat_id')." ":"";
+		 		//$query_str="SELECT sum(e.sum) summ  FROM ck_expense e  WHERE".$date.$user.$department;
+		 		$query_str="SELECT u.name, e.expense_date date, e.sum summ, e.goal,ek.title, d.department_name department FROM ck_expense e LEFT JOIN ck_users u ON e.user_id=u.userid LEFT JOIN ck_department d ON e.department_id=d.department_id LEFT JOIN ck_expense_categories ek ON e.cat_id=ek.id WHERE".$date.$user.$department.$exp_category."ORDER BY e.id DESC";
 			}
 		}
     	if($page==2){
@@ -249,8 +268,8 @@ class Payment_model extends CI_Model {
 	 		$query_str="SELECT sum(pay.paid) summ, c.first_name, c.middle_name FROM ck_payment pay LEFT JOIN ck_patient pat ON pay.patient_id=pat.patient_id LEFT JOIN ck_contacts c ON pat.contact_id=c.contact_id ".$date."GROUP BY pay.patient_id ORDER BY summ DESC LIMIT ".$limit;
 	 	}
 		$res=$this->db->query($query_str);
-		//file_put_contents('t1.txt', print_r($this->db->last_query(),true));
-    	//file_put_contents('t1.txt', print_r($this->db->error(),true));
+		file_put_contents('t1.txt', print_r($this->db->last_query(),true), FILE_APPEND);
+    	file_put_contents('t1.txt', print_r($this->db->error(),true), FILE_APPEND);
 		return $res->result_array();
 	}
 }

@@ -28,18 +28,41 @@ function displayPage(p_num){
 
 
 function page_build(page_num,data){
+	if($.fn.DataTable.isDataTable("#page_1_table")) {$('#page_1_table').DataTable().destroy();}
 	if(page_num==1){
-		var tab=$('#page_1_tbody');
-		var i=1;
-		data=JSON.parse(data);tab.html("");
-		data.forEach(function(item){
-			var row=$('<tr></tr>').append($('<td></td>').text(item.date))
-			.append($('<td></td>').text(item.name))
-			.append($('<td></td>').text(item.department))
-			.append($('<td></td>').text(item.summ));
-			tab.append(row);
-			i++;
-		});
+		var tab=$('#page_1_tbody');head=$('#page_1_thead');
+		var summ=0;
+		data=JSON.parse(data);tab.html("");head.html("");
+		if($('#operation').val()==1){
+			$('#tbl_1_head').text('Оплати');
+			head.append($('<tr></tr>').append($('<th></th>').text('Дата')).append($('<th></th>').text('Користувач')).append($('<th></th>').text('Процедура')).append($('<th></th>').text('Відділ')).append($('<th></th>').text('Сума')));
+			data.forEach(function(item){
+				var row=$('<tr></tr>').append($('<td></td>').text(item.date))
+				.append($('<td></td>').text(item.name))
+				.append($('<td></td>').text(item.treatment))
+				.append($('<td></td>').text(item.department))
+				.append($('<td></td>').text(item.summ));
+				tab.append(row);
+				summ+=parseFloat(item.summ);
+			});
+		}
+		if($('#operation').val()==2){
+			$('#tbl_1_head').text('Витрати');
+			head.append($('<tr></tr>').append($('<th></th>').text('Дата')).append($('<th></th>').text('Користувач')).append($('<th></th>').text('Відділ')).append($('<th></th>').text('Призначення')).append($('<th></th>').text('Категорія витрат')).append($('<th></th>').text('Сума')));
+			data.forEach(function(item){
+				var row=$('<tr></tr>').append($('<td></td>').text(item.date))
+				.append($('<td></td>').text(item.name))
+				.append($('<td></td>').text(item.department))
+				.append($('<td></td>').text(item.goal))
+				.append($('<td></td>').text(item.title))
+				.append($('<td></td>').text(item.summ));
+				tab.append(row);
+				summ+=parseFloat(item.summ);
+			});
+		}
+		//$("#page_1_table").dataTable().fnDestroy();
+		$('#tbl_1_summ').text('Всього: '+summ+' грн.');
+		$("#page_1_table").dataTable({"pageLength": 50, "order":  []});
 
 		//data=(data=="")?0:data;
 		//$('#summ').text('Сума: '+data+' грн.');
@@ -58,6 +81,7 @@ function page_build(page_num,data){
 		//$("#page_2_tbody").dataTable({"pageLength": 50});
 	}		
 }
+
 
 $(function() {
 	$('.ajax_form').submit(function(e) {
@@ -127,10 +151,10 @@ $( window ).load(function() {
 
 	$('#operation').on('change', function(){
 		if(this.value==2){
-			$('#treatment').prop('readonly',true);
+			$('#treatment').parent().hide();$('#cat_id').parent().show();
 		}
 		else{
-			$('#treatment').prop('readonly',false);			
+			$('#treatment').parent().show();$('#cat_id').parent().hide();		
 		}
 	});
 
@@ -183,12 +207,19 @@ $( window ).load(function() {
 								</select>
 							</div>	
 							<div class="col-md-4">
-								<label for="treatment"><?php echo $this->lang->line('treatment');?></label>
+								<label for="treatment">Процедура</label>
 								<input name="treatment" id="treatment" type="text" class="form-control" value=""/><br />
 							</div>
-							<div class="col-md-4" style="display: none">
-								<label for="exp_cat">Категорія витрат</label>
-								<input name="exp_cat" id="exp_cat" type="text" class="form-control" value=""/><br />
+							<div class="col-md-4 form-group" style="display: none">
+								<label for="cat_id">Категорія витрат</label>
+								<?php
+									$cat_list = array();
+									foreach ($expense_categories as $cat){
+										$cat_list[$cat['id']] = $cat['view_id']." ".$cat['title'];
+									}
+								?>
+								<?php echo form_dropdown('cat_id', $cat_list,array(" "=>0),'class="form-control" id="cat_id"'); ?>
+								<?php echo form_error('cat_id','<div class="alert alert-danger">','</div>'); ?>
 							</div>
 							<div class="col-md-4 form-group">
 								<label for="user_id">Користувач</label>
@@ -212,21 +243,19 @@ $( window ).load(function() {
 						<?php echo form_close(); ?>
 				</div>
 			</div>
-			<div class="table-responsive page_1">
-				<table class="table table-striped table-bordered table-hover dataTable no-footer" id="">
-					<thead>
-						<tr>
-							<th>Дата</th>
-							<th>Користувач</th>
-							<th>Відділ</th>
-							<th>Сума (грн.)</th>
-						</tr>
-					</thead>
-					<tbody id="page_1_tbody">
-												
-					</tbody>
-				</table>
-			</div>		
+			<div class="panel panel-primary page_1">
+				<div class="panel-heading">
+						<span id="tbl_1_head"></span>
+						<span id="tbl_1_summ" style="float:right" ></span>
+				</div>
+
+				<div class="table-responsive page_1">
+					<table class="table table-striped table-bordered table-hover table-condensed dataTable no-footer" id="page_1_table">
+						<thead  id="page_1_thead"></thead>
+						<tbody id="page_1_tbody"></tbody>
+					</table>
+				</div>
+			</div>	
 			<div class="panel panel-primary page_2" style="display: none">
 				<div class="panel-body">
 					<?php echo form_open('payment/payment_ajax_report/2',array('class'=>'ajax_form')); ?>
