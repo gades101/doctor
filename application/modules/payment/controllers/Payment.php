@@ -301,30 +301,16 @@ class Payment extends CI_Controller {
         } else {
 			$this->form_validation->set_rules('start_date', 'Від ', 'required');
 			$this->form_validation->set_rules('end_date', 'До', 'required');
-			if ($this->form_validation->run() === FALSE) {
-				$data['users'] = $this->admin_model->get_work_users();
-				$data['treatments'] = $this->treatment_model->get_treatments();
- 	  			$data['def_dateformate'] = $this->settings_model->get_date_formate();
-				$data['departments'] = $this->doctor_model->get_all_departments();
-				$data['expense_categories'] = $this->payment_model->list_expense_cat();
-				array_unshift($data['expense_categories'] , array("id"=>"","title"=>"Усі","view_id"=>""));
-				$this->load->view('templates/header');
-				$this->load->view('templates/menu');
-				$this->load->view('dir_pay_report',$data);
-				$this->load->view('templates/footer');
-			} else {
-				$data['users'] = $this->admin_model->get_work_users();
-				$data['departments'] = $this->doctor_model->get_all_departments();
-				$data['treatments'] = $this->treatment_model->get_treatments();
- 	  			$data['def_dateformate'] = $this->settings_model->get_date_formate();
-                $data['report'] = $this->payment_model->create_dir_report();
-                $data['start_date'] = $this->input->post('start_date');
-                $data['end_date'] = $this->input->post('end_date');
-                $this->load->view('templates/header');
-                $this->load->view('templates/menu');
-                $this->load->view('pay_report', $data);
-                $this->load->view('templates/footer');
-            }
+			$data['users'] = $this->admin_model->get_work_users();
+			$data['treatments'] = $this->treatment_model->get_treatments();
+	  			$data['def_dateformate'] = $this->settings_model->get_date_formate();
+			$data['departments'] = $this->doctor_model->get_all_departments();
+			$data['expense_categories'] = $this->payment_model->list_expense_cat();
+			array_unshift($data['expense_categories'] , array("id"=>"","title"=>"Усі","view_id"=>""));
+			$this->load->view('templates/header');
+			$this->load->view('templates/menu');
+			$this->load->view('dir_pay_report',$data);
+			$this->load->view('templates/footer');
         }
     }
 

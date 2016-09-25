@@ -440,84 +440,28 @@ class Appointment extends CI_Controller {
 		if ( $this->is_session_started() === FALSE ){
 			session_start();
 		}
-        if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
-            redirect('login/index');
+		//Check if user has logged in
+		if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
+			redirect('login/index');
         } else {
-            $data['doctors'] = $this->admin_model->get_doctor();
-            $level = $_SESSION["category"];
-            $data['currency_postfix'] = $this->settings_model->get_currency_postfix();
-			$data['def_dateformate'] = $this->settings_model->get_date_formate();
-            if ($level == 'Doctor')
-			{
-                $this->form_validation->set_rules('app_date', 'Appointment Date', 'required');
-                if ($this->form_validation->run() === FALSE) {
-					$timezone = $this->settings_model->get_time_zone();
-					if (function_exists('date_default_timezone_set'))
-						date_default_timezone_set($timezone);
-					$app_date = date('Y-m-d');
-                    $user_id = $_SESSION['id'];
-					$data['app_date'] = $app_date;
+			$this->form_validation->set_rules('start_date', 'Від ', 'required');
+			$this->form_validation->set_rules('end_date', 'До', 'required');
+			if ($this->form_validation->run() === FALSE) {
+				$data['users'] = $this->admin_model->get_work_users();
 
-                    $data['app_reports'] = $this->appointment_model->get_report($app_date, $user_id);
-                } else {
-                    $app_date = date('Y-m-d', strtotime($this->input->post('app_date')));
-                    $user_id = $_SESSION['id'];
-					$data['app_date'] = $app_date;
-                    $data['app_reports'] = $this->appointment_model->get_report($app_date, $user_id);
-                }
-				//var_dump($data);
+				$this->load->view('templates/header');
+				$this->load->view('templates/menu');
+				$this->load->view('dir_pay_report',$data);
+				$this->load->view('templates/footer');
+			} else {
+				$data['users'] = $this->admin_model->get_work_users();
+
+                $data['start_date'] = $this->input->post('start_date');
+                $data['end_date'] = $this->input->post('end_date');
                 $this->load->view('templates/header');
                 $this->load->view('templates/menu');
-                $this->load->view('appointment/report', $data);
+                $this->load->view('pay_report', $data);
                 $this->load->view('templates/footer');
-            }
-			else
-			{
-                $this->form_validation->set_rules('app_date', 'Appointment Date', 'required');
-                $this->form_validation->set_rules('doctor', 'Doctor Name', 'required');
-                if ($this->form_validation->run() === FALSE) {
-                    $timezone = $this->settings_model->get_time_zone();
-					if (function_exists('date_default_timezone_set'))
-						date_default_timezone_set($timezone);
-
-					$app_date = date('Y-m-d');
-                    $user_id = $_SESSION['id'];
-
-					$data['app_date'] = $app_date;
-					$data['doctor_id'] = $user_id;
-                    $data['app_reports'] = $this->appointment_model->get_report($app_date, NULL);
-                    if ($level == 'Administrator') {
-                        $this->load->view('templates/header');
-                        $this->load->view('templates/menu');
-                        $this->load->view('appointment/report', $data);
-                        $this->load->view('templates/footer');
-                    } else {
-                        $this->load->view('templates/header');
-                        $this->load->view('templates/menu');
-                        $this->load->view('appointment/report', $data);
-                        $this->load->view('templates/footer');
-                    }
-                }
-				else
-				{
-                    $app_date = date('Y-m-d', strtotime($this->input->post('app_date')));
-                    $user_id = $this->input->post('doctor');
-					$data['app_date'] = $app_date;
-					$data['doctor_id'] = $user_id;
-                    $data['app_reports'] = $this->appointment_model->get_report($app_date, $user_id);
-
-                    if ($level == 'Administrator') {
-                        $this->load->view('templates/header');
-                        $this->load->view('templates/menu');
-                        $this->load->view('appointment/report', $data);
-                        $this->load->view('templates/footer');
-                    } else {
-                        $this->load->view('templates/header');
-                        $this->load->view('templates/menu');
-                        $this->load->view('appointment/report', $data);
-                        $this->load->view('templates/footer');
-                    }
-                }
             }
         }
     }
