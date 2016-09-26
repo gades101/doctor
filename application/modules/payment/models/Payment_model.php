@@ -250,7 +250,6 @@ class Payment_model extends CI_Model {
 				$user=($this->input->post('user_id'))?" AND p.userid=".$this->input->post('user_id')." " :"";
 				$treatment=($this->input->post('treatment_id'))?" AND p.treatment_id=".$this->input->post('treatment_id')." ":"";
 		 		$department = ($this->input->post('department_id'))?" AND p.department_id=".$this->input->post('department_id')." ":"";
-		 		//$query_str="SELECT sum(p.paid) summ  FROM ck_payment p  WHERE".$date.$user.$treatment.$department;
 		 		$query_str="SELECT u.name, p.pay_date date, p.paid summ, d.department_name department, t.treatment FROM ck_payment p LEFT JOIN ck_users u ON p.userid=u.userid LEFT JOIN ck_department d ON p.department_id=d.department_id LEFT JOIN ck_treatments t ON p.treatment_id=t.id WHERE".$date.$user.$treatment.$department."ORDER BY p.payment_id DESC";
 	 		}
 	    	if($this->input->post('operation')==2){
@@ -258,7 +257,6 @@ class Payment_model extends CI_Model {
 				$user=($this->input->post('user_id'))?" AND e.user_id=".$this->input->post('user_id')." " :"";
 		 		$department = ($this->input->post('department_id'))?" AND e.department_id=".$this->input->post('department_id')." ":"";
 		 		$exp_category = ($this->input->post('cat_id'))?" AND e.cat_id=".$this->input->post('cat_id')." ":"";
-		 		//$query_str="SELECT sum(e.sum) summ  FROM ck_expense e  WHERE".$date.$user.$department;
 		 		$query_str="SELECT u.name, e.expense_date date, e.sum summ, e.goal,ek.title, d.department_name department FROM ck_expense e LEFT JOIN ck_users u ON e.user_id=u.userid LEFT JOIN ck_department d ON e.department_id=d.department_id LEFT JOIN ck_expense_categories ek ON e.cat_id=ek.id WHERE".$date.$user.$department.$exp_category."ORDER BY e.id DESC";
 			}
 		}
@@ -268,8 +266,8 @@ class Payment_model extends CI_Model {
 	 		$query_str="SELECT sum(pay.paid) summ, c.first_name, c.middle_name FROM ck_payment pay LEFT JOIN ck_patient pat ON pay.patient_id=pat.patient_id LEFT JOIN ck_contacts c ON pat.contact_id=c.contact_id ".$date."GROUP BY pay.patient_id ORDER BY summ DESC LIMIT ".$limit;
 	 	}
 		$res=$this->db->query($query_str);
-		file_put_contents('t1.txt', print_r($this->db->last_query(),true), FILE_APPEND);
-    	file_put_contents('t1.txt', print_r($this->db->error(),true), FILE_APPEND);
+		//file_put_contents('t1.txt', print_r($this->db->last_query(),true), FILE_APPEND);
+    	//file_put_contents('t1.txt', print_r($this->db->error(),true), FILE_APPEND);
 		return $res->result_array();
 	}
 }

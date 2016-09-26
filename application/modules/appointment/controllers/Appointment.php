@@ -7,6 +7,7 @@ class Appointment extends CI_Controller {
         $this->load->model('admin/admin_model');
 		$this->load->model('contact/contact_model');
         $this->load->model('patient/patient_model');
+		$this->load->model('doctor/doctor_model');
 		$this->load->model('payment/payment_model');
         $this->load->model('settings/settings_model');
 		$this->load->model('module/module_model');
@@ -76,10 +77,6 @@ class Appointment extends CI_Controller {
 
 			//Fetch Task Details
          $data['todos'] = $this->appointment_model->get_todos();
-
-			//Display Followups for next 8 days
-			/*$followup_date = date('Y-m-d', strtotime("+8 days"));
-			$data['followups'] = $this->appointment_model->get_followup($followup_date);*/
 
 			//Display Events
 			$events = $this->event_model->get_events();
@@ -290,7 +287,6 @@ class Appointment extends CI_Controller {
 				$this->load->view('templates/footer');
 			}else{
 				$this->payment_model->edit_payment_count($this->input->post('payment_id'),$this->input->post('payment_id_orig'));
-				file_put_contents('t1.txt', print_r($this->input->post(),true));
 				if($this->input->post('new_payment')){
 					$treatment=$this->treatment_model->get_edit_treatment($this->input->post('treatment_id'));
 					$this->payment_model->new_payment_from_app($treatment);
@@ -446,23 +442,13 @@ class Appointment extends CI_Controller {
         } else {
 			$this->form_validation->set_rules('start_date', 'Від ', 'required');
 			$this->form_validation->set_rules('end_date', 'До', 'required');
-			if ($this->form_validation->run() === FALSE) {
-				$data['users'] = $this->admin_model->get_work_users();
-
-				$this->load->view('templates/header');
-				$this->load->view('templates/menu');
-				$this->load->view('dir_pay_report',$data);
-				$this->load->view('templates/footer');
-			} else {
-				$data['users'] = $this->admin_model->get_work_users();
-
-                $data['start_date'] = $this->input->post('start_date');
-                $data['end_date'] = $this->input->post('end_date');
-                $this->load->view('templates/header');
-                $this->load->view('templates/menu');
-                $this->load->view('pay_report', $data);
-                $this->load->view('templates/footer');
-            }
+			$data['users'] = $this->admin_model->get_work_users();
+	  		$data['def_dateformate'] = $this->settings_model->get_date_formate();
+			$data['departments'] = $this->doctor_model->get_all_departments();
+			$this->load->view('templates/header');
+			$this->load->view('templates/menu');
+			$this->load->view('report',$data);
+			$this->load->view('templates/footer');
         }
     }
 

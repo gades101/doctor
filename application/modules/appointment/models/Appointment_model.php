@@ -358,12 +358,12 @@ class Appointment_model extends CI_Model {
 		return $followup['followup_date'];
     }
 
-    function get_report($app_date, $user_id) {
-		if($user_id == NULL){
-			$query = $this->db->get_where('view_report', array('appointment_date' => $app_date));
-		}else{
-			$query = $this->db->get_where('view_report', array('userid' => $user_id, 'appointment_date' => $app_date));
-		}
+    function get_report() {
+ 		$start_date = date("Y-m-d", strtotime($this->input->post('start_date')));
+    	$end_date = date("Y-m-d", strtotime($this->input->post('end_date')));
+		$date="WHERE a.appointment_date >=". $this->db->escape($start_date)." AND a.appointment_date < ". $this->db->escape($end_date)." ";
+		$query_str="SELECT COUNT(*) app_count,u.name FROM ck_appointments a INNER JOIN ck_users u ON a.userid=u.userid GROUP BY a.userid";
+		$res=$this->db->query($query_str);
         return $query->result_array();
     }
 

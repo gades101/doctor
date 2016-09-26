@@ -1,115 +1,139 @@
 <script type="text/javascript" charset="utf-8">
-	$(window).load(function() {
-		$("#app_date").datetimepicker({
-			timepicker:false,
-			format: '<?=$def_dateformate;?>'
+function page_build(page_num,data){
+	if($.fn.DataTable.isDataTable("#page_1_table")) {$('#page_1_table').DataTable().destroy();}
+	var tab=$('#page_1_tbody');head=$('#page_1_thead');
+	var count=0;
+	data=JSON.parse(data);tab.html("");head.html("");
+	$('#tbl_1_head').text('Оплати');
+	head.append($('<tr></tr>').append($('<th></th>').text('Дата')).append($('<th></th>').text('Користувач')).append($('<th></th>').text('Сума')));
+	data.forEach(function(item){
+		var row=$('<tr></tr>').append($('<td></td>').text(item.date))
+		.append($('<td></td>').text(item.name))
+		.append($('<td></td>').text(item.app_count));
+		tab.append(row);
+		count+=parseFloat(item.count);
+	});
+	//$("#page_1_table").dataTable().fnDestroy();
+	$('#app_count').text('Всього: '+count+' процедур');
+	$("#app_table").dataTable({"pageLength": 50, "order":  []});
+}
+
+	$(function() {
+		$('.ajax_form').submit(function(e) {
+		var $form = $(this);
+		$.ajax({
+			type: $form.attr('method'),
+		  	url: $form.attr('action'),
+		  	data: $form.serialize()
+		}).done(function(response) {
+		  	page_build(page_num,response);
+		}).fail(function() {
+		  	console.log('fail');
 		});
-    });
+		//отмена действия по умолчанию для кнопки submit
+		e.preventDefault(); 
+		});
+	});
+
+$( window ).load(function() {
+
+
+
+	var maxdate=false, mindate=false;
+	$('.confirmDelete').click(function(){
+			return confirm("Ви впевнені");
+	});
+	$('#start_date').datetimepicker({
+		timepicker:true,
+		format: 'd-m-Y H:i',
+		scrollInput:false,
+		maxDate: maxdate,
+		minDate: mindate,
+
+	});	
+	$('#end_date').datetimepicker({
+		timepicker:true,
+		format: 'd-m-Y H:i',
+		maxDate: maxdate,
+		scrollInput:false,
+		maxDate: maxdate,		
+		minDate: mindate,
+	});	
+} )
 </script>
 <?php
-
-$level = $_SESSION['category'];
+	$start_date = (isset($start_date)) ? ($start_date) : date($def_dateformate) . " 00:00";
+	$end_date = (isset($end_date)) ? ($end_date) : date($def_dateformate, mktime(0,0,0,date("m"),date("d")+1,date("Y"))) . " 00:00";
 ?>
 <div id="page-inner">
 	<div class="row">
-		<div class="col-md-12">
-			<div class="panel panel-primary">
+		<div class="col-md-12">	
+			<div class="panel panel-primary">		
 				<div class="panel-heading">
-					<?php echo $this->lang->line('report').' по Прийомам';?>
+					Звіт по прийомам
 				</div>
 				<div class="panel-body">
-					<?php echo form_open('appointment/appointment_report'); ?>
-					<div class="col-md-3">
-						<?php echo $this->lang->line('date');?>
-						<input type="text" name="app_date" id="app_date" class="form-control" value="<?=date($def_dateformate,strtotime($app_date));?>" />
-					</div>
-					<div class="col-md-3" <?php if($level == 'Doctor'){ echo 'style = display:none;';} ?>>
-						<?php echo $this->lang->line('doctor');?>
-						<select name="doctor" class="form-control">
-							<option></option>
-							<?php foreach ($doctors as $doctor) {?>
-								<option value="<?php echo $doctor['userid'] ?>" <?php if($doctor['userid'] == $doctor_id){echo "selected='selected'";} ?>><?= $doctor['name'];?></option>
-							<?php } ?>
-							<input type="hidden" name="doctor_id" id="doctor_id" value="" />
-						</select>
-					</div>
-					<div class="col-md-3">
-						<button type="submit" name="submit" class="btn btn-primary"><?php echo $this->lang->line('go');?></button>
-					</div>
+					<?php echo form_open('appointment/appointment_report',array('id'=>'main_form','class'=>'ajax_form')); ?>
+					<input type="hidden" name="treatment_id" id="treatment_id" value=""/>	
+						<div class="col-md-12 form-group">							
+							<div class="col-md-4">
+								<div class="form-group">
+									<label for="start_date"><?php echo $this->lang->line("from_date");?></label>
+									<input type="text" class="form-control input_date" name="start_date" id="start_date" value="<?=$start_date;?>"/>
+									<?php echo form_error('start_date','<div class="alert alert-danger">','</div>'); ?>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label for="end_date"><?php echo $this->lang->line("to_date");?></label>								
+									<input type="text" class="form-control input_date" name="end_date" id="end_date" value="<?=$end_date;?>" />
+									<?php echo form_error('end_date','<div class="alert alert-danger">','</div>'); ?>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label for="ok" style="height: 14px"> </label>
+									<input id="ok" class="btn btn-primary form-control" type="submit" value="Вивести" name="submit" />
+								</div>
+							</div>
+						</div>
+					<div id="page_1" class="col-md-12">	
+						<div class="col-md-6 form-group">
+							<label for="user_id">Користувач</label>
+							<select id='user_id' name='user_id' class="form-control" value="">
+								<option value="">Усі</option>
+								<?php foreach($users as $user){ ?>									
+									<option value="<?php echo $user['userid']; ?>" data-department_id="<?= $user['department_id']; ?>" /><?= $user['name']; ?></option>				
+								<?php } ?>
+							</select>
+						</div>	
+						<div class="col-md-6 form-group">
+							<label for="department_id">Відділ</label>
+							<select id='department_id' name='department_id' class="form-control" value="">
+								<option value="">Усі</option>
+								<?php foreach($departments as $department){ ?>									
+									<option value="<?= $department['department_id']; ?>" /><?= $department['department_name']; ?></option>				
+								<?php } ?>
+							</select>
+						</div>
+					</div>				
 					<?php echo form_close(); ?>
+				</div>
+			</div>			
+			<div class="panel panel-primary">
+				<div class="panel-body">
+					<div class="panel-heading">
+						<span id="app_head"></span>
+						<span id="app_count" style="float:right" ></span>
+					</div>
+					<div class="table-responsive">
+					<table class="table table-striped table-bordered table-hover table-condensed dataTable no-footer" id="app_table">
+						<thead  id="app_thead"></thead>
+						<tbody id="app_tbody"></tbody>
+					</table>
+					</div>	
 				</div>
 			</div>
 		</div>
-
-			<div class="col-md-12">
-				<div class="panel panel-primary">
-					<div class="table-responsive">
-						<table class="table table-striped table-bordered table-hover" id="attendance_table" >
-							<thead>
-								<tr>
-									<th width="100px;"><?php echo $this->lang->line('patient');?></th>
-									<th width="100px;"><?php echo $this->lang->line('time').' '.$this->lang->line('appointment')."у";?></th>
-									<th><?php echo $this->lang->line('time')." ".$this->lang->line('waiting');?></th>
-									<th><?php echo $this->lang->line('duration')." ".$this->lang->line('waiting');?></th>
-									<th><?php echo $this->lang->line('consultation');?></th>
-									<th><?php echo $this->lang->line('duration')." Консультації";?></th>
-									<!--th><?php echo $this->lang->line('bill')." ".$this->lang->line('amount');?></th-->
-								</tr>
-							</thead>
-							<?php if ($app_reports) {?>
-							<tbody>
-								<?php $i=1; ?>
-								<?php foreach ($app_reports as $report):  ?>
-									<tr <?php if ($i%2 == 0) { echo "class='even'"; }else{ echo "class='odd'"; } ?> >
-										<td><?= $report['patient_name'];?></td>
-										<td><?=$report['appointment_time']; ?></td>
-										<td><?=$report['waiting_in']; ?></td>
-										<?php if($report['waiting_duration'] == NULL) { ?>
-										<td> -- </td>
-										<?php } else { ?>
-										<td>
-										<?php
-											$duration = $report['waiting_duration'];
-											$hours = floor($duration / 3600);
-											$minutes = floor(($duration / 60) % 60);
-											$seconds = $duration % 60;
-
-											echo "$hours:$minutes:$seconds";
-										?>
-										</td>
-										<?php }  ?>
-										<td><?=$report['consultation_in'];?></td>
-										<?php if($report['consultation_duration'] == NULL) { ?>
-										<td> -- </td>
-										<?php } else { ?>
-										<td>
-										<?php
-											$duration = $report['consultation_duration'];
-											$hours = floor($duration / 3600);
-											$minutes = floor(($duration / 60) % 60);
-											$seconds = $duration % 60;
-
-											echo "$hours:$minutes:$seconds";
-										?>
-										</td>
-										<?php }  ?>
-										<!--td class="right"><?php echo currency_format($report['collection_amount']);if($currency_postfix) echo $currency_postfix['currency_postfix']; ?></td-->
-									</tr>
-
-								<?php $i++; ?>
-								<?php endforeach ?>
-							</tbody>
-							<?php } else { ?>
-							<tbody>
-								<tr>
-									<td colspan="8"><?php echo $this->lang->line('norecfound');?></td>
-								</tr>
-							</tbody>
-							<?php } ?>
-						</table>
-					</div>
-				</div>
-			</div>
-
 	</div>
 </div>
