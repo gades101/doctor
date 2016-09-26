@@ -266,8 +266,6 @@ class Payment_model extends CI_Model {
 	 		$query_str="SELECT sum(pay.paid) summ, c.first_name, c.middle_name FROM ck_payment pay LEFT JOIN ck_patient pat ON pay.patient_id=pat.patient_id LEFT JOIN ck_contacts c ON pat.contact_id=c.contact_id ".$date."GROUP BY pay.patient_id ORDER BY summ DESC LIMIT ".$limit;
 	 	}
 		$res=$this->db->query($query_str);
-		//file_put_contents('t1.txt', print_r($this->db->last_query(),true), FILE_APPEND);
-    	//file_put_contents('t1.txt', print_r($this->db->error(),true), FILE_APPEND);
 		return $res->result_array();
 	}
 }

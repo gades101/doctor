@@ -1,19 +1,28 @@
 <script type="text/javascript" charset="utf-8">
-function page_build(page_num,data){
-	if($.fn.DataTable.isDataTable("#page_1_table")) {$('#page_1_table').DataTable().destroy();}
-	var tab=$('#page_1_tbody');head=$('#page_1_thead');
+function page_build(data){
+	if($.fn.DataTable.isDataTable("#app_table")) {$('#app_table').DataTable().destroy();}
+	var tab=$('#app_tbody');head=$('#app_thead');
 	var count=0;
 	data=JSON.parse(data);tab.html("");head.html("");
-	$('#tbl_1_head').text('Оплати');
-	head.append($('<tr></tr>').append($('<th></th>').text('Дата')).append($('<th></th>').text('Користувач')).append($('<th></th>').text('Сума')));
-	data.forEach(function(item){
-		var row=$('<tr></tr>').append($('<td></td>').text(item.date))
-		.append($('<td></td>').text(item.name))
-		.append($('<td></td>').text(item.app_count));
-		tab.append(row);
-		count+=parseFloat(item.count);
-	});
-	//$("#page_1_table").dataTable().fnDestroy();
+	if($('#user_id').val()==""){
+		head.append($('<tr></tr>').append($('<th></th>').text('Користувач')).append($('<th></th>').text('Кількість процедур')));
+		data.forEach(function(item){
+			var row=$('<tr></tr>').append($('<td></td>').text(item.name))
+			.append($('<td></td>').text(item.app_count));
+			tab.append(row);
+			count+=parseInt(item.app_count);
+		});
+	}
+	else{
+		head.append($('<tr></tr>').append($('<th></th>').text('Процедура')).append($('<th></th>').text('Кількість процедур')));
+		data.forEach(function(item){
+			var row=$('<tr></tr>').append($('<td></td>').text(item.treatment))
+			.append($('<td></td>').text(item.treatment_count));
+			tab.append(row);
+			count+=parseInt(item.treatment_count);
+		});
+	}
+	$('#app_head').text('Загальна кількість процедур');
 	$('#app_count').text('Всього: '+count+' процедур');
 	$("#app_table").dataTable({"pageLength": 50, "order":  []});
 }
@@ -26,7 +35,7 @@ function page_build(page_num,data){
 		  	url: $form.attr('action'),
 		  	data: $form.serialize()
 		}).done(function(response) {
-		  	page_build(page_num,response);
+		  	page_build(response);
 		}).fail(function() {
 		  	console.log('fail');
 		});
@@ -45,7 +54,7 @@ $( window ).load(function() {
 	});
 	$('#start_date').datetimepicker({
 		timepicker:true,
-		format: 'd-m-Y H:i',
+		format: 'd-m-Y',
 		scrollInput:false,
 		maxDate: maxdate,
 		minDate: mindate,
@@ -53,7 +62,7 @@ $( window ).load(function() {
 	});	
 	$('#end_date').datetimepicker({
 		timepicker:true,
-		format: 'd-m-Y H:i',
+		format: 'd-m-Y',
 		maxDate: maxdate,
 		scrollInput:false,
 		maxDate: maxdate,		
@@ -62,8 +71,8 @@ $( window ).load(function() {
 } )
 </script>
 <?php
-	$start_date = (isset($start_date)) ? ($start_date) : date($def_dateformate) . " 00:00";
-	$end_date = (isset($end_date)) ? ($end_date) : date($def_dateformate, mktime(0,0,0,date("m"),date("d")+1,date("Y"))) . " 00:00";
+	$start_date = (isset($start_date)) ? ($start_date) : date($def_dateformate);
+	$end_date = (isset($end_date)) ? ($end_date) : date($def_dateformate, mktime(0,0,0,date("m"),date("d")+1,date("Y")));
 ?>
 <div id="page-inner">
 	<div class="row">
@@ -73,7 +82,7 @@ $( window ).load(function() {
 					Звіт по прийомам
 				</div>
 				<div class="panel-body">
-					<?php echo form_open('appointment/appointment_report',array('id'=>'main_form','class'=>'ajax_form')); ?>
+					<?php echo form_open('appointment/get_ajax_report',array('id'=>'main_form','class'=>'ajax_form')); ?>
 					<input type="hidden" name="treatment_id" id="treatment_id" value=""/>	
 						<div class="col-md-12 form-group">							
 							<div class="col-md-4">
@@ -119,20 +128,19 @@ $( window ).load(function() {
 					</div>				
 					<?php echo form_close(); ?>
 				</div>
-			</div>			
+			</div>	
+
 			<div class="panel panel-primary">
-				<div class="panel-body">
-					<div class="panel-heading">
-						<span id="app_head"></span>
-						<span id="app_count" style="float:right" ></span>
-					</div>
-					<div class="table-responsive">
+				<div class="panel-heading">
+					<span id="app_head"></span>
+					<span id="app_count" style="float:right" ></span>
+				</div>
+				<div class="table-responsive">
 					<table class="table table-striped table-bordered table-hover table-condensed dataTable no-footer" id="app_table">
 						<thead  id="app_thead"></thead>
 						<tbody id="app_tbody"></tbody>
 					</table>
-					</div>	
-				</div>
+				</div>	
 			</div>
 		</div>
 	</div>

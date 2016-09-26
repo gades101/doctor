@@ -451,6 +451,12 @@ class Appointment extends CI_Controller {
 			$this->load->view('templates/footer');
         }
     }
+    function get_ajax_report(){
+		$data=$this->appointment_model->get_report();
+			//echo $data[0]['summ'];
+		echo json_encode($data);
+    }
+
 
     function todos() {
         $this->appointment_model->add_todos();

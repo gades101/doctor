@@ -361,9 +361,17 @@ class Appointment_model extends CI_Model {
     function get_report() {
  		$start_date = date("Y-m-d", strtotime($this->input->post('start_date')));
     	$end_date = date("Y-m-d", strtotime($this->input->post('end_date')));
-		$date="WHERE a.appointment_date >=". $this->db->escape($start_date)." AND a.appointment_date < ". $this->db->escape($end_date)." ";
-		$query_str="SELECT COUNT(*) app_count,u.name FROM ck_appointments a INNER JOIN ck_users u ON a.userid=u.userid GROUP BY a.userid";
-		$res=$this->db->query($query_str);
+		$date="AND a.appointment_date >=". $this->db->escape($start_date)." AND a.appointment_date < ". $this->db->escape($end_date)." ";
+		if($this->input->post('user_id')){
+			$query_str="SELECT t.treatment,COUNT(*) treatment_count FROM ck_appointments a INNER JOIN ck_treatments t ON a.treatment_id=t.id WHERE a.userid=".$this->input->post('user_id')." ".$date."GROUP BY a.treatment_id ORDER BY treatment_count DESC";			
+		}
+		else{
+			$department = ($this->input->post('department_id'))?" AND d.department_id=".$this->input->post('department_id')." ":"";
+			$query_str="SELECT COUNT(*) app_count,u.name FROM ck_appointments a INNER JOIN ck_users u ON a.userid=u.userid INNER JOIN ck_doctor d ON a.userid=d.userid WHERE u.is_active=1 ".$date.$department."GROUP BY a.userid";
+		}
+		$query=$this->db->query($query_str);
+		file_put_contents('t1.txt', print_r($this->db->last_query(),true), FILE_APPEND);
+    	file_put_contents('t1.txt', print_r($this->db->error(),true), FILE_APPEND);
         return $query->result_array();
     }
 
