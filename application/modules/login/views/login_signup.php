@@ -31,12 +31,12 @@
 							<?php echo form_open('login/valid_signin'); ?>   
 							<div class="form-group input-group">
 								<span class="input-group-addon"><i class="fa fa-tag"  ></i></span>
-								<input type="text" name="username" id="username" class="form-control" placeholder="<?=$this->lang->line('your_username');?>" />
+								<input type="text" name="username" id="username" class="form-control" autocomplete="off" placeholder="<?=$this->lang->line('your_username');?>" />
 								<?php echo form_error('username','<div class="alert alert-danger">','</div>'); ?>
 							</div>
 							<div class="form-group input-group">
 								<span class="input-group-addon"><i class="fa fa-lock"  ></i></span>
-								<input type="password" class="form-control" name="password" id="password" placeholder="<?=$this->lang->line('your_password');?>" />
+								<input type="password" class="form-control" name="password" id="password" autocomplete="off" placeholder="<?=$this->lang->line('your_password');?>" />
 								<?php echo form_error('password','<div class="alert alert-danger">','</div>'); ?>
 							</div>
 							<button type="submit" name="submit" class="btn btn-primary"><?php echo $this->lang->line('sign_in');?></button>

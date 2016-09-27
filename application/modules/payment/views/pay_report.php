@@ -1,8 +1,9 @@
 <script type="text/javascript" charset="utf-8">
 $( window ).load(function() {
-	var maxdate=false, mindate=false;
+	var mindate=false;
 	<?php if($_SESSION["category"] == 'Секретар'){?>
-		$('.inp_date').prop("readonly", true); mindate=new Date();mindate.setMonth(mindate.getMonth()-1);
+		$('.inp_date').prop("readonly", true); mindate=new Date();//mindate.setMonth(mindate.getMonth()-1);
+		mindate.setDate(mindate.getDate()-mindate.getDay()+1);
 	<?php } ?>
 	$('.confirmDelete').click(function(){
 			return confirm("Ви впевнені");
@@ -11,16 +12,13 @@ $( window ).load(function() {
 		timepicker:true,
 		format: 'd-m-Y H:i',
 		scrollInput:false,
-		maxDate: maxdate,
 		minDate: mindate,
 
 	});	
 	$('#end_date').datetimepicker({
 		timepicker:true,
 		format: 'd-m-Y H:i',
-		maxDate: maxdate,
 		scrollInput:false,
-		maxDate: maxdate,		
 		minDate: mindate,
 	});	
 } )

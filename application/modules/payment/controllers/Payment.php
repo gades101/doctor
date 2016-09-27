@@ -44,7 +44,10 @@ class Payment extends CI_Controller {
 		if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
 			redirect('login/index');
         } else {
-			$data['payments'] = $this->payment_model->list_payments();
+			//$data['payments'] = $this->payment_model->list_payments();
+			$def_dateformate = $this->settings_model->get_date_formate();
+			$data['start_date'] = date($def_dateformate) . " 00:00";
+			$data['end_date'] = date($def_dateformate, mktime(0,0,0,date("m"),date("d")+1,date("Y"))) . " 00:00";
 			$data['currency_postfix'] = $this->settings_model->get_currency_postfix();
 			$this->load->view('templates/header');
 			$this->load->view('templates/menu');
@@ -333,6 +336,12 @@ class Payment extends CI_Controller {
 			echo json_encode($data);
 		}
     }
+
+    public function payment_list(){
+		$data=$this->payment_model->list_payments();			
+		echo json_encode($data);
+    }
+
 
 
 

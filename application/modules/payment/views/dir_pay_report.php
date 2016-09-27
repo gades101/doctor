@@ -173,74 +173,74 @@ $( window ).load(function() {
 					<span class="tblHead btn-danger" onclick=displayPage(1) style="min-width:20%"/>Звіт по платежам/витратам</span>
 					<span class="tblHead btn-danger" onclick=displayPage(2) />Звіт по пацієнтам</span>
 				</div>
-					<div class="panel-body page_1">
-						<?php echo form_open('payment/payment_ajax_report/1',array('id'=>'main_form','class'=>'ajax_form')); ?>
-						<input type="hidden" name="treatment_id" id="treatment_id" value=""/>	
-							<div class="col-md-12 form-group">							
-								<div class="col-md-4">
-									<div class="form-group">
-										<label for="start_date"><?php echo $this->lang->line("from_date");?></label>
-										<input type="text" class="form-control input_date" name="start_date" id="start_date" value="<?=$start_date;?>"/>
-										<?php echo form_error('start_date','<div class="alert alert-danger">','</div>'); ?>
-									</div>
-								</div>
-								<div class="col-md-4">
-									<div class="form-group">
-										<label for="end_date"><?php echo $this->lang->line("to_date");?></label>								
-										<input type="text" class="form-control input_date" name="end_date" id="end_date" value="<?=$end_date;?>" />
-										<?php echo form_error('end_date','<div class="alert alert-danger">','</div>'); ?>
-									</div>
-								</div>
-								<div class="col-md-4">
-									<div class="form-group">
-										<label for="ok" style="height: 14px"> </label>
-										<input id="ok" class="btn btn-primary form-control" type="submit" value="Вивести" name="submit" />
-									</div>
-								</div>
-							</div>
-						<div id="page_1" class="col-md-12">
-							<div class="col-md-4 form-group">
-								<label for="operation">Оплати/Витрати</label>
-								<select id='operation' name='operation' class="form-control" value="">								
-									<option value="1" selected=true />Оплати</option>
-									<option value="2" />Витрати</option>								
-								</select>
-							</div>	
+				<div class="panel-body page_1">
+					<?php echo form_open('payment/payment_ajax_report/1',array('id'=>'main_form','class'=>'ajax_form')); ?>
+					<input type="hidden" name="treatment_id" id="treatment_id" value=""/>	
+						<div class="col-md-12 form-group">							
 							<div class="col-md-4">
-								<label for="treatment">Процедура</label>
-								<input name="treatment" id="treatment" type="text" class="form-control" value=""/><br />
+								<div class="form-group">
+									<label for="start_date"><?php echo $this->lang->line("from_date");?></label>
+									<input type="text" class="form-control input_date" name="start_date" id="start_date" value="<?=$start_date;?>"/>
+									<?php echo form_error('start_date','<div class="alert alert-danger">','</div>'); ?>
+								</div>
 							</div>
-							<div class="col-md-4 form-group" style="display: none">
-								<label for="cat_id">Категорія витрат</label>
-								<?php
-									$cat_list = array();
-									foreach ($expense_categories as $cat){
-										$cat_list[$cat['id']] = $cat['view_id']." ".$cat['title'];
-									}
-								?>
-								<?php echo form_dropdown('cat_id', $cat_list,array(" "=>0),'class="form-control" id="cat_id"'); ?>
-								<?php echo form_error('cat_id','<div class="alert alert-danger">','</div>'); ?>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label for="end_date"><?php echo $this->lang->line("to_date");?></label>								
+									<input type="text" class="form-control input_date" name="end_date" id="end_date" value="<?=$end_date;?>" />
+									<?php echo form_error('end_date','<div class="alert alert-danger">','</div>'); ?>
+								</div>
 							</div>
-							<div class="col-md-4 form-group">
-								<label for="user_id">Користувач</label>
-								<select id='user_id' name='user_id' class="form-control" value="">
-									<option value="">Усі</option>
-									<?php foreach($users as $user){ ?>									
-										<option value="<?php echo $user['userid']; ?>" data-department_id="<?= $user['department_id']; ?>" /><?= $user['name']; ?></option>				
-									<?php } ?>
-								</select>
-							</div>	
-							<div class="col-md-6 form-group">
-								<label for="department_id">Відділ</label>
-								<select id='department_id' name='department_id' class="form-control" value="">
-									<option value="">Усі</option>
-									<?php foreach($departments as $department){ ?>									
-										<option value="<?= $department['department_id']; ?>" /><?= $department['department_name']; ?></option>				
-									<?php } ?>
-								</select>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label for="ok" style="height: 14px"> </label>
+									<input id="ok" class="btn btn-primary form-control" type="submit" value="Вивести" name="submit" />
+								</div>
 							</div>
-						</div>				
-						<?php echo form_close(); ?>
+						</div>
+					<div id="page_1" class="col-md-12">
+						<div class="col-md-4 form-group">
+							<label for="operation">Оплати/Витрати</label>
+							<select id='operation' name='operation' class="form-control" value="">								
+								<option value="1" selected=true />Оплати</option>
+								<option value="2" />Витрати</option>								
+							</select>
+						</div>	
+						<div class="col-md-4">
+							<label for="treatment">Процедура</label>
+							<input name="treatment" id="treatment" type="text" class="form-control" value=""/><br />
+						</div>
+						<div class="col-md-4 form-group" style="display: none">
+							<label for="cat_id">Категорія витрат</label>
+							<?php
+								$cat_list = array();
+								foreach ($expense_categories as $cat){
+									$cat_list[$cat['id']] = $cat['view_id']." ".$cat['title'];
+								}
+							?>
+							<?php echo form_dropdown('cat_id', $cat_list,array(" "=>0),'class="form-control" id="cat_id"'); ?>
+							<?php echo form_error('cat_id','<div class="alert alert-danger">','</div>'); ?>
+						</div>
+						<div class="col-md-4 form-group">
+							<label for="user_id">Користувач</label>
+							<select id='user_id' name='user_id' class="form-control" value="">
+								<option value="">Усі</option>
+								<?php foreach($users as $user){ ?>									
+									<option value="<?php echo $user['userid']; ?>" data-department_id="<?= $user['department_id']; ?>" /><?= $user['name']; ?></option>				
+								<?php } ?>
+							</select>
+						</div>	
+						<div class="col-md-6 form-group">
+							<label for="department_id">Відділ</label>
+							<select id='department_id' name='department_id' class="form-control" value="">
+								<option value="">Усі</option>
+								<?php foreach($departments as $department){ ?>									
+									<option value="<?= $department['department_id']; ?>" /><?= $department['department_name']; ?></option>				
+								<?php } ?>
+							</select>
+						</div>
+					</div>				
+					<?php echo form_close(); ?>
 				</div>
 			</div>
 			<div class="panel panel-primary page_1">

@@ -27,22 +27,22 @@ function page_build(data){
 	$("#app_table").dataTable({"pageLength": 50, "order":  []});
 }
 
-	$(function() {
-		$('.ajax_form').submit(function(e) {
-		var $form = $(this);
-		$.ajax({
-			type: $form.attr('method'),
-		  	url: $form.attr('action'),
-		  	data: $form.serialize()
-		}).done(function(response) {
-		  	page_build(response);
-		}).fail(function() {
-		  	console.log('fail');
-		});
-		//отмена действия по умолчанию для кнопки submit
-		e.preventDefault(); 
-		});
+$(function() {
+	$('.ajax_form').submit(function(e) {
+	var $form = $(this);
+	$.ajax({
+		type: $form.attr('method'),
+	  	url: $form.attr('action'),
+	  	data: $form.serialize()
+	}).done(function(response) {
+	  	page_build(response);
+	}).fail(function() {
+	  	console.log('fail');
 	});
+	//отмена действия по умолчанию для кнопки submit
+	e.preventDefault(); 
+	});
+});
 
 $( window ).load(function() {
 

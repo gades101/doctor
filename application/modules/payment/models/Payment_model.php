@@ -7,6 +7,9 @@ class Payment_model extends CI_Model {
     }
 
     public function list_payments() {
+		$start_date = date("Y-m-d H:i", strtotime($this->input->post('start_date')));
+    	$end_date = date("Y-m-d H:i", strtotime($this->input->post('end_date')));
+    	$this->db->where('pay_date>=',$start_date." AND pay_date<".$end_date);
         $this->db->order_by("payment_id","desc");
         $query = $this->db->get('view_payment');
         return $query->result_array();
