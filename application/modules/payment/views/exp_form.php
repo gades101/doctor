@@ -288,17 +288,6 @@
 					<?php } ?>
 				</div>
 			</div>
-			<?php
-				if(!isset($payment)){
-			?>
-			<div class="col-md-6">
-				<div class="form-group">
-					<a href="<?=site_url("appointment/index/all"); ?>" class="btn btn-primary" ><?php echo $this->lang->line('back');?></a>
-				</div>
-			</div>
-			<?php
-				}
-			?>
 			<?php echo form_close(); ?>
 			</div>
 			</div>

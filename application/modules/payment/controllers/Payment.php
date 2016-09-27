@@ -137,13 +137,17 @@ class Payment extends CI_Controller {
 		if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
 			redirect('login/index');
         } else {
-            $this->form_validation->set_rules('expense_date', 'expense_date', 'trim|required');
+            $this->form_validation->set_rules('expense_date', 'Дата', 'trim|required');
+            $this->form_validation->set_rules('department_id', 'Відділення', 'integer|required');
+            $this->form_validation->set_rules('goal', 'Призначення', 'required');
  	  		$data['def_dateformate'] = $this->settings_model->get_date_formate();
             if ($this->form_validation->run() === FALSE) {
-				$data['users'] = $this->admin_model->get_work_users();
+				$data['users'] = $this->admin_model->get_all_work_users();
 				$data['expense_categories'] = $this->payment_model->list_expense_cat();
 				$data['expenses'] = $this->payment_model->list_expenses();
 				$data['departments'] = $this->doctor_model->get_all_departments();
+				//array_unshift($data['departments'] , array("department_id"=>"","department_name"=>"Не обрано"));
+
 				$this->load->view('templates/header');
 				$this->load->view('templates/menu');
 				$this->load->view('exp_browse',$data);
@@ -162,10 +166,13 @@ class Payment extends CI_Controller {
         if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
             redirect('login/index');
         } else {
+            $this->form_validation->set_rules('expense_date', 'Дата', 'trim|required');
+            $this->form_validation->set_rules('department_id', 'Відділення', 'integer|required');
+            $this->form_validation->set_rules('goal', 'Призначення', 'required');
 			$this->form_validation->set_rules('cat_id', 'Категорія', 'trim|required');
  	  		$data['def_dateformate'] = $this->settings_model->get_date_formate();
 			if ($this->form_validation->run() === FALSE) {
-				$data['users'] = $this->admin_model->get_work_users();
+				$data['users'] = $this->admin_model->get_all_work_users();
 				$data['departments'] = $this->doctor_model->get_all_departments();
 				$data['expense_categories'] = $this->payment_model->list_expense_cat();
 				$data['edit_expense'] = $this->payment_model->get_edit_expense($id);
@@ -175,7 +182,7 @@ class Payment extends CI_Controller {
 				$this->load->view('templates/footer');
 			} else {
                 $this->payment_model->edit_expense($id);
-				$data['users'] = $this->admin_model->get_work_users();
+				$data['users'] = $this->admin_model->get_all_work_users();
 				$data['departments'] = $this->doctor_model->get_all_departments();
 				$data['expense_categories'] = $this->payment_model->list_expense_cat();
 				$data['expenses'] = $this->payment_model->list_expenses();             

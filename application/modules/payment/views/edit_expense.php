@@ -46,14 +46,14 @@ $( window ).load(function() {
 				</div>
 				<div class="panel-body">
 					<?php echo form_open('payment/edit_expense/'.$edit_expense['id']); ?>
-						<div class="col-md-2">
+						<div class="col-md-6">
 							<div class="form-group">
 								<label for="expense_date">Дата</label>
 								<input type="text" class="form-control" name="expense_date" id="expense_date" value="<?=$edit_expense['expense_date']; ?>"/>
 								<?php echo form_error('expense_date','<div class="alert alert-danger">','</div>'); ?>
 							</div>
 						</div>
-						<div class="col-md-4">
+						<div class="col-md-6">
 							<div class="form-group">
 								<label for="cat_id">Категорія</label>
 								<?php
@@ -91,12 +91,13 @@ $( window ).load(function() {
                             <?php echo form_error('department_id','<div class="alert alert-danger">','</div>'); ?>
                         </div>
 						<div class="col-md-12 form-group">
-							<label for="expense_title">Призначення</label>
+							<label for="goal">Призначення</label>
 							<input type="text" name="goal" id="expense_title" value="<?=$edit_expense['goal']; ?>" class="form-control"/>
-							<?php echo form_error('expense_title','<div class="alert alert-danger">','</div>'); ?>
+							<?php echo form_error('goal','<div class="alert alert-danger">','</div>'); ?>
 						</div>						
 						<div class="form-group col-md-12">
 							<button type="submit" name="submit" class="btn btn-primary"><?php echo $this->lang->line('save');?></button>
+							<a class="btn btn-primary" href="<?php echo site_url("payment/expense"); ?>">Назад</a>
 						</div>
 					</form>
 				</div>

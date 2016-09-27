@@ -23,8 +23,11 @@ class Admin_model extends CI_Model {
         return $query->result_array();
     }
     function get_work_users() {
-        //$query = $this->db->get_where("users", array('is_active'=>'1','username !='=>'admin'));
         $query = $this->db->query("SELECT u.userid, u.name, u.level, d.department_id FROM ck_users u, ck_doctor d WHERE u.userid=d.userid AND u.is_active=1 AND u.username !='admin'");  
+        return $query->result_array();
+    }
+    function get_all_work_users() {
+        $query = $this->db->query("SELECT u.userid, u.name, u.level, d.department_id FROM ck_users u LEFT JOIN ck_doctor d ON u.userid=d.userid WHERE u.is_active=1 AND u.username !='admin'");  
         return $query->result_array();
     }
     function get_user_detail($user_id) {
