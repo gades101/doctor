@@ -367,11 +367,11 @@ class Appointment_model extends CI_Model {
 		}
 		else{
 			$department = ($this->input->post('department_id'))?" AND d.department_id=".$this->input->post('department_id')." ":"";
-			$query_str="SELECT COUNT(*) app_count,u.name FROM ck_appointments a INNER JOIN ck_users u ON a.userid=u.userid INNER JOIN ck_doctor d ON a.userid=d.userid WHERE u.is_active=1 ".$date.$department."GROUP BY a.userid";
+			$query_str="SELECT COUNT(*) app_count,u.name FROM ck_appointments a INNER JOIN ck_users u ON a.userid=u.userid INNER JOIN ck_doctor d ON a.userid=d.userid WHERE u.is_active=1 ".$date.$department."GROUP BY a.userid ORDER BY app_count DESC";
 		}
 		$query=$this->db->query($query_str);
-		file_put_contents('t1.txt', print_r($this->db->last_query(),true), FILE_APPEND);
-    	file_put_contents('t1.txt', print_r($this->db->error(),true), FILE_APPEND);
+		//file_put_contents('t1.txt', print_r($this->db->last_query(),true), FILE_APPEND);
+    	//file_put_contents('t1.txt', print_r($this->db->error(),true), FILE_APPEND);
         return $query->result_array();
     }
 
