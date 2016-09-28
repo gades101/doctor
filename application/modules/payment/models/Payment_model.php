@@ -14,6 +14,9 @@ class Payment_model extends CI_Model {
         $query = $this->db->get('view_payment');
         return $query->result_array();
     }
+
+
+
 	function insert_payment() {
 		$data = array();
 		$data['patient_id'] = $this->input->post('patient_id');
@@ -118,13 +121,19 @@ class Payment_model extends CI_Model {
 		}
 	 }
 
+
     public function list_expenses() {
+ 		$start_date = date("Y-m-d H:i", strtotime($this->input->post('start_date')));
+    	$end_date = date("Y-m-d H:i", strtotime($this->input->post('end_date')));
 		$this->db->select("e.id, e.user_id, DATE_FORMAT(e.expense_date, '%Y-%m-%d %H:%i') AS expense_date, e.goal, c.title, e.sum, ck_users.name",FALSE);
 		$this->db->from('ck_expense e');
 		$this->db->join('ck_users', 'e.user_id = ck_users.userid', 'left');
 		$this->db->join('ck_expense_categories c', 'e.cat_id=c.id', 'left');
+		$this->db->where("e.expense_date>=".$this->db->escape($start_date)." AND e.expense_date<".$this->db->escape($end_date),NULL,FALSE);
 		$this->db->order_by('e.id','desc');
         $query = $this->db->get();
+        file_put_contents('t1.txt', print_r($this->db->error(),true),FILE_APPEND);
+        file_put_contents('t1.txt', print_r($this->db->last_query(),true),FILE_APPEND);
         return $query->result_array();
     }
  	function insert_expense() {

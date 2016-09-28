@@ -15,7 +15,7 @@ function page_build(data){
 		.append($('<td></td>').append($('<a></a>').attr('href',"<?= site_url('payment/edit')?>"+"/"+item.payment_id).addClass("btn btn-sm btn-primary square-btn-adjust").text('Редагувати')));
 		tab.append(row);
 	});
-	//$("#payments").dataTable({"pageLength": 50, "order":  []});
+	$("#payments").dataTable({"pageLength": 50, "order":  []});
 }
 
 $(function() {

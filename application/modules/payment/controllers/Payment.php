@@ -143,11 +143,13 @@ class Payment extends CI_Controller {
             $this->form_validation->set_rules('expense_date', 'Дата', 'trim|required');
             $this->form_validation->set_rules('department_id', 'Відділення', 'integer|required');
             $this->form_validation->set_rules('goal', 'Призначення', 'required');
- 	  		$data['def_dateformate'] = $this->settings_model->get_date_formate();
+ 	  		//$data['def_dateformate'] = $this->settings_model->get_date_formate();
+			$def_dateformate = $this->settings_model->get_date_formate();
+			$data['start_date'] = date($def_dateformate) . " 00:00";
+			$data['end_date'] = date($def_dateformate, mktime(0,0,0,date("m"),date("d")+1,date("Y"))) . " 00:00";
             if ($this->form_validation->run() === FALSE) {
 				$data['users'] = $this->admin_model->get_all_work_users();
 				$data['expense_categories'] = $this->payment_model->list_expense_cat();
-				$data['expenses'] = $this->payment_model->list_expenses();
 				$data['departments'] = $this->doctor_model->get_all_departments();
 				//array_unshift($data['departments'] , array("department_id"=>"","department_name"=>"Не обрано"));
 
@@ -157,7 +159,6 @@ class Payment extends CI_Controller {
 				$this->load->view('templates/footer');
 			} else {
 				$this->payment_model->insert_expense();
-				$data['expenses'] = $this->payment_model->list_expenses();
 				redirect('payment/expense');
 			}
         }
@@ -342,8 +343,10 @@ class Payment extends CI_Controller {
 		echo json_encode($data);
     }
 
-
-
+    public function expense_list(){
+		$data=$this->payment_model->list_expenses();			
+		echo json_encode($data);
+    }
 
 }
 ?>

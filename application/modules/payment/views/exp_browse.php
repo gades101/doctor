@@ -1,20 +1,59 @@
 <script type="text/javascript" charset="utf-8">
 
+function page_build(data){
+	//if($.fn.DataTable.isDataTable("#expenses")) {$('#expenses').DataTable().destroy();}
+	var tab=$('#exp_tbody');
+	data=JSON.parse(data);tab.html("");
+	//head.append($('<tr></tr>').append($('<th></th>').text('Користувач')).append($('<th></th>').text('Кількість процедур')));
+	data.forEach(function(item){
+		var row=$('<tr></tr>').append($('<td></td>').text(item.expense_date))
+		.append($('<td></td>').text(item.name))
+		.append($('<td></td>').text(item.sum))
+		.append($('<td></td>').text(item.title))
+		.append($('<td></td>').text(item.goal))
+		.append($('<td></td>').append($('<a></a>').attr('href',"<?= site_url('payment/edit_expense')?>"+"/"+item.id).addClass("btn btn-sm btn-primary square-btn-adjust").text('Редагувати')));
+		tab.append(row);
+	});
+	//$("#expenses").dataTable({"pageLength": 50, "order":  []});
+}
+
+$(function() {
+	$('.ajax_form').submit(function(e) {
+	var $form = $(this);
+	$.ajax({
+		type: $form.attr('method'),
+	  	url: $form.attr('action'),
+	  	data: $form.serialize()
+	}).done(function(response) {
+	  	page_build(response);
+	}).fail(function() {
+	  	console.log('fail');
+	});
+	//отмена действия по умолчанию для кнопки submit
+	e.preventDefault(); 
+	});
+});
+
 $( window ).load(function() {
 	$('.confirmDelete').click(function(){
 			return confirm("Are you sure you want to delete?");
 		});
-		
-    $('#expenses').dataTable({
-		"pageLength": 50,
-		"order":  []
-	});	
 	$('#expense_date').datetimepicker({
 			timepicker:true,
 			format: 'd-m-Y H:i',
 			scrollInput:false,
 
 	});
+	var mindate=false;
+	<?php if($_SESSION["category"] == 'Секретар'){?>
+		$('.input_date').prop("readonly", true); mindate=new Date();mindate.setMonth(mindate.getMonth()-1);
+	<?php } ?>
+	$('.input_date').datetimepicker({
+		timepicker:true,
+		format: 'd-m-Y H:i',
+		scrollInput:false,
+		minDate: mindate,
+	});	
 	$('#user_id').on('change', function(){
 		$('#department_id').val($(this).children('option:selected').data('department_id'));
 	});	
@@ -84,43 +123,53 @@ $( window ).load(function() {
 					</form>
 				</div>
 			</div>	
+
 			<div class="panel panel-primary">
 				<div class="panel-heading">
 					Витрати
 				</div>
 				<div class="panel-body">
-					<?php if ($expenses) { ?>
+
+
+
+					<?php echo form_open('payment/expense_list',array('id'=>'main_form','class'=>'ajax_form')); ?>
+						<div class="col-md-12 form-group">							
+							<div class="col-md-4">
+								<div class="form-group">
+									<label for="start_date"><?php echo $this->lang->line("from_date");?></label>
+									<input type="text" class="form-control input_date" name="start_date" id="start_date" value="<?=$start_date;?>"/>
+									<?php echo form_error('start_date','<div class="alert alert-danger">','</div>'); ?>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label for="end_date"><?php echo $this->lang->line("to_date");?></label>								
+									<input type="text" class="form-control input_date" name="end_date" id="end_date" value="<?=$end_date;?>" />
+									<?php echo form_error('end_date','<div class="alert alert-danger">','</div>'); ?>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label for="ok" style="height: 14px"> </label>
+									<input id="ok" class="btn btn-primary form-control" type="submit" value="Вивести" name="submit" />
+								</div>
+							</div>
+						</div>			
+					<?php echo form_close(); ?>
 						<table class="table table-striped table-bordered table-hover dataTable no-footer" id="expenses" >
-						<thead>
-							<tr>
-								<th><?php echo $this->lang->line('no');?></th>
-								<th>Користувач</th>
-								<th>Категорія витрат</th>
-								<th>Призначення</th>
-								<th>Дата</th>
-								<th>Сума</th>
-								<th><?php echo $this->lang->line('edit');?></th>
-								<th><?php echo $this->lang->line('delete');?></th>
-							</tr>
-						</thead>
-						<tbody>
-						<?php $i=1; $j=1 ?>
-						<?php foreach ($expenses as $expense):  ?>
-						<tr <?php if ($i%2 == 0) { echo "class='even'"; } else {echo "class='odd'";}?> >
-							<td><?php echo $j; ?></td>
-							<td><?php echo $expense['name']; ?></td>
-							<td><?php echo $expense['title']; ?></td>
-							<td><?php echo $expense['goal']; ?></td>
-							<td><?php echo $expense['expense_date']; ?></td> 
-							<td><?php echo $expense['sum']; ?></td>               
-							<td><a class="btn btn-primary btn-sm" href="<?php echo site_url("payment/edit_expense/" . $expense['id']); ?>"><?php echo $this->lang->line('edit');?></a></td>
-							<td><a class="btn btn-danger btn-sm confirmDelete" href="<?php echo site_url("payment/delete_expense/" . $expense['id']); ?>"><?php echo $this->lang->line('delete');?></a></td>
-			            </tr>
-			            <?php $i++; $j++;?>
-			            <?php endforeach ?>
-			    	    </tbody>
+							<thead>
+								<tr>
+									<th>Дата</th>
+									<th>Користувач</th>
+									<th>Сума</th>
+									<th>Категорія витрат</th>
+									<th>Призначення</th>
+									<th><?php echo $this->lang->line('edit');?></th>
+								</tr>
+							</thead>
+							<tbody id="exp_tbody">
+				    	    </tbody>
 			  			</table>
-			  		<?php } ?>
 				</div> 
 			</div>
 		</div>
