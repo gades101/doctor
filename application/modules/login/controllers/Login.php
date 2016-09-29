@@ -63,23 +63,19 @@ class login extends CI_Controller {
     }
 
     function valid_signin_ajax() {
-        //file_put_contents('t1.txt', print_r($this->input->post(),true),FILE_APPEND);
-
 		//Check if loggin details entered
-        $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[5]|max_length[12]|xss_clean');
-        $this->form_validation->set_rules('password', 'Password', 'trim|required');
+        $this->form_validation->set_rules('username', 'Логін', 'trim|required|min_length[5]|max_length[12]|xss_clean');
+        $this->form_validation->set_rules('passwd', 'Пароль', 'trim|required');
+        $data=array();
         if ($this->form_validation->run() == FALSE) {
-        	echo json_encode(array('username' => form_error('username'),'password' =>form_error('password')));
-        } else {
-        		
-
-        	        //file_put_contents('t1.txt', print_r('this->form_validation->run() == TRUE',true));
-				redirect('/appointment/index/all', 'refresh');
+        	$data=array('error' => 1,'username' => form_error('username','<div class="alert alert-danger">','</div>'),'passwd' =>form_error('passwd','<div class="alert alert-danger">','</div>'));
+        } else {		
+				//redirect('/appointment/index/all', 'refresh');
 			$logged_in = FALSE;
             if($this->input->post('username')){
 				//Check Login details
 				$username = $this->input->post('username');
-				$password = base64_encode($this->input->post('password'));
+				$password = base64_encode($this->input->post('passwd'));
 				$result = $this->login_model->login($username, $password);
 				if(!empty($result)){
 					session_start();
@@ -89,19 +85,20 @@ class login extends CI_Controller {
 					$_SESSION["id"] = $result->userid;
 					$_SESSION["logged_in"] = TRUE;
 					$_SESSION["dep"] = "all";
+					ini_set('session.gc_maxlifetime',20);
 					$logged_in = TRUE;
 				}
 			}
 			//If Username and Password matches
 			if ($logged_in) {
-				redirect('/appointment/index/all', 'refresh');
+				$data['error'] = "";
+				//redirect('/appointment/index/all', 'refresh');
 			} else {
-				$data['username'] = $this->input->post('username');
-				$data['level'] = $this->input->post('level');
-				$data['error'] = 'Невірний логін і/або пароль';
-				$this->load->view('login/login_signup',$data);
+				$data['error'] = 2;
 			}
+
         }
+		echo json_encode($data);
     }
 
 
