@@ -11,10 +11,34 @@
 		<!-- CUSTOM STYLES-->
 		<link href="<?= base_url() ?>assets/css/custom.css" rel="stylesheet" />
 		<script src="<?= base_url() ?>assets/js/jquery-1.11.3.js"></script>
-	</head>
-<script type="text/javascript">
+        <script type="text/javascript">
+        $(document).ready(function(){
+            $(function() {
+                $('#button').click(function() {
+                var $form = $('#main_form');
+                console.log($form);
+                $.ajax({
+                    type: $form.attr('method'),
+                    //url: "<?php echo base_url(); ?>index.php/payment/payment_ajax_report/"+page_num,
+                    url: $form.attr('action'),
+                    data: $form.serialize()
+                }).done(function(response) {
+                    console.log(response);
 
-</script>
+                    //page_build(page_num,response);
+                }).fail(function() {
+                    console.log('fail');
+                });
+                //отмена действия по умолчанию для кнопки submit
+                //e.preventDefault(); 
+                });
+            });
+        });
+
+
+        </script>
+	</head>
+
     <body>
         <div class="container">
             <div class="row text-center ">
@@ -34,7 +58,7 @@
                         <?php if(isset($error)) { ?><div class="alert alert-danger"><?=$error;?></div><?php } ?>
                         <?php if(isset($message)) { ?><div class="alert alert-info"><?=$message;?></div><?php } ?>
                         <div class="panel-body">
-                            <?php echo form_open('login/valid_signin',array('id'=>'main_form')); ?>   
+                            <?php echo form_open('login/valid_signin_ajax',array('id'=>'main_form',"autocomplete"=>"off")); ?>   
                             <div class="form-group input-group">
                                 <span class="input-group-addon"><i class="fa fa-tag"  ></i></span>
                                 <input type="text" name="username" id="username" class="form-control" autocomplete="off" placeholder="<?=$this->lang->line('your_username');?>" />
@@ -42,10 +66,10 @@
                             </div>
                             <div class="form-group input-group">
                                 <span class="input-group-addon"><i class="fa fa-lock"  ></i></span>
-                                <input type="text" class="form-control" name="password" id="password" autocomplete="off" placeholder="<?=$this->lang->line('your_password');?>" />
+                                <input type="password" class="form-control" name="password" id="password" autocomplete="off" placeholder="<?=$this->lang->line('your_password');?>" />
                                 <?php echo form_error('password','<div class="alert alert-danger">','</div>'); ?>
                             </div>
-                            <button type="submit" name="submit" class="btn btn-primary"><?php echo $this->lang->line('sign_in');?></button>
+                            <div id="button" class="btn btn-primary"><?php echo $this->lang->line('sign_in');?></div>
                             <?php echo form_close(); ?>
                         </div>
                     </div>

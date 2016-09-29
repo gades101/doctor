@@ -132,8 +132,8 @@ class Payment_model extends CI_Model {
 		$this->db->where("e.expense_date>=".$this->db->escape($start_date)." AND e.expense_date<".$this->db->escape($end_date),NULL,FALSE);
 		$this->db->order_by('e.id','desc');
         $query = $this->db->get();
-        file_put_contents('t1.txt', print_r($this->db->error(),true),FILE_APPEND);
-        file_put_contents('t1.txt', print_r($this->db->last_query(),true),FILE_APPEND);
+        //file_put_contents('t1.txt', print_r($this->db->error(),true),FILE_APPEND);
+        ///file_put_contents('t1.txt', print_r($this->db->last_query(),true),FILE_APPEND);
         return $query->result_array();
     }
  	function insert_expense() {

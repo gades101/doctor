@@ -62,14 +62,60 @@ class login extends CI_Controller {
         }
     }
 
+    function valid_signin_ajax() {
+        //file_put_contents('t1.txt', print_r($this->input->post(),true),FILE_APPEND);
+
+		//Check if loggin details entered
+        $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[5]|max_length[12]|xss_clean');
+        $this->form_validation->set_rules('password', 'Password', 'trim|required');
+        if ($this->form_validation->run() == FALSE) {
+        	echo json_encode(array('username' => form_error('username'),'password' =>form_error('password')));
+        } else {
+        		
+
+        	        //file_put_contents('t1.txt', print_r('this->form_validation->run() == TRUE',true));
+				redirect('/appointment/index/all', 'refresh');
+			$logged_in = FALSE;
+            if($this->input->post('username')){
+				//Check Login details
+				$username = $this->input->post('username');
+				$password = base64_encode($this->input->post('password'));
+				$result = $this->login_model->login($username, $password);
+				if(!empty($result)){
+					session_start();
+					$_SESSION["name"] = $result->name;
+					$_SESSION["user_name"] = $result->username;
+					$_SESSION["category"] = $result->level;
+					$_SESSION["id"] = $result->userid;
+					$_SESSION["logged_in"] = TRUE;
+					$_SESSION["dep"] = "all";
+					$logged_in = TRUE;
+				}
+			}
+			//If Username and Password matches
+			if ($logged_in) {
+				redirect('/appointment/index/all', 'refresh');
+			} else {
+				$data['username'] = $this->input->post('username');
+				$data['level'] = $this->input->post('level');
+				$data['error'] = 'Невірний логін і/або пароль';
+				$this->load->view('login/login_signup',$data);
+			}
+        }
+    }
+
+
+
+
     public function logout() {
-		//Destroy Session and go to login form
-        if ( $this->is_session_started() === TRUE ){
-			// remove all session variables
-			session_unset();
-			// destroy the session
-			session_destroy();
+		if ( $this->is_session_started() === FALSE ){
+			session_start();
 		}
+		//Destroy Session and go to login form
+			// remove all session variables
+		session_unset();
+			// destroy the session
+		session_destroy();
         $this->index();
     }
 	public function is_session_started(){
