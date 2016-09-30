@@ -46,7 +46,6 @@ class Appointment extends CI_Controller {
 		if ( $this->is_session_started() === FALSE ){
 			session_start();
 		}
-		//file_put_contents('t1.txt', print_r($_SESSION,true));
 		// Check If user has logged in or not
 		if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
             redirect('login/index');
