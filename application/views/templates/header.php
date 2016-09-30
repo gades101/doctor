@@ -51,8 +51,6 @@
     </head>
     <body>
         <?php
-
-
             $query = $this->db->get('clinic');
             $clinic = $query->row_array();
 
@@ -60,6 +58,15 @@
             $this->db->where('userid', $user_id);
             $query = $this->db->get('users');
             $user = $query->row_array();
+
+
+			if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 600)) {
+			    // last request was more than 30 minutes ago
+			    session_unset();     // unset $_SESSION variable for the run-time 
+			    session_destroy();   // destroy session data in storage
+			    redirect('login/index');
+			}
+			$_SESSION['LAST_ACTIVITY'] = time();
         ?>
         <div id="wrapper">
 		<nav class="navbar navbar-default navbar-cls-top " role="navigation" style="margin-bottom: 0">

@@ -43,9 +43,12 @@ $(document).ready(function(){
             });
         });
     });
-    $('#password').focus(function(e){
-    	$(this).attr('type','password');
+    $('#password').focus(function(){
+        $(this).attr('type','password');
     });
+    $('#password').keypress(function(){
+        $(this).attr('maxlength','40');
+    });    
   $("#username,#password").keypress(function(e) {
     if (e.which == 13) {
       $('#button').click();
@@ -86,7 +89,7 @@ $(document).ready(function(){
                             </div>
                             <div class="form-group input-group" id="passwd_div">
                                 <span class="input-group-addon"><i class="fa fa-lock"  ></i></span>
-                                <input type="text" class="form-control input" name="passwd" id="password"  autocomplete="off" placeholder="<?=$this->lang->line('your_password');?>" />
+                                <input type="text" class="form-control input" name="passwd" id="password"  maxlength=0 autocomplete="off" placeholder="<?=$this->lang->line('your_password');?>" />
                                 <div class="error" id="passwd_error"></div>
                             </div>
                             <div id="button" class="btn btn-primary"><?php echo $this->lang->line('sign_in');?></div>
