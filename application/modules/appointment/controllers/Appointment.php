@@ -25,10 +25,12 @@ class Appointment extends CI_Controller {
 		if ( $this->is_session_started() === FALSE ){
 			session_start();
 		}
-		$dep=$_SESSION['dep'];
+		//$dep=$_SESSION['dep'];
+	//file_put_contents('t1.txt', print_r($this->uri->segment(3),true));
+
         $prefs = array(
             'show_next_prev' => TRUE,
-			'next_prev_url' => base_url() . 'index.php/appointment/index/'.$dep,
+			'next_prev_url' => base_url() . 'index.php/appointment/index/'.$this->uri->segment(3),
         );
         $this->load->library('calendar', $prefs);
     }

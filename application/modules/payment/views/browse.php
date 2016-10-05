@@ -1,7 +1,7 @@
 <script type="text/javascript" charset="utf-8">
 
 function page_build(data){
-	//if($.fn.DataTable.isDataTable("#payments")) {$('#payments').DataTable().destroy();}
+	if($.fn.DataTable.isDataTable("#payments")) {$('#payments').DataTable().destroy();}
 	var tab=$('#pay_tbody');
 	data=JSON.parse(data);tab.html("");
 	//head.append($('<tr></tr>').append($('<th></th>').text('Користувач')).append($('<th></th>').text('Кількість процедур')));

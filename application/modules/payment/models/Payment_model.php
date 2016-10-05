@@ -12,6 +12,7 @@ class Payment_model extends CI_Model {
     	$this->db->where('pay_date>=',$start_date." AND pay_date<".$end_date);
         $this->db->order_by("payment_id","desc");
         $query = $this->db->get('view_payment');
+        file_put_contents('t1.txt', print_r($this->db->last_query(),true));
         return $query->result_array();
     }
 
@@ -109,7 +110,9 @@ class Payment_model extends CI_Model {
         $this->db->delete('payment', array('payment_id' => $payment_id));
 		$this->db->set('payment_id',0,false);
 		$this->db->where('payment_id', $payment_id);
-		$this->db->update('appointment');
+		$this->db->update('appointments');
+        //file_put_contents('t1.txt', print_r($this->db->last_query(),true));
+
     }
 	 function get_all_payments_by_patient($patient_id){
 		$query = $this->db->get_where('payment',array('patient_id'=>$patient_id));

@@ -162,7 +162,7 @@ class CI_Calendar {
 		{
 			$this->next_prev_url = $this->CI->config->site_url($this->CI->router->class.'/'.$this->CI->router->method);
 		}
-
+		
 		return $this;
 	}
 

@@ -1,7 +1,7 @@
 <script type="text/javascript" charset="utf-8">
 
 function page_build(data){
-	//if($.fn.DataTable.isDataTable("#expenses")) {$('#expenses').DataTable().destroy();}
+	if($.fn.DataTable.isDataTable("#expenses")) {$('#expenses').DataTable().destroy();}
 	var tab=$('#exp_tbody');
 	data=JSON.parse(data);tab.html("");
 	//head.append($('<tr></tr>').append($('<th></th>').text('Користувач')).append($('<th></th>').text('Кількість процедур')));
@@ -14,7 +14,7 @@ function page_build(data){
 		.append($('<td></td>').append($('<a></a>').attr('href',"<?= site_url('payment/edit_expense')?>"+"/"+item.id).addClass("btn btn-sm btn-primary square-btn-adjust").text('Редагувати')));
 		tab.append(row);
 	});
-	//$("#expenses").dataTable({"pageLength": 50, "order":  []});
+	$("#expenses").dataTable({"pageLength": 50, "order":  []});
 }
 
 $(function() {
