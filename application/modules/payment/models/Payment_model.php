@@ -31,6 +31,9 @@ class Payment_model extends CI_Model {
 		$data['notes'] = $this->input->post('notes');
 		$data['department_id'] = $this->input->post('department_id');
 		$this->db->insert('payment', $data);
+		if($data['paid']!=0 && $this->db->insert_id()){
+			$this->db->insert('payment_check',array('payment_id'=>$this->db->insert_id(),'pay_date'=>$data['pay_date'],'paid'=>$data['paid']));
+		}
 		$this->db->set('all_paid','all_paid + '.$data['paid'],false);
 		$this->db->where('patient_id', $data['patient_id']);
 		$this->db->update('patient');
@@ -49,6 +52,9 @@ class Payment_model extends CI_Model {
 		$data['apps_remaining']=($treatment['count']=="") ? 0 : $treatment['count']-1;
 		$data['department_id'] = $this->input->post('department_id');
 		$this->db->insert('payment', $data);
+		if($data['paid']!=0 && $this->db->insert_id()){
+			$this->db->insert('payment_check',array('payment_id'=>$this->db->insert_id(),'pay_date'=>$data['pay_date'],'paid'=>$data['paid']));
+		}
 		$_POST['payment_id']=$this->db->insert_id();
 		$this->db->set('all_paid','all_paid + '.$data['paid'],false);
 		$this->db->where('patient_id', $data['patient_id']);

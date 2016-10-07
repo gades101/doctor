@@ -220,8 +220,20 @@
 			</div>
 			<div class="col-md-12">
 				<label for="paid">Сплачено</label>
-				<input name="paid" id="paid" type="text" class="form-control" value="<?= $paid; ?>"/><br />
-			</div>			
+				<input name="paid" id="paid" type="text" class="form-control" value="<?= $paid; ?>" <?php if (isset($payment)) echo 'readonly=true'; ?>/><br />
+			</div>
+			<?php if (isset($payment)) { ?>
+			<div class="col-md-12">
+					<div class="col-md-6">
+					</div>
+						<input name="payment_check" id="payment_check" type="text" class="form-control"/>
+					<div class="col-md-6">
+						Додати оплату до платежу
+					</div>
+				<label for="paid">Сплачено</label>
+				<input name="paid" id="paid" type="text" class="form-control" value="<?= $paid; ?>" <?php if (isset($payment)) echo 'readonly=true'; ?>/><br />
+			</div>
+			<?php }?>	
 			<div class="col-md-12">
 				<label for="pay_amount">Всього до сплати(грн.)</label>
 				<input name="pay_amount" id="pay_amount" type="text" readonly="readonly" class="form-control" value="<?php echo $pay_amount; ?>"/><br />
