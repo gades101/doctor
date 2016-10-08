@@ -62,6 +62,8 @@ class Payment extends CI_Controller {
             redirect('login/index');
         } else {
 			$this->form_validation->set_rules('patient_id', 'Patient', 'required');
+			$this->form_validation->set_rules('add_money', 'Внести оплату', 'decimal');
+
             //$this->form_validation->set_rules('bill_id', 'Bill Id', 'required');
 
 			if ($this->form_validation->run() === FALSE) {

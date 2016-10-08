@@ -179,7 +179,7 @@ $(window).load(function(){
 				$("#treatment").val(ui.item ? ui.item.treatment : '');
 				var amount=ui.item ? ui.item.price*((100-$("#discount").val())/100) : '';
 				$("#pay_amount").val(amount);
-				$("#paid").val(amount);
+				$("#add_money").val(amount);
 				price=ui.item ? ui.item.price : '';
 
 			},
@@ -565,8 +565,9 @@ function openReason(onof) {
 					</br>
 					<div id="pay_block" class="panel-body" style="display:none">
 							<div class="col-md-3">
-								<label for="discount">Знижка %</label>
-								<input type="text" name="discount" id="discount" value="<?php if(isset($curr_patient)){echo $curr_patient['discount']; } ?>" class="form-control"/>
+								<label for="add_money">Додати оплату (грн.)</label>
+								<input type="text" name="add_money" id="add_money" class="form-control"/>
+								<?php echo form_error('add_money','<div class="alert alert-danger">','</div>'); ?>
 							</div>
 							<div class="col-md-3">
 								<label for="paid">Сплачено (грн.)</label>
@@ -577,6 +578,10 @@ function openReason(onof) {
 								<label for="pay_amount">Загальна сума (грн.)</label>
 								<input type="text" name="pay_amount" id="pay_amount" value="<?= $pay_amount; ?>" readonly="readonly" class="form-control"/>
 								<?php echo form_error('pay_amount','<div class="alert alert-danger">','</div>'); ?>
+							</div>
+							<div class="col-md-3">
+								<label for="discount">Знижка %</label>
+								<input type="text" name="discount" id="discount" value="<?php if(isset($curr_patient)){echo $curr_patient['discount']; } ?>" class="form-control"/>
 							</div>
 					</div>
 					

@@ -114,7 +114,7 @@
 				$("#apps_remaining").val(ui.item ? ui.item.count : '');
 				var amount=ui.item ? ui.item.price*((100-$("#discount").val())/100) : '';
 				$("#pay_amount").val(amount);
-				$("#paid").val(amount);
+				$("#add_money").val(amount);
 				price=ui.item ? ui.item.price : '';
 			},
 			change: function(event, ui) {
@@ -202,7 +202,7 @@
 			<input type="hidden" name="treatment_id" id="treatment_id" value="<?php if(isset($curr_treatment)){echo $curr_treatment['id']; } ?>"/>
 
 
-			<div class="col-md-12">
+			<div class="col-md-6">
 				<label for="patient_name"><?php echo "ПІБ Пацієнта";?></label>
 				<?php if(isset($patient_id) && $patient_id != NULL) { ?>
 					<input type="hidden" name="patient_id" id="patient_id" value="<?= $patient_id; ?>" />
@@ -214,32 +214,25 @@
 					<?php echo form_error('patient_id','<div class="alert alert-danger">','</div>'); ?>
 				<?php } ?>
 			</div>
-			<div class="col-md-12">
+			<div class="col-md-6">
 				<label for="treatment"><?php echo $this->lang->line('treatment');?></label>
 				<input name="treatment" id="treatment" type="text" class="form-control" value="<?= $curr_treatment_name; ?>"/><br />
 			</div>
-			<div class="col-md-12">
-				<label for="paid">Сплачено</label>
-				<input name="paid" id="paid" type="text" class="form-control" value="<?= $paid; ?>" <?php if (isset($payment)) echo 'readonly=true'; ?>/><br />
+			<div class="col-md-4">
+				<label for="add_money">Внести оплату</label>
+				<input name="add_money" id="add_money" type="text" class="form-control"/>
+	            <?php echo form_error('add_money','<div class="alert alert-danger">','</div>'); ?>
 			</div>
-			<?php if (isset($payment)) { ?>
-			<div class="col-md-12">
-					<div class="col-md-6">
-					</div>
-						<input name="payment_check" id="payment_check" type="text" class="form-control"/>
-					<div class="col-md-6">
-						Додати оплату до платежу
-					</div>
+			<div class="col-md-4">
 				<label for="paid">Сплачено</label>
-				<input name="paid" id="paid" type="text" class="form-control" value="<?= $paid; ?>" <?php if (isset($payment)) echo 'readonly=true'; ?>/><br />
-			</div>
-			<?php }?>	
-			<div class="col-md-12">
-				<label for="pay_amount">Всього до сплати(грн.)</label>
+				<input name="paid" id="paid" type="text" class="form-control" value="<?= $paid; ?>" readonly="readonly"/><br />
+			</div>	
+			<div class="col-md-4">
+				<label for="pay_amount">Всього до сплати</label>
 				<input name="pay_amount" id="pay_amount" type="text" readonly="readonly" class="form-control" value="<?php echo $pay_amount; ?>"/><br />
 				<input name="due_amount" id="due_amount" type="hidden" class="form-control" value="<?= $pay_amount; ?>"/>
 			</div>
-			<div class="col-md-3">
+			<div class="col-md-2">
 				<div class="form-group">
 					<label for="discount">Знижка %</label>
 					<input type="text"  name="discount" id="discount" class="form-control" value="<?= $discount; ?>" />
@@ -251,6 +244,14 @@
 					<input type="text"  name="apps_remaining" id="apps_remaining" readonly=true class="form-control" value="<?php if(isset($payment)) echo $payment->apps_remaining; ?>" />
 				</div>
 			</div>
+			<div class="col-md-6">
+				<label for="title"><?php echo $this->lang->line('payment_mode');?></label>
+				<select name="pay_mode" id="pay_mode" class="form-control">
+					<option value="cash" <?php if ($pay_mode =='cash') {echo "selected";} ?>>Готівка</option>
+					<option value="cheque" <?php if ($pay_mode =='cheque') {echo "selected";} ?>>Безготівковий розрах.</option>
+				</select>
+			</div>
+
 			<div class="col-md-12">
 				<div class="form-group">
 					<label for="title"><?php echo $this->lang->line('payment_date');?></label>
@@ -276,15 +277,6 @@
 	                <?php echo form_dropdown('department_id', $department_list,$curr_department,'id="department_id" class="form-control"'); ?>
 	                <?php echo form_error('department_id','<div class="alert alert-danger">','</div>'); ?>
 	        </div>			
-			<div class="col-md-12">
-				<div class="form-group">
-					<label for="title"><?php echo $this->lang->line('payment_mode');?></label>
-					<select name="pay_mode" id="pay_mode" class="form-control">
-						<option value="cash" <?php if ($pay_mode =='cash') {echo "selected";} ?>>Готівка</option>
-						<option value="cheque" <?php if ($pay_mode =='cheque') {echo "selected";} ?>>Безготівковий розрах.</option>
-					</select>
-				</div>
-			</div>
 			<?php  if(isset($payment)){ ?>
 			<div class="col-md-12">
 				<div class="form-group">

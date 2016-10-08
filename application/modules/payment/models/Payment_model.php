@@ -22,7 +22,7 @@ class Payment_model extends CI_Model {
 		$data = array();
 		$data['patient_id'] = $this->input->post('patient_id');
 		$data['treatment_id'] = $this->input->post('treatment_id');
-		$data['paid'] = $this->input->post('paid');
+		$data['paid'] = $this->input->post('add_money');
 		$data['pay_amount'] = $this->input->post('pay_amount');
 		$data['pay_date'] = date('Y-m-d H:i',strtotime($this->input->post('pay_date')));
 		$data['pay_mode'] = $this->input->post('pay_mode');
@@ -44,7 +44,7 @@ class Payment_model extends CI_Model {
 		$data = array();
 		$data['patient_id'] = $this->input->post('patient_id');
 		$data['treatment_id'] = $treatment['id'];
-		$data['paid'] = $this->input->post('paid');	
+		$data['paid'] = $this->input->post('add_money');	
 		$data['pay_amount'] = $this->input->post('pay_amount');		
 		$data['pay_date'] = date('Y-m-d H:i');
 		$data['pay_mode'] = 'cash';
@@ -75,28 +75,27 @@ class Payment_model extends CI_Model {
 		$this->db->join('ck_contacts c', 'd.contact_id = c.contact_id', 'left');
 		$this->db->where(array('p.patient_id'=>$patient_id),NULL,FALSE);
 		$this->db->or_where("p.payment_id=$payment_id",NULL,FALSE);
+		$this->db->order_by('payment_id','desc');
 		$query=$this->db->get();
 		return $query->result_array();
 	}
 	function edit_payment($payment_id){
-		$this->db->select('paid');
-		$old_paid=$this->db->get_where('payment',array('payment_id'=>$payment_id));
-		$old_paid=$old_paid->row();
-		$old_paid=$old_paid->paid;
-		$data['patient_id'] = $this->input->post('patient_id');
-		$data['treatment_id'] = $this->input->post('treatment_id');
-		$data['pay_amount'] = $this->input->post('pay_amount');
-		$data['paid'] = $this->input->post('paid');
-		$data['pay_mode'] = $this->input->post('pay_mode');
-		$data['pay_date'] = $this->input->post('pay_date');
-		$data['notes'] = $this->input->post('notes');
-		$data['apps_remaining']=$this->input->post('apps_remaining');
-		$data['department_id'] = $this->input->post('department_id');
+		$this->db->set('patient_id',$this->input->post('patient_id'));
+		$this->db->set('treatment_id', $this->input->post('treatment_id'));
+		$this->db->set('pay_amount', $this->input->post('pay_amount'));
+		if($this->input->post('add_money')>0) $this->db->set('paid', 'paid+'.$this->input->post('add_money'),false);
+		else $this->db->set('paid', $this->input->post('paid'));
+		$this->db->set('pay_mode', $this->input->post('pay_mode'));
+		$this->db->set('pay_date', $this->input->post('pay_date'));
+		$this->db->set('notes', $this->input->post('notes'));
+		$this->db->set('apps_remaining', $this->input->post('apps_remaining'));
+		$this->db->set('department_id', $this->input->post('department_id'));
 		$this->db->where('payment_id', $payment_id);
-		$this->db->update('payment', $data);
-		if($old_paid!=$data['paid']){
-			$this->db->set('all_paid','all_paid+'.($data['paid']-$old_paid),false);
-			$this->db->where('patient_id', $data['patient_id']);
+		$this->db->update('payment');
+		file_put_contents('t1.txt', print_r($this->db->last_query(),true));
+		if($this->input->post('add_money')>0){
+			$this->db->set('all_paid','all_paid+'.$this->input->post('add_money'),false);
+			$this->db->where('patient_id', $this->input->post('patient_id'));
 			$this->db->update('patient');
 		}
 	}
