@@ -197,6 +197,8 @@ class Appointment extends CI_Controller {
 			$this->form_validation->set_rules('end_time', 'End Time', 'required');
 			$this->form_validation->set_rules('appointment_date', 'Date', 'required');
             $this->form_validation->set_rules('paid', 'Сплачено', 'trim|numeric');
+			$this->form_validation->set_rules('treatment', 'Процедура', 'required');
+
 
 
 			if ($this->form_validation->run() === FALSE){
@@ -231,6 +233,9 @@ class Appointment extends CI_Controller {
 					$treatment=$this->treatment_model->get_edit_treatment($this->input->post('treatment_id'));
 					$this->payment_model->new_payment_from_app($treatment);
 				}
+				if($this->input->post('add_money')>0 && $this->input->post('payment_id')>0){
+					$this->payment_model->new_fee_from_app();
+				}
 				$this->appointment_model->add_appointment($this->input->post('status'));
 				$year = date("Y", strtotime($this->input->post('appointment_date')));
 				$month = date("m", strtotime($this->input->post('appointment_date')));
@@ -257,7 +262,7 @@ class Appointment extends CI_Controller {
 			$this->form_validation->set_rules('end_time', 'End Time', 'required');
 			$this->form_validation->set_rules('appointment_date', 'Date', 'required');
             $this->form_validation->set_rules('paid', 'Сплачено', 'trim|numeric');
-
+			$this->form_validation->set_rules('treatment', 'Процедура', 'required');
 			$dep=$_SESSION['dep'];
 			if ($this->form_validation->run() === FALSE){
 				if(isset($_SESSION['saved'])) {
@@ -265,7 +270,7 @@ class Appointment extends CI_Controller {
 					unset ($_SESSION['saved']);
 				}	
 				$appointment = $this->appointment_model->get_appointments_id($appointment_id);
-				//$appointment['appointment_details']=htmlspecialchars($appointment['appointment_details']);
+				file_put_contents('t1.txt', print_r($appointment,true));
 				$data['appointment']=$appointment;
 				$data['treatments']=$this->treatment_model->get_treatments();
 				$data['curr_treatment']=$this->treatment_model->get_edit_treatment($appointment['treatment_id']);

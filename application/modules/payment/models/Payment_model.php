@@ -12,7 +12,6 @@ class Payment_model extends CI_Model {
     	$this->db->where('pay_date>=',$start_date." AND pay_date<".$end_date);
         $this->db->order_by("payment_id","desc");
         $query = $this->db->get('view_payment');
-        file_put_contents('t1.txt', print_r($this->db->last_query(),true));
         return $query->result_array();
     }
 
@@ -32,7 +31,7 @@ class Payment_model extends CI_Model {
 		$data['department_id'] = $this->input->post('department_id');
 		$this->db->insert('payment', $data);
 		if($data['paid']!=0 && $this->db->insert_id()){
-			$this->db->insert('payment_check',array('payment_id'=>$this->db->insert_id(),'pay_date'=>$data['pay_date'],'paid'=>$data['paid']));
+			$this->db->insert('payment_fee',array('payment_id'=>$this->db->insert_id(),'pay_date'=>$data['pay_date'],'paid'=>$data['paid']));
 		}
 		$this->db->set('all_paid','all_paid + '.$data['paid'],false);
 		$this->db->where('patient_id', $data['patient_id']);
@@ -53,13 +52,21 @@ class Payment_model extends CI_Model {
 		$data['department_id'] = $this->input->post('department_id');
 		$this->db->insert('payment', $data);
 		if($data['paid']!=0 && $this->db->insert_id()){
-			$this->db->insert('payment_check',array('payment_id'=>$this->db->insert_id(),'pay_date'=>$data['pay_date'],'paid'=>$data['paid']));
+			$this->db->insert('payment_fee',array('payment_id'=>$this->db->insert_id(),'pay_date'=>$data['pay_date'],'paid'=>$data['paid']));
 		}
 		$_POST['payment_id']=$this->db->insert_id();
 		$this->db->set('all_paid','all_paid + '.$data['paid'],false);
 		$this->db->where('patient_id', $data['patient_id']);
 		$this->db->update('patient');
     }
+
+ 	function new_fee_from_app() {
+ 		$this->db->insert('payment_fee',array('payment_id'=>$this->input->post('payment_id'),'pay_date'=>date('Y-m-d H:i'),'paid'=>$this->input->post('add_money')));
+
+ 		$this->db->set('paid', 'paid+'.$this->input->post('add_money'),false);
+		$this->db->where('payment_id', $this->input->post('payment_id'));
+ 		$this->db->update('payment');
+ 	}
 	
 	function get_payment($payment_id){
 		$query = $this->db->get_where('payment', array('payment_id' => $payment_id));
@@ -68,8 +75,20 @@ class Payment_model extends CI_Model {
 
 	function get_curr_payments($patient_id,$payment_id=0){
 		//$query = $this->db->get_where('payment', array('patient_id' => $patient_id, 'count > 0'));
-		$this->db->select("p.payment_id, p.patient_id, p.treatment_id, p.pay_date, p.pay_amount, p.paid, p.apps_remaining, c.first_name, c.middle_name, t.treatment",FALSE);
+		$this->db->select("p.payment_id, p.pay_date, p.paid, p.patient_id, p.treatment_id, p.pay_amount, p.apps_remaining, t.treatment",FALSE);
 		$this->db->from('ck_payment p');
+		$this->db->join('ck_treatments t', 'p.treatment_id = t.id', 'left');
+		$this->db->where(array('p.patient_id'=>$patient_id),NULL,FALSE);
+		$this->db->or_where("p.payment_id=$payment_id",NULL,FALSE);
+		$this->db->order_by('payment_id','desc');
+		$query=$this->db->get();
+		return $query->result_array();
+	}
+	function get_curr_fees($patient_id,$payment_id=0){
+		//$query = $this->db->get_where('payment', array('patient_id' => $patient_id, 'count > 0'));
+		$this->db->select("ch.payment_fee_id, ch.payment_id, ch.pay_date, ch.paid, p.patient_id, p.treatment_id, p.pay_amount, p.apps_remaining, c.first_name, c.middle_name, t.treatment",FALSE);
+		$this->db->from('ck_payment_fee ch');
+		$this->db->join('ck_payment p', 'ch.payment_id = p.payment_id', 'left');
 		$this->db->join('ck_treatments t', 'p.treatment_id = t.id', 'left');
 		$this->db->join('ck_doctor d', 'p.userid = d.userid', 'left');
 		$this->db->join('ck_contacts c', 'd.contact_id = c.contact_id', 'left');
@@ -77,6 +96,12 @@ class Payment_model extends CI_Model {
 		$this->db->or_where("p.payment_id=$payment_id",NULL,FALSE);
 		$this->db->order_by('payment_id','desc');
 		$query=$this->db->get();
+		return $query->result_array();
+	}
+
+	function get_curr_ajax_fees($payment_id){
+		$query = $this->db->get_where('payment_fee', array('payment_id' => $payment_id));
+		file_put_contents('t1.txt', print_r($this->db->last_query(),true));
 		return $query->result_array();
 	}
 	function edit_payment($payment_id){
@@ -253,7 +278,7 @@ class Payment_model extends CI_Model {
  		foreach ($departments as $dep) {
  			$id=$dep['department_id'];
  			if ($i!=0) $query_str.=" UNION ";
- 			$query_str.="SELECT ".$this->db->escape($dep['department_name'])." department_name, sum(p.paid) pay_summ, (SELECT sum(e.sum) summ FROM ck_expense e WHERE e.expense_date >=".$this->db->escape($start_date)." and e.expense_date <".$this->db->escape($end_date)." AND e.department_id=$id) exp_summ  FROM ck_payment p  WHERE p.pay_date >=". $this->db->escape($start_date)." and p.pay_date < ". $this->db->escape($end_date)." AND p.department_id=$id";
+ 			$query_str.="SELECT ".$this->db->escape($dep['department_name'])." department_name, sum(p.paid) pay_summ, (SELECT sum(e.sum) summ FROM ck_expense e WHERE e.expense_date >=".$this->db->escape($start_date)." AND e.expense_date <".$this->db->escape($end_date)." AND e.department_id=$id) exp_summ  FROM ck_payment p  WHERE p.pay_date >=". $this->db->escape($start_date)." AND p.pay_date < ". $this->db->escape($end_date)." AND p.department_id=$id";
  			$i+=1;
  		}
 		$res=$this->db->query($query_str);
@@ -264,11 +289,12 @@ class Payment_model extends CI_Model {
     	$end_date = date("Y-m-d H:i", strtotime($this->input->post('end_date')));
     	if($page==1){
 	    	if($this->input->post('operation')==1){
-		    	$date=" p.pay_date >=". $this->db->escape($start_date)." and p.pay_date < ". $this->db->escape($end_date)." ";
+		    	$date=" c.pay_date >=". $this->db->escape($start_date)." and c.pay_date < ". $this->db->escape($end_date)." ";
 				$user=($this->input->post('user_id'))?" AND p.userid=".$this->input->post('user_id')." " :"";
 				$treatment=($this->input->post('treatment_id'))?" AND p.treatment_id=".$this->input->post('treatment_id')." ":"";
 		 		$department = ($this->input->post('department_id'))?" AND p.department_id=".$this->input->post('department_id')." ":"";
-		 		$query_str="SELECT u.name, p.pay_date date, p.paid summ, d.department_name department, t.treatment FROM ck_payment p LEFT JOIN ck_users u ON p.userid=u.userid LEFT JOIN ck_department d ON p.department_id=d.department_id LEFT JOIN ck_treatments t ON p.treatment_id=t.id WHERE".$date.$user.$treatment.$department."ORDER BY p.payment_id DESC";
+		 		//$query_str="SELECT u.name, p.pay_date date, p.paid summ, d.department_name department, t.treatment FROM ck_payment p LEFT JOIN ck_users u ON p.userid=u.userid LEFT JOIN ck_department d ON p.department_id=d.department_id LEFT JOIN ck_treatments t ON p.treatment_id=t.id WHERE".$date.$user.$treatment.$department."ORDER BY p.payment_id DESC";
+		 		$query_str="SELECT u.name, c.pay_date date, c.paid summ, d.department_name department, t.treatment FROM ck_payment_fee c LEFT JOIN ck_payment p ON c.payment_id = p.payment_id LEFT JOIN ck_users u ON p.userid=u.userid LEFT JOIN ck_department d ON p.department_id=d.department_id LEFT JOIN ck_treatments t ON p.treatment_id=t.id WHERE".$date.$user.$treatment.$department."ORDER BY p.payment_id DESC";
 	 		}
 	    	if($this->input->post('operation')==2){
 		    	$date=" e.expense_date >=". $this->db->escape($start_date)." AND e.expense_date < ". $this->db->escape($end_date)." ";

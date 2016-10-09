@@ -67,7 +67,7 @@ class Patient extends CI_Controller {
 			echo json_encode($appointments);
 		}
 		if ($page_num==3){
-			$payments=$this->payment_model->get_curr_payments($patient_id);
+			$payments=$this->payment_model->get_curr_fees($patient_id);
 			echo json_encode($payments);
 		}
     }

@@ -62,10 +62,7 @@ class Payment extends CI_Controller {
             redirect('login/index');
         } else {
 			$this->form_validation->set_rules('patient_id', 'Patient', 'required');
-			$this->form_validation->set_rules('add_money', 'Внести оплату', 'decimal');
-
             //$this->form_validation->set_rules('bill_id', 'Bill Id', 'required');
-
 			if ($this->form_validation->run() === FALSE) {
 				$data['treatments'] = $this->treatment_model->get_treatments();
 				if ($curr_patient_id) 	$data['curr_patient'] = $this->patient_model->get_patient_detail($curr_patient_id);
@@ -260,7 +257,10 @@ class Payment extends CI_Controller {
 	public function payment_ajax_info($patient_id){
 		$data=$this->payment_model->get_curr_payments($patient_id);
 		echo json_encode($data);
-		//else return json_encode($data);
+	}
+	public function ajax_payment_fees($payment_id){
+		$data=$this->payment_model->get_curr_ajax_fees($payment_id);
+		echo json_encode($data);
 	}
 
 	public function close_payment($payment_id){
@@ -331,7 +331,6 @@ class Payment extends CI_Controller {
     public function payment_ajax_report($page_num=NULL){
 		if ($page_num==1){
 			$data=$this->payment_model->create_dir_report($page_num);
-			//echo $data[0]['summ'];
 			echo json_encode($data);
 			}
 		if ($page_num==2){

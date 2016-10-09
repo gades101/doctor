@@ -244,13 +244,13 @@ $(window).load(function(){
 			var i=1;
 			data.forEach(function(item){
 				var link="<?=base_url();?>"+"index.php/payment/edit/"+item.payment_id;
-				var row=$('<tr></tr>').append($('<td></td>').text(i))
+				var row=$('<tr></tr>').append($('<td></td>').text(item.payment_fee_id))
+				.append($('<td></td>').text(item.payment_id))
 				.append($('<td></td>').text(item.pay_date))
 				.append($('<td></td>').text(item.paid))
 				.append($('<td></td>').text(item.pay_amount))
 				.append($('<td></td>').text(item.treatment))
 				.append($('<td></td>').text(item.first_name+" "+item.middle_name))
-				.append($('<td></td>').text(item.apps_remaining));
 				tab.append(row);
 				i++;
 			});
@@ -510,12 +510,12 @@ function goToApp(link){
 						<thead>
 							<tr>
 								<th class='appTime'>№</th>
+								<th class='' >№ рахунка</th>
 								<th class='' >Дата оплати</th>
 								<th class=''>Сума оплати</th>
 								<th class=''>Вартість процедури</th>
 								<th class=''>Процедура</th>
 								<th class=''>Терапевт</th>
-								<th class=''>Непризначених зайнять </th>
 							</tr>
 						</thead>
 						<tbody id="page_3_tbody"></tbody>

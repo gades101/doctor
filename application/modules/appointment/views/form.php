@@ -41,15 +41,16 @@ $(window).load(function(){
 				success: function(data){
 					paylist=$('#payment_id');
 					paylist.html('');
-					paylist.append($('<option>').val('0').text('Без оплати'));
+					paylist.append($('<option>').val('0').text('Не обрано'));
 					data.forEach(function(item){
-						paylist.append($('<option>').val(item.payment_id).attr('data-treatment',item.treatment_id).text(item.treatment+" (залишилось зайнять: "+item.apps_remaining+")"));
+						paylist.append($('<option>').val(item.payment_id).attr({'data-treatment': item.treatment_id,'data-paid': item.paid,'data-pay_amount': item.pay_amount}).text(item.treatment+" (залишилось зайнять: "+item.apps_remaining+")"));
 					});
 				}
 			});
 		}
 	}
 	
+
 	$("#new_payment").click(function() {
 			var pay=$('#new_payment');
 			if (pay.prop('checked')==true){
@@ -58,6 +59,7 @@ $(window).load(function(){
 					$('#payment_id').val(0).prop('disabled',true);
 					$('#treatment').prop('readonly',false);
 					$('#department_id').val($('#doctor_id').children('option:selected').data('department_id'));
+					$('#add_money').val("");
 					$('#pay_block').show();
 				}
 				else{
@@ -67,6 +69,7 @@ $(window).load(function(){
 			}
 			else {
 				$('#pay_block').hide();
+				$('#add_money').val("");
 				//$('#discount').prop('disabled',true).val('');
 				$('#payment_id').prop('readonly',false);
 			}
@@ -365,11 +368,19 @@ $(window).load(function(){
 			if(this.value!=0){
 				var opt=this.children[this.selectedIndex];
 				$('#treatment_id').val(opt.dataset.treatment);
+				$('#paid').val(opt.dataset.paid);
+				$('#pay_amount').val(opt.dataset.pay_amount);
 				$('#treatment').val(opt.textContent).prop('readonly',true);
+				$('#add_money').val("");
+				$('#pay_block').show();
 			}
 			else{
+				$('#add_money').val("");
+				$('#paid').val("");
+				$('#pay_amount').val("");
 				$('#treatment_id').val("");
 				$('#treatment').val("").prop('readonly',false);
+				$('#pay_block').hide();
 			}
 		});
 		$('#discount').on('input', function(){
@@ -545,16 +556,16 @@ function openReason(onof) {
 						<div class="form-group">
 							<label for="payment_id">Платежі Пацієнта</label></br>
 							<select id='payment_id' name='payment_id' class="form-control">
-								<option value='0'>Без оплати</option>
+								<option value='0'>Не обрано</option>
 								<?php if(isset($curr_payments)){
 									foreach($curr_payments as $payment){ ?>
-										<option value="<?php echo $payment['payment_id']; ?>"  data-treatment="<?= $payment['treatment_id']; ?>" <?php if($payment['payment_id']==$curr_payment_id){echo 'selected=true';} ?> /><?= $payment['treatment'].' (залишилось зайнять: '.$payment['apps_remaining'].')'; ?></option>				
+										<option value="<?php echo $payment['payment_id']; ?>"  data-treatment="<?= $payment['treatment_id']; ?>" data-paid="<?= $payment['paid']; ?>" data-pay_amount="<?= $payment['pay_amount']; ?>" <?php if($payment['payment_id']==$curr_payment_id){echo 'selected=true';} ?> /><?= $payment['treatment'].' (залишилось зайнять: '.$payment['apps_remaining'].')'; ?></option>				
 								<?php } } ?>
 							</select>
 						</div>
 					</div>
 	
-					<div class="col-md-12">
+					<div class="col-md-12" id="new_payment_div">
 						<div class="form-group">
 							<label for="new_payment">
 								 Створити Платіж
@@ -571,7 +582,7 @@ function openReason(onof) {
 							</div>
 							<div class="col-md-3">
 								<label for="paid">Сплачено (грн.)</label>
-								<input type="text" name="paid" id="paid" value="<?= $pay_amount; ?>" class="form-control"/>
+								<input type="text" name="paid" id="paid" value="<?= $pay_amount; ?>" readonly="readonly" class="form-control"/>
 								<?php echo form_error('paid','<div class="alert alert-danger">','</div>'); ?>
 							</div>
 							<div class="col-md-3">
