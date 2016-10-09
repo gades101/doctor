@@ -9,12 +9,11 @@ var page_2=false,page_3=false;
 			type: 'POST',
 			cache: false,
 			dataType: 'json',
-			processData: false, // Не обрабатываем файлы (Don't process the files)
-			contentType: false, // Так jQuery скажет серверу что это строковой запрос
+			processData: false, 
+			contentType: false,
 			success: function( respond, textStatus, jqXHR ){
 				if( typeof respond.error === 'undefined' ){
-					// Файлы успешно загружены, делаем что нибудь здесь
-					// выведем пути к загруженным файлам в блок '.ajax-respond'
+
 					var html = '',filelist=$('#filelist'),elem;
 					var img_path="<?= base_url() ?>patient_media/<?= $patient_id ?>/"+appointment_id+"/foto/";
 					$('#filelist').html('');
@@ -30,11 +29,7 @@ var page_2=false,page_3=false;
 
 				$('body').flipLightBox();
 				}
-				//else{console.log('ОШИБКИ ОТВЕТА сервера: ' + respond.error );}
 			},
-			/*error: function( jqXHR, textStatus, errorThrown ){
-				console.log('ОШИБКИ AJAX запроса: ' + textStatus );
-			}*/
 		});
 	}
 <?php } ?>
@@ -245,7 +240,7 @@ $(window).load(function(){
 			data.forEach(function(item){
 				var link="<?=base_url();?>"+"index.php/payment/edit/"+item.payment_id;
 				var row=$('<tr></tr>').append($('<td></td>').text(item.payment_fee_id))
-				.append($('<td></td>').text(item.payment_id))
+				.append($('<td></td>').append($('<a></a>').text(item.payment_id).attr("href",link)))
 				.append($('<td></td>').text(item.pay_date))
 				.append($('<td></td>').text(item.paid))
 				.append($('<td></td>').text(item.pay_amount))
