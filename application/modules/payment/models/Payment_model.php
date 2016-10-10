@@ -62,7 +62,6 @@ class Payment_model extends CI_Model {
 
  	function new_fee_from_app() {
  		$this->db->insert('payment_fee',array('payment_id'=>$this->input->post('payment_id'),'pay_date'=>date('Y-m-d H:i'),'paid'=>$this->input->post('add_money')));
-
  		$this->db->set('paid', 'paid+'.$this->input->post('add_money'),false);
 		$this->db->where('payment_id', $this->input->post('payment_id'));
  		$this->db->update('payment');
@@ -73,7 +72,21 @@ class Payment_model extends CI_Model {
         return $query->row();
 	}
 
+
 	function get_curr_payments($patient_id,$payment_id=0){
+		//$query = $this->db->get_where('payment', array('patient_id' => $patient_id, 'count > 0'));
+		$this->db->select("p.payment_id, p.pay_date, p.paid, p.patient_id, p.treatment_id, p.pay_amount, p.apps_remaining, t.treatment",FALSE);
+		$this->db->from('ck_payment p');
+		$this->db->join('ck_treatments t', 'p.treatment_id = t.id', 'left');
+		$this->db->where("(p.patient_id=$patient_id AND p.apps_remaining > 0) or (p.payment_id=$payment_id AND p.apps_remaining = 0)");
+		$this->db->order_by('p.payment_id','desc');
+		$query=$this->db->get();
+		//file_put_contents('t1.txt', print_r($this->db->last_query(),true),FILE_APPEND);
+		//file_put_contents('t1.txt', print_r($this->db->error(),true),FILE_APPEND);
+		return $query->result_array();
+	}
+
+	/*function get_curr_payments($patient_id,$payment_id=0){
 		//$query = $this->db->get_where('payment', array('patient_id' => $patient_id, 'count > 0'));
 		$this->db->select("p.payment_id, p.pay_date, p.paid, p.patient_id, p.treatment_id, p.pay_amount, p.apps_remaining, t.treatment",FALSE);
 		$this->db->from('ck_payment p');
@@ -83,9 +96,8 @@ class Payment_model extends CI_Model {
 		$this->db->order_by('payment_id','desc');
 		$query=$this->db->get();
 		return $query->result_array();
-	}
+	}*/
 	function get_curr_fees($patient_id,$payment_id=0){
-		//$query = $this->db->get_where('payment', array('patient_id' => $patient_id, 'count > 0'));
 		$this->db->select("ch.payment_fee_id, ch.payment_id, ch.pay_date, ch.paid, p.patient_id, p.treatment_id, p.pay_amount, p.apps_remaining, c.first_name, c.middle_name, t.treatment",FALSE);
 		$this->db->from('ck_payment_fee ch');
 		$this->db->join('ck_payment p', 'ch.payment_id = p.payment_id', 'left');
@@ -101,7 +113,6 @@ class Payment_model extends CI_Model {
 
 	function get_curr_ajax_fees($payment_id){
 		$query = $this->db->get_where('payment_fee', array('payment_id' => $payment_id));
-		file_put_contents('t1.txt', print_r($this->db->last_query(),true));
 		return $query->result_array();
 	}
 	function edit_payment($payment_id){
@@ -117,7 +128,6 @@ class Payment_model extends CI_Model {
 		$this->db->set('department_id', $this->input->post('department_id'));
 		$this->db->where('payment_id', $payment_id);
 		$this->db->update('payment');
-		file_put_contents('t1.txt', print_r($this->db->last_query(),true));
 		if($this->input->post('add_money')>0){
 			$this->db->set('all_paid','all_paid+'.$this->input->post('add_money'),false);
 			$this->db->where('patient_id', $this->input->post('patient_id'));
@@ -138,10 +148,10 @@ class Payment_model extends CI_Model {
 	}
     function delete_payment($payment_id) {
         $this->db->delete('payment', array('payment_id' => $payment_id));
+        $this->db->delete('payment_fee', array('payment_id' => $payment_id));
 		$this->db->set('payment_id',0,false);
 		$this->db->where('payment_id', $payment_id);
 		$this->db->update('appointments');
-        //file_put_contents('t1.txt', print_r($this->db->last_query(),true));
 
     }
 	 function get_all_payments_by_patient($patient_id){

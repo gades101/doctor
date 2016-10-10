@@ -225,7 +225,7 @@
 	$lang['patient_id'] = "ID пацієнта";
 	$lang['patient_name'] = "Ім'я пацієнта";
 	$lang['patient_report'] = "Звіт по пацієнту";
-	$lang['payment'] = "Платіж";
+	$lang['payment'] = "Рахунок";
 	$lang['payment_amount'] = "Сума платежу";
 	$lang['payment_date'] = "Дата оплати";
 	$lang['payment_method'] = "Спосіб оплати";

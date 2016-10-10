@@ -60,7 +60,7 @@ $( window ).load(function() {
 			<!-- Advanced Tables -->
 			<div class="panel panel-primary">
 				<div class="panel-heading">
-					<span>Платежі</span>
+					<span>Рахунки</span>
 				</div>
 			</div>
 			<!--End Advanced Tables -->
@@ -102,7 +102,7 @@ $( window ).load(function() {
 								<th><?php echo $this->lang->line("doctor");?></th>
 								<th>Сплачено (грн.)</th>
 								<th>Загальна сума (грн.)</th>
-								<th>Залишилось зайнять</th>
+								<th>Залишилось занять</th>
 								<th><?php echo $this->lang->line("edit");?></th>
 							</tr>
 						</thead>

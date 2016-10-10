@@ -266,7 +266,7 @@
 			<div class="col-md-12">
 				<div class="form-group">
 					<label for="new_payment">
-						 Закрити платіж досроково
+						 Закрити рахунок досроково
 						 <input type="checkbox" name="close_payment" id="close_payment" class=""/>
 					</label>
 				</div>

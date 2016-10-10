@@ -32,7 +32,7 @@ $( window ).load(function() {
 		<div class="col-md-12">	
 			<div class="panel panel-primary">		
 				<div class="panel-heading">
-					Звіт по платежам/витратам
+					Звіт по оплатам/витратам
 				</div>
 				<div class="panel-body">
 					<?php echo form_open('payment/payment_report'); ?>

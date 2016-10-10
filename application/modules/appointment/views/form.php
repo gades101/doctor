@@ -554,7 +554,7 @@ function openReason(onof) {
 					
 					<div class="col-md-12">
 						<div class="form-group">
-							<label for="payment_id">Платежі Пацієнта</label></br>
+							<label for="payment_id">Рахунки Пацієнта</label></br>
 							<select id='payment_id' name='payment_id' class="form-control">
 								<option value='0'>Не обрано</option>
 								<?php if(isset($curr_payments)){
@@ -568,7 +568,7 @@ function openReason(onof) {
 					<div class="col-md-12" id="new_payment_div">
 						<div class="form-group">
 							<label for="new_payment">
-								 Створити Платіж
+								 Створити Рахунок
 								 <input type="checkbox" name="new_payment" id="new_payment" class=""/>
 							</label>
 						</div>

@@ -299,7 +299,7 @@
 					<div class="col-md-12">
 						<div class="form-group">
 							<label for="new_payment">
-								 Закрити платіж досроково
+								 Закрити рахунок досроково
 								 <input type="checkbox" name="close_payment" id="close_payment" class=""/>
 							</label>
 						</div>
@@ -317,7 +317,8 @@
 							<input class="btn btn-primary" type="submit" value="<?php echo $this->lang->line('add');?>" name="submit" />
 							<?php }else{ ?>
 							<input class="btn btn-primary" type="submit" value="<?php echo $this->lang->line('edit');?>" name="submit" />
-							<!--<a class="btn btn-danger" href="<?=base_url() . "index.php/payment/del/" . $payment->payment_id;?>">Видалити</a>-->
+							<a class="btn btn-danger" href="<?=base_url() . "index.php/payment/del/" . $payment->payment_id;?>">Видалити</a>
+							<a class="btn btn-primary" href="<?=base_url() . "index.php/patient/edit/".$payment->patient_id."/patient";?>">Карта пацієнта</a>
 							<div class="btn btn-primary" id="view_fees">Відобразити оплати</div>
 							<?php } ?>
 						</div>

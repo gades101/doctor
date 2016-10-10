@@ -26,8 +26,6 @@ class Appointment extends CI_Controller {
 			session_start();
 		}
 		//$dep=$_SESSION['dep'];
-	//file_put_contents('t1.txt', print_r($this->uri->segment(3),true));
-
         $prefs = array(
             'show_next_prev' => TRUE,
 			'next_prev_url' => base_url() . 'index.php/appointment/index/'.$this->uri->segment(3),
@@ -270,7 +268,6 @@ class Appointment extends CI_Controller {
 					unset ($_SESSION['saved']);
 				}	
 				$appointment = $this->appointment_model->get_appointments_id($appointment_id);
-				file_put_contents('t1.txt', print_r($appointment,true));
 				$data['appointment']=$appointment;
 				$data['treatments']=$this->treatment_model->get_treatments();
 				$data['curr_treatment']=$this->treatment_model->get_edit_treatment($appointment['treatment_id']);
