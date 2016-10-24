@@ -96,6 +96,7 @@ class Payment extends CI_Controller {
 			$this->form_validation->set_rules('pay_mode', 'Payment Mode', 'required');
 
 			if ($this->form_validation->run() === FALSE) {
+				$data['saved']="";
 				$data['patients'] = $this->patient_model->get_patient();
 				$data['treatments'] = $this->treatment_model->get_treatments();		
 				$data['discounts'] = $this->discount_model->get_discounts();				
@@ -109,14 +110,33 @@ class Payment extends CI_Controller {
 				$data['curr_treatment']=$this->treatment_model->get_edit_treatment($payment->treatment_id);
 				$data['users'] = $this->admin_model->get_work_users();
 				$data['departments'] = $this->doctor_model->get_all_departments();
-				$data['selected_doctor_id']=$payment->userid;			
+				$data['selected_doctor_id']=$payment->userid;
 				$this->load->view('templates/header');
 				$this->load->view('templates/menu');
 				$this->load->view('form',$data);
 				$this->load->view('templates/footer');
 			}else{
 				$this->payment_model->edit_payment($payment_id);
-				$this->index();
+				$data['saved']="Збережено!";
+				$data['patients'] = $this->patient_model->get_patient();
+				$data['treatments'] = $this->treatment_model->get_treatments();		
+				$data['discounts'] = $this->discount_model->get_discounts();				
+				$payment = $this->payment_model->get_payment($payment_id);
+				$data['payment'] = $payment;
+				$data['payment_id'] = $payment->payment_id;
+				$data['patient_id'] = $payment->patient_id;
+				$data['patient'] = $this->patient_model->get_patient_detail($data['patient_id']);
+				$data['def_dateformate'] = $this->settings_model->get_date_formate();
+				$data['called_from'] = "";
+				$data['curr_treatment']=$this->treatment_model->get_edit_treatment($payment->treatment_id);
+				$data['users'] = $this->admin_model->get_work_users();
+				$data['departments'] = $this->doctor_model->get_all_departments();
+				$data['selected_doctor_id']=$payment->userid;
+				$this->load->view('templates/header');
+				$this->load->view('templates/menu');
+				$this->load->view('form',$data);
+				$this->load->view('templates/footer');
+				//$this->index();
 			}
 		}
 	}

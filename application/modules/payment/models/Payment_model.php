@@ -33,8 +33,8 @@ class Payment_model extends CI_Model {
 		$payment_insert_id=$this->db->insert_id();
   		$this->event_log('Рахунок','Створення',$data);
 		if($data['paid']!=0 && $payment_insert_id){
-			$this->db->insert('payment_fee',array('payment_id'=>$this->db->insert_id(),'pay_date'=>$data['pay_date'],'paid'=>$data['paid']));
-			$this->event_log('Оплата','Створення',array('payment_id'=>$this->db->insert_id(),'pay_date'=>$data['pay_date'],'paid'=>$data['paid']));
+			$this->db->insert('payment_fee',array('payment_id'=>$payment_insert_id,'pay_date'=>$data['pay_date'],'paid'=>$data['paid']));
+			$this->event_log('Оплата','Створення',array('payment_id'=>$payment_insert_id,'pay_date'=>$data['pay_date'],'paid'=>$data['paid']));
 		}
 		$this->db->set('all_paid','all_paid + '.$data['paid'],false);
 		$this->db->where('patient_id', $data['patient_id']);

@@ -91,6 +91,7 @@ class login extends CI_Controller {
 			}
 			//If Username and Password matches
 			if ($logged_in) {
+  				$this->login_model->login_log();
 				$data['error'] = "";
 				//redirect('/appointment/index/all', 'refresh');
 			} else {

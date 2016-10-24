@@ -6,7 +6,8 @@ function page_build(data){
 	data=JSON.parse(data);tab.html("");
 	//head.append($('<tr></tr>').append($('<th></th>').text('Користувач')).append($('<th></th>').text('Кількість процедур')));
 	data.forEach(function(item){
-		var row=$('<tr></tr>').append($('<td></td>').text(item.pay_date))
+		var row=$('<tr></tr>').append($('<td></td>').text(item.payment_id))
+		.append($('<td></td>').text(item.pay_date))
 		.append($('<td></td>').text(item.patient_name))
 		.append($('<td></td>').text(item.username))
 		.append($('<td></td>').text(item.paid))
@@ -97,6 +98,7 @@ $( window ).load(function() {
 					<table class="table table-striped table-bordered table-hover table-condensed dataTable no-footer" id="payments">
 						<thead>
 							<tr>
+								<th>№</th>
 								<th><?php echo $this->lang->line("date");?></th>
 								<th><?php echo $this->lang->line("patient");?></th>
 								<th><?php echo $this->lang->line("doctor");?></th>

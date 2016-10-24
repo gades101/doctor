@@ -34,6 +34,13 @@ class Login_model extends CI_Model {
         }
         return array();
     }
+    public function login_log(){
+        $data['user_name']=$_SESSION['name'];
+        $data['event_table']='Логін';
+        $data['type']='Авторизація';
+        $this->db->insert('ck_event_log',$data);
+    }
+
 
 }
 

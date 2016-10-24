@@ -4,6 +4,7 @@
 		$payment_pay_amount = $payment->pay_amount;
 		$pay_mode = $payment->pay_mode;
 		$pay_date=date("d-m-Y H:i");
+		$payment_date=$payment->pay_date;
 		$curr_treatment_name=$curr_treatment['treatment'];
 		$pay_amount=$payment->pay_amount;
 		$paid=$payment->paid;
@@ -209,7 +210,7 @@
 		<div class="col-md-12">
 			<div class="panel panel-primary">
 				<div class="panel-heading">
-					Форма рахунка
+					Форма рахунка <?php if(isset($payment)) echo $saved;?>
 				</div>
 				<div class="panel-body">
 					<?php if(isset($payment)) { ?>	
@@ -307,7 +308,7 @@
 					</div>	
 					<div class="col-md-6">
 						<div class="form-group">
-							<label for="title">Дата створення рахунка: <?=$pay_date;?></label>
+							<label for="title">Дата створення рахунка: <?=$payment_date;?></label>
 						</div>
 					</div>
 					<?php } ?>		
@@ -317,29 +318,20 @@
 							<input type="text" name="notes" id="notes" class="form-control" value="<?=$notes;?>" />
 						</div>
 					</div>
-					<div class="col-md-6">
+					<div class="col-md-12">
 						<div class="form-group">
 							<?php  if(!isset($payment)){ ?>
 							<input class="btn btn-primary" type="submit" value="<?php echo $this->lang->line('add');?>" name="submit" />
+							<a href="<?=site_url("appointment/index/all"); ?>" class="btn btn-primary" ><?php echo $this->lang->line('back');?></a>
 							<?php }else{ ?>
 							<input class="btn btn-primary" type="submit" value="Зберегти зміни" name="submit" />
 							<a class="btn btn-danger" href="<?=base_url() . "index.php/payment/del/" . $payment->payment_id;?>">Видалити</a>
 							<a class="btn btn-primary" href="<?=base_url() . "index.php/patient/edit/".$payment->patient_id."/patient";?>">Карта пацієнта</a>
 							<div class="btn btn-primary" id="view_fees">Відобразити оплати</div>
+							<a class="btn btn-primary" href="<?=base_url() . "index.php/payment";?>">Назад до платежів</a>
 							<?php } ?>
 						</div>
 					</div>
-					<?php
-						if(!isset($payment)){
-					?>
-					<div class="col-md-6">
-						<div class="form-group">
-							<a href="<?=site_url("appointment/index/all"); ?>" class="btn btn-primary" ><?php echo $this->lang->line('back');?></a>
-						</div>
-					</div>
-					<?php
-						}
-					?>
 					<?php echo form_close(); ?>
 				</div>
 			</div>
