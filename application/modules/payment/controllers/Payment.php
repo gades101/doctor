@@ -118,7 +118,6 @@ class Payment extends CI_Controller {
 				$this->payment_model->edit_payment($payment_id);
 				$this->index();
 			}
-
 		}
 	}
     public function del($payment_id) {
@@ -150,8 +149,6 @@ class Payment extends CI_Controller {
 				$data['users'] = $this->admin_model->get_all_work_users();
 				$data['expense_categories'] = $this->payment_model->list_expense_cat();
 				$data['departments'] = $this->doctor_model->get_all_departments();
-				//array_unshift($data['departments'] , array("department_id"=>"","department_name"=>"Не обрано"));
-
 				$this->load->view('templates/header');
 				$this->load->view('templates/menu');
 				$this->load->view('exp_browse',$data);
@@ -185,14 +182,15 @@ class Payment extends CI_Controller {
 				$this->load->view('templates/footer');
 			} else {
                 $this->payment_model->edit_expense($id);
+				$data['start_date'] = date($def_dateformate) . " 00:00";
+				$data['end_date'] = date($def_dateformate, mktime(0,0,0,date("m"),date("d")+1,date("Y"))) . " 00:00";
 				$data['users'] = $this->admin_model->get_all_work_users();
-				$data['departments'] = $this->doctor_model->get_all_departments();
 				$data['expense_categories'] = $this->payment_model->list_expense_cat();
-				$data['expenses'] = $this->payment_model->list_expenses();             
-                $this->load->view('templates/header');
-                $this->load->view('templates/menu');
-                $this->load->view('exp_browse', $data);
-                $this->load->view('templates/footer');
+				$data['departments'] = $this->doctor_model->get_all_departments();
+				$this->load->view('templates/header');
+				$this->load->view('templates/menu');
+				$this->load->view('exp_browse',$data);
+				$this->load->view('templates/footer');
             }
         }
     }

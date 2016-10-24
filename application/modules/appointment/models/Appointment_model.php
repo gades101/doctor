@@ -77,10 +77,11 @@ class Appointment_model extends CI_Model {
 		// Insert Appointment
 		$data['status'] = $status;
 		$this->db->insert('appointments', $data);
+  		$this->payment_model->event_log('Прийом','Створення',$data);
 		$appointment_id = $this->db->insert_id();
 
 		//Creating a Log of Appintment
-		$data2['appointment_id'] = $appointment_id;
+		/*$data2['appointment_id'] = $appointment_id;
 		$data2['change_date_time'] = date('d/m/Y H:i:s'); //Do not use Time Format
 		$data2['start_time'] = $this->input->post('start_time');
 		$data2['old_status'] = " ";
@@ -88,8 +89,8 @@ class Appointment_model extends CI_Model {
 		$data2['from_time'] = date('H:i:s'); //Do not use Time Format
 		$data2['to_time'] = " ";
 		$data2['name'] = $_SESSION["name"];
+		$this->db->insert('appointment_log', $data2);*/
 
-		$this->db->insert('appointment_log', $data2);
     }
 	function update_appointment($title){
 		$appointment_id = $this->input->post('appointment_id');

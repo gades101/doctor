@@ -167,26 +167,27 @@
 		$('#user_id').on('change', function(){
 			$('#department_id').val($(this).children('option:selected').data('department_id'));
 		});	
-		$('#view_fees').click(function(){
-				$.ajax({
-					type: "POST",
-					url: "<?php echo base_url(); ?>index.php/payment/ajax_payment_fees/<?= $payment->payment_id; ?>/",
-					dataType: "json",
-					success: function(data){
-						$('#fee_table').show();
-						var tab=$('#fee_tbody');
-						data.forEach(function(item){
-							var row=$('<tr></tr>').append($('<td></td>').text(item.payment_fee_id))
-							.append($('<td></td>').text(item.pay_date))
-							.append($('<td></td>').text(item.paid))
-							tab.append(row);
-						});
-					}
-				});
-		});	
-
 
 		<?php if(isset($payment)) { ?>
+
+			$('#view_fees').click(function(){
+					$.ajax({
+						type: "POST",
+						url: "<?php echo base_url(); ?>index.php/payment/ajax_payment_fees/<?= $payment->payment_id; ?>/",
+						dataType: "json",
+						success: function(data){
+							$('#fee_table').show();
+							var tab=$('#fee_tbody');
+							data.forEach(function(item){
+								var row=$('<tr></tr>').append($('<td></td>').text(item.payment_fee_id))
+								.append($('<td></td>').text(item.pay_date))
+								.append($('<td></td>').text(item.paid))
+								tab.append(row);
+							});
+						}
+					});
+			});	
+			
 			$("#close_payment").click(function() {
 				var pay=$('#close_payment'),apps_remaining="<?= $payment->apps_remaining; ?>",pay_amount="<?= $payment->pay_amount; ?>";
 				if (pay.prop('checked')==true){
@@ -208,7 +209,7 @@
 		<div class="col-md-12">
 			<div class="panel panel-primary">
 				<div class="panel-heading">
-					Форма оплати
+					Форма рахунка
 				</div>
 				<div class="panel-body">
 					<?php if(isset($payment)) { ?>	

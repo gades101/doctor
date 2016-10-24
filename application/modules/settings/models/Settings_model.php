@@ -173,6 +173,17 @@ class Settings_model extends CI_Model {
 		$db_array = array('ck_value' => $value);
 		$this->db->update('data', $db_array);	
 	}
+    function get_log(){
+        $start_date = date("Y-m-d H:i", strtotime($this->input->post('start_date')));
+        $end_date = date("Y-m-d H:i", strtotime($this->input->post('end_date')));
+        $this->db->where('date>=',$this->db->escape($start_date)." AND date<".$this->db->escape($end_date),false);
+        $this->db->order_by("id","desc");
+        $query_str="SELECT  user_name, event_table, type, date, vars FROM ck_event_log WHERE date >=".$this->db->escape($start_date)." AND date <".$this->db->escape($end_date)." ORDER BY id DESC";
+        $res=$this->db->query($query_str);
+        file_put_contents('t1.txt', print_r($this->db->last_query(),true));
+
+        return $res->result_array();
+    }
 }
 
 ?>

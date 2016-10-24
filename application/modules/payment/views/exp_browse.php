@@ -129,9 +129,6 @@ $( window ).load(function() {
 					Витрати
 				</div>
 				<div class="panel-body">
-
-
-
 					<?php echo form_open('payment/expense_list',array('id'=>'main_form','class'=>'ajax_form')); ?>
 						<div class="col-md-12 form-group">							
 							<div class="col-md-4">

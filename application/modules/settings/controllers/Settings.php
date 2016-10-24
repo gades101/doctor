@@ -232,8 +232,27 @@ class Settings extends CI_Controller {
 		}
     }
     
-    public function events(){
-    
+    public function log(){
+		if ( $this->is_session_started() === FALSE ){
+			session_start();
+		}
+		//Check if user has logged in
+		if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
+            redirect('login/index');
+        } else {
+ 	  		$def_dateformate = $this->settings_model->get_date_formate();
+			$data['start_date'] = date($def_dateformate) . " 00:00";
+			$data['end_date'] = date($def_dateformate, mktime(0,0,0,date("m"),date("d")+1,date("Y"))) . " 00:00";		
+			$this->load->view('templates/header');
+			$this->load->view('templates/menu');
+			$this->load->view('log',$data);
+			$this->load->view('templates/footer');
+		}  
+    }
+
+    public function get_log(){
+		$data=$this->settings_model->get_log();			
+		echo json_encode($data);
     }
 
 	public function restore_backup(){

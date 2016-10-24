@@ -112,9 +112,6 @@ $( window ).load(function() {
 					</table>
 				</div>
 			</div>
-
-
-
 		</div>
 	</div>
 </div>

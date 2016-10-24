@@ -9,7 +9,7 @@ class Payment_model extends CI_Model {
     public function list_payments() {
 		$start_date = date("Y-m-d H:i", strtotime($this->input->post('start_date')));
     	$end_date = date("Y-m-d H:i", strtotime($this->input->post('end_date')));
-    	$this->db->where('pay_date>=',$start_date." AND pay_date<".$end_date);
+    	$this->db->where('pay_date>=',$this->db->escape($start_date)." AND pay_date<".$this->db->escape($end_date),false);
         $this->db->order_by("payment_id","desc");
         $query = $this->db->get('view_payment');
         return $query->result_array();
@@ -30,8 +30,11 @@ class Payment_model extends CI_Model {
 		$data['notes'] = $this->input->post('notes');
 		$data['department_id'] = $this->input->post('department_id');
 		$this->db->insert('payment', $data);
+  		$this->event_log('Рахунок','Створення',$data);
 		if($data['paid']!=0 && $this->db->insert_id()){
 			$this->db->insert('payment_fee',array('payment_id'=>$this->db->insert_id(),'pay_date'=>$data['pay_date'],'paid'=>$data['paid']));
+			$this->event_log('Оплата','Створення',array('payment_id'=>$this->db->insert_id(),'pay_date'=>$data['pay_date'],'paid'=>$data['paid']));
+
 		}
 		$this->db->set('all_paid','all_paid + '.$data['paid'],false);
 		$this->db->where('patient_id', $data['patient_id']);
@@ -51,8 +54,10 @@ class Payment_model extends CI_Model {
 		$data['apps_remaining']=($treatment['count']=="") ? 0 : $treatment['count']-1;
 		$data['department_id'] = $this->input->post('department_id');
 		$this->db->insert('payment', $data);
+  		$this->event_log('Оплата','Створення',$data);
 		if($data['paid']!=0 && $this->db->insert_id()){
 			$this->db->insert('payment_fee',array('payment_id'=>$this->db->insert_id(),'pay_date'=>$data['pay_date'],'paid'=>$data['paid']));
+			$this->event_log('Оплата','Створення',array('payment_id'=>$this->db->insert_id(),'pay_date'=>$data['pay_date'],'paid'=>$data['paid']));
 		}
 		$_POST['payment_id']=$this->db->insert_id();
 		$this->db->set('all_paid','all_paid + '.$data['paid'],false);
@@ -62,6 +67,7 @@ class Payment_model extends CI_Model {
 
  	function new_fee_from_app() {
  		$this->db->insert('payment_fee',array('payment_id'=>$this->input->post('payment_id'),'pay_date'=>date('Y-m-d H:i'),'paid'=>$this->input->post('add_money')));
+  		$this->event_log('Оплата','Створення',array('payment_id'=>$this->input->post('payment_id'),'pay_date'=>date('Y-m-d H:i'),'paid'=>$this->input->post('add_money')));
  		$this->db->set('paid', 'paid+'.$this->input->post('add_money'),false);
 		$this->db->where('payment_id', $this->input->post('payment_id'));
  		$this->db->update('payment');
@@ -81,8 +87,6 @@ class Payment_model extends CI_Model {
 		$this->db->where("(p.patient_id=$patient_id AND p.apps_remaining > 0) or (p.payment_id=$payment_id AND p.apps_remaining = 0)");
 		$this->db->order_by('p.payment_id','desc');
 		$query=$this->db->get();
-		//file_put_contents('t1.txt', print_r($this->db->last_query(),true),FILE_APPEND);
-		//file_put_contents('t1.txt', print_r($this->db->error(),true),FILE_APPEND);
 		return $query->result_array();
 	}
 
@@ -128,6 +132,7 @@ class Payment_model extends CI_Model {
 		$this->db->set('department_id', $this->input->post('department_id'));
 		$this->db->where('payment_id', $payment_id);
 		$this->db->update('payment');
+  		$this->event_log('Рахунок','Зміна',$this->input->post());
 		if($this->input->post('add_money')>0){
 			$this->db->set('all_paid','all_paid+'.$this->input->post('add_money'),false);
 			$this->db->where('patient_id', $this->input->post('patient_id'));
@@ -148,7 +153,9 @@ class Payment_model extends CI_Model {
 	}
     function delete_payment($payment_id) {
         $this->db->delete('payment', array('payment_id' => $payment_id));
+  		$this->event_log('Рахунок','Видалення',array('payment_id' => $payment_id));        
         $this->db->delete('payment_fee', array('payment_id' => $payment_id));
+  		$this->event_log('Оплата','Видалення',array('payment_id' => $payment_id));  
 		$this->db->set('payment_id',0,false);
 		$this->db->where('payment_id', $payment_id);
 		$this->db->update('appointments');
@@ -186,9 +193,13 @@ class Payment_model extends CI_Model {
 		$data['cat_id'] = $this->input->post('cat_id');
 		$data['department_id'] = $this->input->post('department_id');
 		$this->db->insert('expense', $data);
+  		$this->event_log('Витрата','Створення',$data);
+
     }
     function delete_expense($id) {
         $this->db->delete('expense', array('id' => $id));
+  		$this->event_log('Витрата','Видалення', array('id' => $id));  
+
     }
 	function get_edit_expense($id){
 		$query = $this->db->get_where('expense', array('id' => $id));
@@ -204,6 +215,7 @@ class Payment_model extends CI_Model {
 		$data['department_id'] = $this->input->post('department_id');
 		$this->db->where('id', $id);
 		$this->db->update('expense', $data);
+  		$this->event_log('Витрата','Зміна', $data);  
 	}
     public function list_expense_cat() {
         $this->db->order_by("id");
@@ -322,5 +334,22 @@ class Payment_model extends CI_Model {
 		$res=$this->db->query($query_str);
 		return $res->result_array();
 	}
+
+
+    public function event_log($table,$type,$vars){
+    	$data['user_name']=$_SESSION['name'];
+    	$data['event_table']=$table;
+    	$data['type']=$type;
+    	$vars=array_map(function($k,$v) { return "$k - $v"; }, array_keys($vars), $vars);
+    	$data['vars']=implode(', ',$vars);
+    	$data['query']=$this->db->last_query();
+    	$error=$this->db->error();
+    	$data['error']=$error['message'];
+    	$this->db->insert('ck_event_log',$data);
+    	//file_put_contents('t1.txt', print_r($this->db->last_query(),true));
+    	//file_put_contents('t1.txt', print_r($this->db->error(),true));
+    }
+
+
 }
 ?>
