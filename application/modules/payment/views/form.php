@@ -3,7 +3,7 @@
 		$payment_cheque_no = $payment->cheque_no;
 		$payment_pay_amount = $payment->pay_amount;
 		$pay_mode = $payment->pay_mode;
-		$pay_date=$payment->pay_date;
+		$pay_date=date("d-m-Y H:i");
 		$curr_treatment_name=$curr_treatment['treatment'];
 		$pay_amount=$payment->pay_amount;
 		$paid=$payment->paid;
@@ -273,7 +273,7 @@
 
 					<div class="col-md-6">
 						<div class="form-group">
-							<label for="title"><?php echo $this->lang->line('payment_date');?></label>
+							<label for="title">Дата оплати</label>
 							<input type="text" name="pay_date" id="pay_date" class="form-control" value="<?=$pay_date;?>" />
 						</div>
 					</div>
@@ -317,7 +317,7 @@
 							<?php  if(!isset($payment)){ ?>
 							<input class="btn btn-primary" type="submit" value="<?php echo $this->lang->line('add');?>" name="submit" />
 							<?php }else{ ?>
-							<input class="btn btn-primary" type="submit" value="<?php echo $this->lang->line('edit');?>" name="submit" />
+							<input class="btn btn-primary" type="submit" value="Зберегти зміни" name="submit" />
 							<a class="btn btn-danger" href="<?=base_url() . "index.php/payment/del/" . $payment->payment_id;?>">Видалити</a>
 							<a class="btn btn-primary" href="<?=base_url() . "index.php/patient/edit/".$payment->patient_id."/patient";?>">Карта пацієнта</a>
 							<div class="btn btn-primary" id="view_fees">Відобразити оплати</div>
