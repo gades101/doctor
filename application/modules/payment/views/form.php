@@ -297,7 +297,7 @@
 			                <?php echo form_error('department_id','<div class="alert alert-danger">','</div>'); ?>
 			        </div>			
 					<?php  if(isset($payment)){ ?>
-					<div class="col-md-12">
+					<div class="col-md-6">
 						<div class="form-group">
 							<label for="new_payment">
 								 Закрити рахунок досроково
@@ -305,6 +305,11 @@
 							</label>
 						</div>
 					</div>	
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="title">Дата створення рахунка: <?=$pay_date;?></label>
+						</div>
+					</div>
 					<?php } ?>		
 					<div class="col-md-12">
 						<div class="form-group">
