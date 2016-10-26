@@ -316,9 +316,7 @@ function check_doctor_availability($i,$doctor_id){
 									<tr>
 										<th class='appTime'><?=$this->lang->line('time');?></th>
 										<th class='docAppTable' style='width:20%'><?=$this->lang->line('appointments');?></th>
-										<th class='docAppTable'><?=$this->lang->line('waiting');?></th>
 										<th class='docAppTable'><?=$this->lang->line('consultation');?></th>
-										<th class='docAppTable'>Завершені</th>
 										<th class='docAppTable'>Скасовані</th>
 									</tr>
 								</thead>
@@ -335,10 +333,8 @@ function check_doctor_availability($i,$doctor_id){
 										?>
 										<tr>
 											<th><?=inttotime12( $i ,$time_format);?></th><!-- Display the Time -->
-											<td id="app<?=$i*100;?>" class="appointments"><a href='<?=base_url() . "index.php/appointment/add/"  . $year . "/" . $month . "/" . $day_date . "/" . $time[0] . "/" . $time[1] . "/Appointments" ?>' class="add_appointment"></a></div></td>
-											<td id="wai<?=$i*100;?>" class="waiting"><a href='<?=base_url() . "index.php/appointment/add/" .  $year . "/" . $month . "/" . $day_date . "/" . $time[0] . "/" . $time[1] . "/Waiting" ?>' class="add_appointment" ></a></div></td>
-											<td id="con<?=$i*100;?>" class="consultation"><a href='<?=base_url() . "index.php/appointment/add/" . $year . "/" . $month . "/" . $day . "/" . $time[0] . "/" . $time[1] . "/Consultation" ?>' class="add_appointment" ></a></div></td>
-											<td id="com<?=$i*100;?>" class="complete"></td>
+											<td id="app<?=$i*100;?>" class="appointments"></div></td>
+											<td id="con<?=$i*100;?>" class="consultation"></div></td>
 											<td id="can<?=$i*100;?>" class="cancel"></td>
 										</tr>
 							<?php }
@@ -372,25 +368,14 @@ function check_doctor_availability($i,$doctor_id){
 											$end_position = "app".$end_position;
 											$href = base_url() . "index.php/appointment/edit_appointment/" . $appointment_id ;
 											$nxt=true;
-											$nextstatus= base_url() ."index.php/appointment/change_status/". $appointment_id."/Waiting";
 											$ca=true;
-											$cancelapp= base_url() ."index.php/appointment/change_status/". $appointment_id."/Cancel";
-											$d_width='60%';
+											$d_width='100%';
 											break;
 										case 'Consultation':
 											$class = "btn-danger";
 											$start_position = "con".$start_position;
 											$end_position = "con".$end_position;
-											$href = base_url() . "index.php/patient/visit/" . $patient_id ."/" . $appointment_id ;
-											$nxt=false;
-											$ca=false;
-											$d_width='100%';
-											break;
-										case 'Complete':
-											$class = "btn btn-success";
-											$start_position = "com".$start_position;
-											$end_position = "com".$end_position;
-											$href = base_url() . "index.php/patient/visit/" . $patient_id ."/" . $appointment_id ;
+											$href = base_url() . "index.php/appointment/edit_appointment/" . $appointment_id ;
 											$nxt=false;
 											$ca=false;
 											$d_width='100%';
@@ -404,17 +389,6 @@ function check_doctor_availability($i,$doctor_id){
 											$ca=false;
 											$d_width='100%';
 											break;
-										case 'Waiting':
-											$class = "btn-warning";
-											$start_position = "wai".$start_position;
-											$end_position = "wai".$end_position;
-											$href = base_url() . "index.php/appointment/edit_appointment/" . $appointment_id ;
-											$nxt=true;
-											$nextstatus= base_url() ."index.php/appointment/change_status/". $appointment_id."/Consultation";
-											$ca=true;
-											$cancelapp= base_url() ."index.php/appointment/change_status/". $appointment_id."/Cancel";
-											$d_width='60%';
-											break;
 										default:
 											break;
 									}
@@ -422,7 +396,7 @@ function check_doctor_availability($i,$doctor_id){
 						?>
 
 									<div id="<?=$appointment_id;?>" start_position="<?=$start_position;?>" end_position="<?=$end_position;?>" appointment_column="<?=$appointment_column;?>"  style="display:none;" >
-										<a href='<?=$href;?>' title="<?=$appointment['title'];?>" class="btn square-btn-adjust <?=$class;?>" style="height:100%;width:<?=$d_width;?>"; ><?= $appointment_title;?></a><?php if ($nxt){?><a href='<?=$nextstatus;?>' class="btn square-btn-adjust <?=$class;?> " style="height:100%;width:20%;"><i class="fa fa-arrow-circle-right"></i></a><?php } ?><?php if($ca){ ?><a href='<?=$cancelapp;?>'class="btn square-btn-adjust <?=$class;?>" style="height:100%;width:19%;"><i class="fa fa-times"></i></a><?php } ?>
+										<a href='<?=$href;?>' title="<?=$appointment['title'];?>" class="btn square-btn-adjust <?=$class;?>" style="height:100%;width:<?=$d_width;?>"; ><?= $appointment_title;?></a>
 									</div>
 									<script>
 										//$(window).load(function() {
@@ -560,16 +534,8 @@ function check_doctor_availability($i,$doctor_id){
 												$href = base_url() . "index.php/appointment/edit_appointment/" . $appointment_id ;
 											//$href = base_url() . "index.php/patient/visit/" . $patient_id."/".$appointment_id ;
 												break;
-											case 'Complete':
-												$class = "btn-success";
-												$href = base_url() . "index.php/appointment/view_appointment	/". $appointment_id  ;
-												break;
 											case 'Cancel':
 												$class = "btn-info";
-												$href = base_url() . "index.php/appointment/edit_appointment/" . $appointment_id ;
-												break;
-											case 'Waiting':
-												$class = "btn-warning";
 												$href = base_url() . "index.php/appointment/edit_appointment/" . $appointment_id ;
 												break;
 											default:
@@ -615,23 +581,14 @@ function check_doctor_availability($i,$doctor_id){
 			echo "</tbody></table>";
 			?>
 			<div class="col-md-12 col-sm-12 col-xs-12">
-				<div class="col-md-6">
+				<div class="col-md-4">
 					<span class="btn square-btn-adjust btn-primary"><?=$this->lang->line('appointment').'и';?></span>
 				</div>
-				<div class="col-md-6">
+				<div class="col-md-4">
 					<span class="btn square-btn-adjust btn-danger">Консультації</span>
 				</div>
-				<div class="col-md-6">
-					<span class="btn square-btn-adjust btn-success"><?='Завершені '. $this->lang->line('appointment').'и';?></span>
-				</div>
-				<div class="col-md-6">
-					<span class="btn square-btn-adjust btn-info"><?='Відмінені '. $this->lang->line('appointment').'и';?></span>
-				</div>
-				<div class="col-md-6">
-					<span class="btn square-btn-adjust btn-warning"><?=$this->lang->line('waiting');?></span>
-				</div>
-				<div class="col-md-6">
-					<span class="btn square-btn-adjust btn-grey"><?=$this->lang->line('not_available');?></span>
+				<div class="col-md-4">
+					<span class="btn square-btn-adjust btn-info"><?='Скасовані '. $this->lang->line('appointment').'и';?></span>
 				</div>
             </div>
 			<?php

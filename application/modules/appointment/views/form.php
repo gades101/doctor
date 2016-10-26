@@ -611,12 +611,13 @@ function openReason(onof) {
 							<textarea name="app_note" id="app_note" class="form-control"/><?=$app_note ?></textarea>
 						</div>
 					</div>
+					<?php if($_SESSION['category']!='Doctor'){ ?>
 					<div class="col-md-12">
 						<div class="form-group">
 							<button class="btn btn-primary" type="submit" name="submit" /><?php echo $this->lang->line('save');?></button>
-							<a class="btn btn-primary" href="<?=base_url() . "index.php/appointment/index/".$dep.'/'.$date_str;?>"><?=$this->lang->line('back_to_app');?></a>
 						</div>
 					</div>
+					<?php } ?>
 
 					<?php echo form_close() ?>
 					</br>
@@ -639,7 +640,7 @@ function openReason(onof) {
 
 					<div class="col-md-12" id="button_panel">
 						<div class="form-group">
-					<?php if(isset($appointment)){ ?>
+					<?php if(isset($appointment) && $_SESSION['category']!='Doctor'){ ?>
 						<a class="btn btn-primary" href="<?php echo site_url("patient/edit/" . $curr_patient['patient_id']."/patient"); ?>">Редагувати пацієнта</a>
 						<?php if ($status != 'Appointments') { ?>
 							<a class="btn btn-primary" href="<?=base_url() . "index.php/appointment/change_status/" . $appointment_id . "/Appointments";?>" ><?php echo $this->lang->line('appointment');?></a>
@@ -654,6 +655,7 @@ function openReason(onof) {
 							<a class="btn btn-danger" href="<?=base_url() . "index.php/appointment/del/" . $appointment_id;?>">Видалити запис</a>
 						<?php } ?>-->
 					<?php } ?>
+							<a class="btn btn-primary" href="<?=base_url() . "index.php/appointment/index/".$dep.'/'.$date_str;?>"><?=$this->lang->line('back_to_app');?></a>
 
 						</div>
 					</div>
