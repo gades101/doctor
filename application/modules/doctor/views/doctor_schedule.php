@@ -5,7 +5,7 @@ $( window ).load(function() {
 		return confirm("Are you sure you want to delete?");
 	})
 
-    $("#doctor_table").dataTable();
+    $("#doctor_table").dataTable({"pageLength": 50});
 	$('#from_time').datetimepicker({
 		datepicker:false,
 		format: '<?=$def_timeformate; ?>',
@@ -39,6 +39,9 @@ function checkAll(ele) {
 <div id="page-inner">
 	<div class="row">
 		<div class="col-md-12">
+		<?php $level = $_SESSION["category"]; 
+
+		if($level!='Doctor') { ?>
 			<div class="panel panel-primary">
 			<div class="panel-heading">
 			<?php
@@ -48,32 +51,19 @@ function checkAll(ele) {
 			</div>
 			<div class="panel-body">
 
-			<?php echo form_open('doctor/doctor_schedule');
-				 $level = $_SESSION["category"];
-				?>
+			<?php echo form_open('doctor/doctor_schedule');?>
 				<div>
 					<div class="form-group">
 						<label><?php echo $this->lang->line('doctor');?></label>
-						<?php if ($level == 'Doctor') {
-								$doctor_name = $doctor['first_name'] . ' ' . $doctor['middle_name']. ' ' . $doctor['last_name'];
-								$userid = $_SESSION['id'];
-							 ?>
-							<input type="hidden" name="doctor" class="form-control" value="<?php echo $doctor['doctor_id'] ?>" readonly="readonly"/>
-							<input type="text" name="doctor_name" class="form-control" id="doctor_name" value="<?= $doctor_name; ?>" readonly="readonly"/><br/>
-							<?php
-							} else {
-								$userid = 0;
-							?>
+						<?php $userid = 0; ?>
 								<select name="doctor" class="form-control">  <option></option>
 									<?php foreach ($doctors as $doctor) { ?>
 									<option value="<?php echo $doctor['doctor_id'] ?>" <?php if($doctor_id==$doctor['doctor_id']){ echo "selected";}?> >
 										<?= $doctor['first_name'] . ' ' . $doctor['middle_name']. ' ' . $doctor['last_name']; ?>
 									</option>
-						<?php } ?>
+									<?php } ?>
 								</select>
-
-						<?php }
-							 echo form_error('doctor','<div class="alert alert-danger">','</div>'); ?>
+							<?php echo form_error('doctor','<div class="alert alert-danger">','</div>'); ?>
 							 <input type="hidden" name="doctor_id" value="<?= $userid; ?>"/>
 					</div>
 				</div>
@@ -133,6 +123,7 @@ function checkAll(ele) {
 				<?php echo form_close(); ?>
 			</div>
 		</div>
+		<?php } ?>
 		<!-- Advanced Tables -->
 		<div class="panel panel-primary">
 			<div class="panel-heading">
@@ -149,8 +140,10 @@ function checkAll(ele) {
 								<th><?php echo $this->lang->line('day');?></th>
 								<th><?php echo $this->lang->line('from_time');?></th>
 								<th><?php echo $this->lang->line('to_time');?></th>
+								<?php if($_SESSION['category']!='Doctor') { ?>
 								<th><?php echo $this->lang->line('edit');?></th>
 								<th><?php echo $this->lang->line('delete');?></th>
+								<?php } ?>
 
 							</tr>
 						</thead>
@@ -160,21 +153,19 @@ function checkAll(ele) {
 							<tr <?php if ($i%2 == 0) { echo "class='even'"; } else { echo "class='odd'"; }?> >
 								<td><?php echo $drschedule['schedule_id']; ?></td>
 								<td>
-								<?php if ($level == 'Doctor') {  ?>
-									<?= $doctor_name; ?>
-								<?php }else{ ?>
 									<?php  foreach ($doctors as $doctor) {
 									if($doctor['doctor_id']==$drschedule['doctor_id']){
 									?>
 									<?php echo $doctor['first_name'] . ' ' . $doctor['middle_name']. ' ' . $doctor['last_name']; ?>
 									<?php }} ?>
-								<?php } ?>
 								</td>
 								<td><?php echo $drschedule['schedule_day']; ?></td>
 								<td><?php echo date($def_timeformate,strtotime($drschedule['from_time'])); ?></td>
 								<td><?php echo date($def_timeformate,strtotime($drschedule['to_time'])); ?></td>
+								<?php if($_SESSION['category']!='Doctor') { ?>
 								<td><a class="btn btn-info btn-sm " title="<?php echo $this->lang->line('edit').' doctor_sechedule : ' . $drschedule['schedule_id'] ?>" href="<?php echo site_url("doctor/edit_drschedule/" . $drschedule['schedule_id']); ?>"><?php echo $this->lang->line("edit");?></a></td>
 								<td><a class="btn btn-danger btn-sm confirmDelete" title="<?php echo $this->lang->line('delete').' doctor_sechedule : ' . $drschedule['schedule_id']?>" href="<?php echo site_url("doctor/delete_drschedule/" . $drschedule['schedule_id']); ?>"><?php echo $this->lang->line("delete");?></a></td>
+								<?php } ?>
 							</tr>
 							<?php $i++; ?>
 							<?php endforeach; ?>

@@ -141,12 +141,7 @@ class Doctor extends CI_Controller {
 					$this->load->view('templates/footer');
 				}else{
 					$contact_id = $this->input->post('contact_id');
-					//echo $contact_id."<br/>";
 					$file_upload = $this->do_upload($contact_id);
-					//print_r($file_upload);
-					//echo "<br/>";
-
-
 					if(isset($file_upload['file_name'])){
 						$file_name = $file_upload['file_name'];
 					}else{
@@ -156,37 +151,6 @@ class Doctor extends CI_Controller {
 					$this->contact_model->update_address();
 					$this->doctor_model->update_doctors();
 					$this->index();
-
-
-					/*if(isset($file_upload['error']) && $file_upload['error']=='<p>Ви не вибрали файл для завантаження.</p>'){
-						$this->contact_model->update_contact();
-						$this->contact_model->update_address();
-						$this->doctor_model->update_doctors();
-						$this->index();
-					}elseif(isset($file_upload['error'])){
-						$data['file_error'] = $file_upload['error'];
-						$data['doctor_id'] = $doctor_id;
-						$doctor_details = $this->doctor_model->get_doctor_details($doctor_id);
-						$data['doctor_details'] = $doctor_details;
-						$contact_id = $doctor_details['contact_id'];
-						$data['contacts'] = $this->contact_model->get_contacts($contact_id);
-						$data['departments'] = $this->doctor_model->get_all_departments();
-						$this->load->view('templates/header');
-						$this->load->view('templates/menu');
-						$this->load->view('form', $data);
-						$this->load->view('templates/footer');
-					}else{
-						if(isset($file_upload['file_name'])){
-							$file_name = $file_upload['file_name'];
-						}else{
-							$file_name = "";
-						}
-						$this->contact_model->update_contact($file_name);
-						$this->contact_model->update_address();
-						$this->doctor_model->update_doctors();
-						$this->index();
-					}*/
-
 				}
 			}
 		}
@@ -377,12 +341,8 @@ class Doctor extends CI_Controller {
 			}else{
 				$this->doctor_model->add_drschedule();
 			}
-			if($_SESSION["category"] == 'Doctor'){
-				$user_id = $_SESSION['id'];
-				$data['doctor'] = $this->doctor_model->find_doctor($user_id);
-			}else{
-				$data['doctors'] = $this->doctor_model->find_doctor();
-			}
+			$data['doctors'] = $this->doctor_model->find_doctor();
+
 			$data['doctor_details']=$this->doctor_model->get_doctor_details($doctor_id);
 			$data['drschedules'] = $this->doctor_model->find_drschedule();
 			$data['def_timeformate']=$this->settings_model->get_time_formate();

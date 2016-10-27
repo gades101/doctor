@@ -14,6 +14,7 @@ $( window ).load(function() {
 <div id="page-inner">
 	<div class="row">
 		<div class="col-md-12">
+		<?php if($_SESSION['category']!='Doctor') { ?>
 			<div class="panel panel-primary">
 				<div class="panel-heading">
 					<?php echo $this->lang->line('add_treatment');?>
@@ -40,7 +41,8 @@ $( window ).load(function() {
 						</div>
 					</form>
 				</div>
-			</div>	
+			</div>
+		<?php } ?>	
 			<div class="panel panel-primary">
 				<div class="panel-heading">
 					<?php echo $this->lang->line('treatments');?>
@@ -54,8 +56,10 @@ $( window ).load(function() {
 								<th><?php echo $this->lang->line('treatment_name');?></th>
 								<th><?php echo $this->lang->line('treatment_charges');?></th>
 								<th>Кількість</th>
+								<?php if($_SESSION['category']!='Doctor') { ?>
 								<th><?php echo $this->lang->line('edit');?></th>
 								<th><?php echo $this->lang->line('delete');?></th>
+								<?php } ?>
 							</tr>
 						</thead>
 						<tbody>
@@ -65,9 +69,11 @@ $( window ).load(function() {
 							<td><?php echo $treatment['id']; ?></td>
 							<td><?php echo $treatment['treatment']; ?></td>
 							<td class="right"><?php echo currency_format($treatment['price']);if($currency_postfix) echo $currency_postfix['currency_postfix']; ?></td>
-							<td><?php echo $treatment['count']; ?></td>							
-							<td><a class="btn btn-primary btn-sm" title="Visit" href="<?php echo site_url("treatment/edit_treatment/" . $treatment['id']); ?>"><?php echo $this->lang->line('edit');?></a></td>
+							<td><?php echo $treatment['count']; ?></td>	
+							<?php if($_SESSION['category']!='Doctor') { ?>						
+							<td><a class="btn btn-primary btn-sm" title="" href="<?php echo site_url("treatment/edit_treatment/" . $treatment['id']); ?>"><?php echo $this->lang->line('edit');?></a></td>
 							<td><a class="btn btn-danger btn-sm confirmDelete" title="<?php echo $this->lang->line('delete_treatment')." : " . $treatment['treatment'] ?>" href="<?php echo site_url("treatment/delete_treatment/" . $treatment['id']); ?>"><?php echo $this->lang->line('delete');?></a></td>
+							<?php } ?>
             </tr>
             <?php $i++; $j++;?>
             <?php endforeach ?>
