@@ -57,9 +57,9 @@ $(window).load(function(){
 				if($('#patient_id').val()){
 					//$('#discount').prop('disabled',false);
 					$('#payment_id').val(0).prop('disabled',true);
-					$('#treatment').val('').prop('readonly',false);
+					$('#treatment').prop('readonly',false);
 					$('#department_id').val($('#doctor_id').children('option:selected').data('department_id'));
-					$('.payment').val('');
+					//$('.payment').val('');
 					$('#pay_block').show();
 					$('#edit_payment').prop('checked',false);
 				}
@@ -270,8 +270,10 @@ $(window).load(function(){
 				$("#display_id").val(ui.item ? ui.item.display : '');
 				$("#discount").val(calc_discount(ui.item.discount,ui.item.all_paid));
 				var amount=price ? price*((100-ui.item.discount)/100) : '';
+				console.log(amount);
 				$("#pay_amount").val(amount);
-				$("#paid").val(amount);
+				$("#paid").val('');
+				$("#add_money").val(amount);
 				loadPayments(ui.item.id);
 
 			},
