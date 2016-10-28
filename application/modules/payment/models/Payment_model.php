@@ -54,12 +54,12 @@ class Payment_model extends CI_Model {
 		$data['apps_remaining']=($treatment['count']=="") ? 0 : $treatment['count']-1;
 		$data['department_id'] = $this->input->post('department_id');
 		$this->db->insert('payment', $data);
-  		$this->event_log('Оплата','Створення',$data);
-		if($data['paid']!=0 && $this->db->insert_id()){
-			$this->db->insert('payment_fee',array('payment_id'=>$this->db->insert_id(),'pay_date'=>$data['pay_date'],'paid'=>$data['paid']));
-			$this->event_log('Оплата','Створення',array('payment_id'=>$this->db->insert_id(),'pay_date'=>$data['pay_date'],'paid'=>$data['paid']));
-		}
 		$_POST['payment_id']=$this->db->insert_id();
+  		$this->event_log('Рахунок','Створення',$data);
+		if($data['paid']!=0 && $this->db->insert_id()){
+			$this->db->insert('payment_fee',array('payment_id'=>$_POST['payment_id'],'pay_date'=>$data['pay_date'],'paid'=>$data['paid']));
+			$this->event_log('Оплата','Створення',array('payment_id'=>$_POST['payment_id'],'pay_date'=>$data['pay_date'],'paid'=>$data['paid']));
+		}
 		$this->db->set('all_paid','all_paid + '.$data['paid'],false);
 		$this->db->where('patient_id', $data['patient_id']);
 		$this->db->update('patient');
@@ -135,11 +135,12 @@ class Payment_model extends CI_Model {
 		$update_rows=$this->db->affected_rows();
   		$this->event_log('Рахунок','Зміна',$this->input->post());
 		if($this->input->post('add_money')>0 && $update_rows>0){
+			$fee_date=date("Y-m-d H:i", strtotime($this->input->post('pay_date')));
 			$this->db->set('all_paid','all_paid+'.$this->input->post('add_money'),false);
 			$this->db->where('patient_id', $this->input->post('patient_id'));
 			$this->db->update('patient');
-			$this->db->insert('payment_fee',array('payment_id'=>$payment_id,'pay_date'=>$this->input->post('pay_date'),'paid'=>$this->input->post('add_money')));
-			$this->event_log('Оплата','Створення',array('payment_id'=>$payment_id,'pay_date'=>$this->input->post('pay_date'),'paid'=>$this->input->post('add_money')));
+			$this->db->insert('payment_fee',array('payment_id'=>$payment_id,'pay_date'=>$fee_date,'paid'=>$this->input->post('add_money')));
+			$this->event_log('Оплата','Створення',array('payment_id'=>$payment_id,'pay_date'=>$fee_date,'paid'=>$this->input->post('add_money')));
 		}
 
 	}

@@ -178,7 +178,7 @@
 						dataType: "json",
 						success: function(data){
 							$('#fee_table').show();
-							var tab=$('#fee_tbody');
+							var tab=$('#fee_tbody');tab.html('');
 							data.forEach(function(item){
 								var row=$('<tr></tr>').append($('<td></td>').text(item.payment_fee_id))
 								.append($('<td></td>').text(item.pay_date))
@@ -328,7 +328,7 @@
 							<a class="btn btn-danger" href="<?=base_url() . "index.php/payment/del/" . $payment->payment_id;?>">Видалити</a>
 							<a class="btn btn-primary" href="<?=base_url() . "index.php/patient/edit/".$payment->patient_id."/patient";?>">Карта пацієнта</a>
 							<div class="btn btn-primary" id="view_fees">Відобразити оплати</div>
-							<a class="btn btn-primary" href="<?=base_url() . "index.php/payment";?>">Назад до платежів</a>
+							<a class="btn btn-primary" href="<?=base_url() . "index.php/payment";?>">Назад до рахунків</a>
 							<?php } ?>
 						</div>
 					</div>

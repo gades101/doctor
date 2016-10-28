@@ -231,9 +231,9 @@ class Appointment extends CI_Controller {
 					$treatment=$this->treatment_model->get_edit_treatment($this->input->post('treatment_id'));
 					$this->payment_model->new_payment_from_app($treatment);
 				}
-				if($this->input->post('add_money')>0 && $this->input->post('payment_id')>0){
-					$this->payment_model->new_fee_from_app();
-				}
+				//if($this->input->post('add_money')>0 && $this->input->post('payment_id')>0){
+				//	$this->payment_model->new_fee_from_app();
+				//}
 				$this->appointment_model->add_appointment($this->input->post('status'));
 				$year = date("Y", strtotime($this->input->post('appointment_date')));
 				$month = date("m", strtotime($this->input->post('appointment_date')));
@@ -294,6 +294,9 @@ class Appointment extends CI_Controller {
 				if($this->input->post('new_payment')){
 					$treatment=$this->treatment_model->get_edit_treatment($this->input->post('treatment_id'));
 					$this->payment_model->new_payment_from_app($treatment);
+				}
+				if($this->input->post('edit_payment')){
+					$this->payment_model->new_fee_from_app();
 				}
 				$patient_id = $this->input->post('patient_id');
 				$payment_id=$this->input->post('curr_payment_id');

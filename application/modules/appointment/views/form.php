@@ -54,24 +54,49 @@ $(window).load(function(){
 	$("#new_payment").click(function() {
 			var pay=$('#new_payment');
 			if (pay.prop('checked')==true){
-				if($('#treatment_id').val() && $('#patient_id').val()){
+				if($('#patient_id').val()){
 					//$('#discount').prop('disabled',false);
 					$('#payment_id').val(0).prop('disabled',true);
-					$('#treatment').prop('readonly',false);
+					$('#treatment').val('').prop('readonly',false);
 					$('#department_id').val($('#doctor_id').children('option:selected').data('department_id'));
-					$('#add_money').val("");
+					$('.payment').val('');
 					$('#pay_block').show();
+					$('#edit_payment').prop('checked',false);
 				}
 				else{
 					pay.prop('checked',false);
-					alert('Пацієнт та процедура мають бути обрані');
+					alert('Пацієнт має бути обраний');
 				}
 			}
 			else {
 				$('#pay_block').hide();
-				$('#add_money').val("");
+				$('.payment').val('');
 				//$('#discount').prop('disabled',true).val('');
-				$('#payment_id').prop('readonly',false);
+				$('#payment_id').prop('disabled',false);
+			}
+		});
+
+	$("#edit_payment").click(function() {
+			var pay=$('#edit_payment');
+			if (pay.prop('checked')==true){
+				if($('#payment_id').val()>0){
+					var curr_payment=$('#payment_id option:selected');
+					$('#add_money').val('');
+					$('#paid').val(curr_payment.data('paid'));
+					$('#pay_amount').val(curr_payment.data('pay_amount'));
+					$('#pay_block').show();
+				}
+				else{
+					pay.prop('checked',false);
+					alert('Рахунок має бути обраний');
+				}
+			}
+			else {
+				//$('#treatment').val('').prop('readonly',false);
+				$('#pay_block').hide();
+				//$('.payment').val('');
+				//$('#discount').prop('disabled',true).val('');
+				//$('#payment_id').prop('disabled',false);
 			}
 		});
 
@@ -182,6 +207,7 @@ $(window).load(function(){
 				$("#treatment").val(ui.item ? ui.item.treatment : '');
 				var amount=ui.item ? ui.item.price*((100-$("#discount").val())/100) : '';
 				$("#pay_amount").val(amount);
+				$("#paid").val("");
 				$("#add_money").val(amount);
 				price=ui.item ? ui.item.price : '';
 
@@ -565,29 +591,33 @@ function openReason(onof) {
 						</div>
 					</div>
 	
-					<div class="col-md-12" id="new_payment_div">
-						<div class="form-group">
-							<label for="new_payment">
-								 Створити Рахунок
-								 <input type="checkbox" name="new_payment" id="new_payment" class=""/>
-							</label>
-						</div>
+					<div class="col-md-6 form-group" id="new_payment_div">
+						<label for="new_payment">
+							 Створити Рахунок
+							 <input type="checkbox" name="new_payment" id="new_payment" class=""/>
+						</label>				
+					</div>
+					<div class="col-md-6 form-group" id="edit_payment_div">
+						<label for="edit_payment">
+							 Оплатити Рахунок
+							 <input type="checkbox" name="edit_payment" id="edit_payment" class=""/>
+						</label>				
 					</div>
 					</br>
 					<div id="pay_block" class="panel-body" style="display:none">
 							<div class="col-md-3">
 								<label for="add_money">Додати оплату (грн.)</label>
-								<input type="text" name="add_money" id="add_money" class="form-control"/>
+								<input type="text" name="add_money" id="add_money" class="form-control payment"/>
 								<?php echo form_error('add_money','<div class="alert alert-danger">','</div>'); ?>
 							</div>
 							<div class="col-md-3">
 								<label for="paid">Сплачено (грн.)</label>
-								<input type="text" name="paid" id="paid" value="<?= $pay_amount; ?>" readonly="readonly" class="form-control"/>
+								<input type="text" name="paid" id="paid" value="<?= $pay_amount; ?>" readonly="readonly" class="form-control payment"/>
 								<?php echo form_error('paid','<div class="alert alert-danger">','</div>'); ?>
 							</div>
 							<div class="col-md-3">
 								<label for="pay_amount">Загальна сума (грн.)</label>
-								<input type="text" name="pay_amount" id="pay_amount" value="<?= $pay_amount; ?>" readonly="readonly" class="form-control"/>
+								<input type="text" name="pay_amount" id="pay_amount" value="<?= $pay_amount; ?>" readonly="readonly" class="form-control payment"/>
 								<?php echo form_error('pay_amount','<div class="alert alert-danger">','</div>'); ?>
 							</div>
 							<div class="col-md-3">
