@@ -70,6 +70,34 @@ $( window ).load(function() {
 									<?php echo form_error('end_date','<div class="alert alert-danger">','</div>'); ?>
 								</div>
 							</div>
+							<div class="col-md-4 form-group">
+								<label for="user_id">Користувач</label>
+								<select id='user_id' name='user_id' class="form-control" value="">
+									<option value="">Усі</option>
+									<?php foreach($users as $user){ ?>									
+										<option value="<?php echo $user['userid']; ?>" data-department_id="<?= $user['department_id']; ?>" /><?= $user['name']; ?></option>				
+									<?php } ?>
+								</select>
+							</div>	
+							<div class="col-md-4 form-group">
+								<label for="object">Об'єкт</label>
+								<select id='object' name='object' class="form-control" value="">
+									<option value="Прийом">Прийом</option>
+									<option value="Оплата">Оплата</option>
+									<option value="Рахунок">Рахунок</option>
+									<option value="Логін">Логін</option>
+								</select>
+							</div>
+							<div class="col-md-4 form-group">
+								<label for="operation">Операція</label>
+								<select id='operation' name='operation' class="form-control" value="">
+									<option value="Редагування">Редагування</option>
+									<option value="Видалення">Видалення</option>
+									<option value="Створення">Створення</option>
+									<option value="Авторизація">Авторизація</option>
+								</select>
+							</div>	
+
 							<div class="col-md-4">
 								<div class="form-group">
 									<label for="ok" style="height: 14px"> </label>

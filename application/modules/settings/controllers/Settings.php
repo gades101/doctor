@@ -7,6 +7,7 @@ class Settings extends CI_Controller {
 
 		$this->load->model('menu_model');
         $this->load->model('settings_model');
+        $this->load->model('admin/admin_model');
 
 		$this->load->helper('url');
 		$this->load->helper('currency_helper');
@@ -242,7 +243,8 @@ class Settings extends CI_Controller {
         } else {
  	  		$def_dateformate = $this->settings_model->get_date_formate();
 			$data['start_date'] = date($def_dateformate) . " 00:00";
-			$data['end_date'] = date($def_dateformate, mktime(0,0,0,date("m"),date("d")+1,date("Y"))) . " 00:00";		
+			$data['end_date'] = date($def_dateformate, mktime(0,0,0,date("m"),date("d")+1,date("Y"))) . " 00:00";
+			$data['users'] = $this->admin_model->get_work_users();		
 			$this->load->view('templates/header');
 			$this->load->view('templates/menu');
 			$this->load->view('log',$data);
