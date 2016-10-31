@@ -43,7 +43,7 @@ $(window).load(function(){
 					paylist.html('');
 					paylist.append($('<option>').val('0').text('Не обрано'));
 					data.forEach(function(item){
-						paylist.append($('<option>').val(item.payment_id).attr({'data-treatment': item.treatment_id,'data-paid': item.paid,'data-pay_amount': item.pay_amount}).text(item.treatment+" (залишилось зайнять: "+item.apps_remaining+")"));
+						paylist.append($('<option>').val(item.payment_id).attr({'data-treatment_id': item.treatment_id,'data-treatment': item.treatment,'data-paid': item.paid,'data-pay_amount': item.pay_amount}).text(item.treatment+" (залишилось зайнять: "+item.apps_remaining+")"));
 					});
 				}
 			});
@@ -59,6 +59,7 @@ $(window).load(function(){
 					$('#payment_id').val(0).prop('disabled',true);
 					$('#treatment').prop('readonly',false);
 					$('#department_id').val($('#doctor_id').children('option:selected').data('department_id'));
+					$('#paid').val('');
 					//$('.payment').val('');
 					$('#pay_block').show();
 					$('#edit_payment').prop('checked',false);
@@ -264,13 +265,12 @@ $(window).load(function(){
 			minLength: 1,//search after one characters
 
 			select: function(event,ui){
-				//do something
+				var curr_disc=calc_discount(ui.item.discount,ui.item.all_paid);
 				$("#patient_id").val(ui.item ? ui.item.id : '');
 				$("#phone_number").val(ui.item ? ui.item.num : '');
 				$("#display_id").val(ui.item ? ui.item.display : '');
-				$("#discount").val(calc_discount(ui.item.discount,ui.item.all_paid));
-				var amount=price ? price*((100-ui.item.discount)/100) : '';
-				console.log(amount);
+				$("#discount").val(curr_disc);
+				var amount=price ? price*((100-curr_disc)/100) : '';
 				$("#pay_amount").val(amount);
 				$("#paid").val('');
 				$("#add_money").val(amount);
@@ -395,12 +395,12 @@ $(window).load(function(){
 		$('#payment_id').on('change', function(){
 			if(this.value!=0){
 				var opt=this.children[this.selectedIndex];
-				$('#treatment_id').val(opt.dataset.treatment);
+				$('#treatment_id').val(opt.dataset.treatment_id);
 				$('#paid').val(opt.dataset.paid);
 				$('#pay_amount').val(opt.dataset.pay_amount);
-				$('#treatment').val(opt.textContent).prop('readonly',true);
+				$('#treatment').val(opt.dataset.treatment).prop('readonly',true);
 				$('#add_money').val("");
-				$('#pay_block').show();
+				//$('#pay_block').show();
 			}
 			else{
 				$('#add_money').val("");
@@ -587,7 +587,7 @@ function openReason(onof) {
 								<option value='0'>Не обрано</option>
 								<?php if(isset($curr_payments)){
 									foreach($curr_payments as $payment){ ?>
-										<option value="<?php echo $payment['payment_id']; ?>"  data-treatment="<?= $payment['treatment_id']; ?>" data-paid="<?= $payment['paid']; ?>" data-pay_amount="<?= $payment['pay_amount']; ?>" <?php if($payment['payment_id']==$curr_payment_id){echo 'selected=true';} ?> /><?= $payment['treatment'].' (залишилось зайнять: '.$payment['apps_remaining'].')'; ?></option>				
+										<option value="<?php echo $payment['payment_id']; ?>"  data-treatment_id="<?= $payment['treatment_id']; ?>" data-treatment="<?= $payment['treatment']; ?>" data-paid="<?= $payment['paid']; ?>" data-pay_amount="<?= $payment['pay_amount']; ?>" <?php if($payment['payment_id']==$curr_payment_id){echo 'selected=true';} ?> /><?= $payment['treatment'].' (залишилось зайнять: '.$payment['apps_remaining'].')'; ?></option>				
 								<?php } } ?>
 							</select>
 						</div>
