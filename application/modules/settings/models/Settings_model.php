@@ -176,13 +176,20 @@ class Settings_model extends CI_Model {
     function get_log(){
         $start_date = date("Y-m-d H:i", strtotime($this->input->post('start_date')));
         $end_date = date("Y-m-d H:i", strtotime($this->input->post('end_date')));
-        $this->db->where('date>=',$this->db->escape($start_date)." AND date<".$this->db->escape($end_date),false);
-        $this->db->order_by("id","desc");
-        $query_str="SELECT  user_name, event_table, type, date, vars FROM ck_event_log WHERE date >=".$this->db->escape($start_date)." AND date <".$this->db->escape($end_date)." ORDER BY id DESC";
+        $user_name=($this->input->post('user_name'))?" AND user_name=".$this->db->escape($this->input->post('user_name'))." " :"";
+        $event_table=($this->input->post('event_table'))?" AND event_table=".$this->db->escape($this->input->post('event_table'))." " :"";
+        $type=($this->input->post('type'))?" AND type=".$this->db->escape($this->input->post('type'))." " :"";
+        $query_str="SELECT  user_name, event_table, type, date, vars FROM ck_event_log WHERE date >=".$this->db->escape($start_date)." AND date <".$this->db->escape($end_date).$user_name.$event_table.$type." ORDER BY id DESC";
         $res=$this->db->query($query_str);
         file_put_contents('t1.txt', print_r($this->db->last_query(),true));
 
         return $res->result_array();
+              /*  $date=" c.pay_date >=". $this->db->escape($start_date)." and c.pay_date < ". $this->db->escape($end_date)." ";
+                $user=($this->input->post('user_id'))?" AND p.userid=".$this->input->post('user_id')." " :"";
+                $treatment=($this->input->post('treatment_id'))?" AND p.treatment_id=".$this->input->post('treatment_id')." ":"";
+                $department = ($this->input->post('department_id'))?" AND p.department_id=".$this->input->post('department_id')." ":"";
+                //$query_str="SELECT u.name, p.pay_date date, p.paid summ, d.department_name department, t.treatment FROM ck_payment p LEFT JOIN ck_users u ON p.userid=u.userid LEFT JOIN ck_department d ON p.department_id=d.department_id LEFT JOIN ck_treatments t ON p.treatment_id=t.id WHERE".$date.$user.$treatment.$department."ORDER BY p.payment_id DESC";
+                $query_str="SELECT u.name, c.pay_date date, c.paid summ, d.department_name department, t.treatment FROM ck_payment_fee c LEFT JOIN ck_payment p ON c.payment_id = p.payment_id LEFT JOIN ck_users u ON p.userid=u.userid LEFT JOIN ck_department d ON p.department_id=d.department_id LEFT JOIN ck_treatments t ON p.treatment_id=t.id WHERE".$date.$user.$treatment.$department."ORDER BY p.payment_id DESC";*/
     }
 }
 

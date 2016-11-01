@@ -71,17 +71,18 @@ $( window ).load(function() {
 								</div>
 							</div>
 							<div class="col-md-4 form-group">
-								<label for="user_id">Користувач</label>
-								<select id='user_id' name='user_id' class="form-control" value="">
+								<label for="user_name">Користувач</label>
+								<select id='user_name' name='user_name' class="form-control" value="">
 									<option value="">Усі</option>
 									<?php foreach($users as $user){ ?>									
-										<option value="<?php echo $user['userid']; ?>" data-department_id="<?= $user['department_id']; ?>" /><?= $user['name']; ?></option>				
+										<option value="<?php echo $user['name']; ?>" data-department_id="<?= $user['department_id']; ?>" /><?= $user['name']; ?></option>				
 									<?php } ?>
 								</select>
 							</div>	
 							<div class="col-md-4 form-group">
-								<label for="object">Об'єкт</label>
-								<select id='object' name='object' class="form-control" value="">
+								<label for="event_table">Об'єкт</label>
+								<select id='event_table' name='event_table' class="form-control" value="">
+									<option value="">Усі</option>
 									<option value="Прийом">Прийом</option>
 									<option value="Оплата">Оплата</option>
 									<option value="Рахунок">Рахунок</option>
@@ -89,8 +90,9 @@ $( window ).load(function() {
 								</select>
 							</div>
 							<div class="col-md-4 form-group">
-								<label for="operation">Операція</label>
-								<select id='operation' name='operation' class="form-control" value="">
+								<label for="type">Операція</label>
+								<select id='type' name='type' class="form-control" value="">
+									<option value="">Усі</option>
 									<option value="Редагування">Редагування</option>
 									<option value="Видалення">Видалення</option>
 									<option value="Створення">Створення</option>

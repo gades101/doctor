@@ -133,7 +133,7 @@ class Payment_model extends CI_Model {
 		$this->db->where('payment_id', $payment_id);
 		$this->db->update('payment');
 		$update_rows=$this->db->affected_rows();
-  		$this->event_log('Рахунок','Зміна',$this->input->post());
+  		$this->event_log('Рахунок','Редагування',$this->input->post());
 		if($this->input->post('add_money')>0 && $update_rows>0){
 			$fee_date=date("Y-m-d H:i", strtotime($this->input->post('pay_date')));
 			$this->db->set('all_paid','all_paid+'.$this->input->post('add_money'),false);
@@ -220,7 +220,7 @@ class Payment_model extends CI_Model {
 		$data['department_id'] = $this->input->post('department_id');
 		$this->db->where('id', $id);
 		$this->db->update('expense', $data);
-  		$this->event_log('Витрата','Зміна', $data);  
+  		$this->event_log('Витрата','Редагування', $data);  
 	}
     public function list_expense_cat() {
         $this->db->order_by("id");
