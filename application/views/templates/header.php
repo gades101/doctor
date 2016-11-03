@@ -47,22 +47,61 @@
 		<script src="<?= base_url() ?>assets/js/sketch.js"></script>
 		<!-- CUSTOM SCRIPTS--> 
 		<script src="<?= base_url() ?>assets/js/custom.js"></script>
+		<style type="text/css">
+			.add_message{
+				position: absolute;
+				margin-top: 40px;
+				z-index: 100;
+			}
+
+		</style>>
 <script type="text/javascript">
 
-function new_message(){
-		$.ajax({
-			url: "<?= base_url() ?>index.php/doctor/message/tient_id?>/"+appointment_id+"/",
-			type: 'POST',
-			dataType: 'json',
-			success: function( respond ){
-				var form=$('<form>');
-				form.append($('<input>').attr({name:'from',type:'hidden'}).val(<?= $_SESSION['id']; ?>))
-				.append($('<input>').attr('to',<?= $_SESSION['id']; ?>))
+$(window).load(function(){
+	function send_message(){
+		
+	}
+	function new_message(){
+			$.ajax({
+				url: "<?= base_url() ?>index.php/doctor/message/add",
+				type: 'POST',
+				dataType: 'json',
+				success: function( respond ){
+					//console.log(respond);
+					var sel=$('<select>').attr('name','to').append($('<option>').val('').text(''));
+					respond.forEach(function(item){
+						sel.append($('<option>').val(item.userid).text(item.name));
+					});
+					var form=$('<form>').attr('active',"<?= base_url() ?>index.php/doctor/message/add").addClass('add_message');
+					form.append($('<input>').attr({name:'from',type:'hidden'}).val(<?= $_SESSION['id']; ?>))
+					.append(sel).addClass('form-group input-group')
+					.append($('<input>').attr({name:'message',type:'text'}).val(<?= $_SESSION['id']; ?>).addClass('form-group input-group'))
+					.append($('<input>').attr({name:'ok',type:'submit',id: 'mess_submit'}).val('Відправити').addClass('form-group input-group'));
+					$('#add_message').append(form);
+					$('#mess_submit').click(function(e){
+						$.ajax({
+							type: form.attr('method'),
+						  	url: form.attr('action'),
+						  	data: form.serialize()
+						}).done(function(response) {
+						  	page_build(page_num,response);
+						}).fail(function() {
+						  	console.log('fail');
+						});
+						//отмена действия по умолчанию для кнопки submit
+						e.preventDefault(); 
+					});
 
-			},
-		});	
+				},
 
-}
+			});	
+	}
+	$('#add_message').click(function(){
+		new_message();
+	});
+
+});
+
 
 </script>
 
@@ -121,7 +160,7 @@ function new_message(){
             </div>
 			<div style="color: white;padding: 15px 50px 5px 50px;float: right;font-size: 16px;">
 				Ласкаво просимо, <?=$user['name']; ?>
-				<a href="<?=site_url("admin/change_profile"); ?>" class="btn btn-primary square-btn-adjust">Написати повідомлення</a>
+				<div id='add_message' class="btn btn-primary square-btn-adjust">Написати повідомлення</div>
 				<a href="<?= site_url("login/logout"); ?>" class="btn btn-danger square-btn-adjust"><?php echo $this->lang->line('log_out');?></a>
 			</div>
         </nav>

@@ -429,32 +429,26 @@ class Doctor extends CI_Controller {
 		}
 	}
 
-	function add_message(){
+	function message($do='browse'){
 		if ( $this->is_session_started() === FALSE ){
 			session_start();
 		}
-		//Check if user has logged in
 		if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
-            redirect('login/index/');
+            return false;
         }
 		else
 		{
 			$id = $_SESSION['id'];
-            $this->form_validation->set_rules('start_time', 'Start Time', 'required');
-
-            if ($this->form_validation->run() === FALSE){
-
+            if ($do=='browse'){
                 $data['users'] = $this->admin_model->get_work_users();
-
 				$this->load->view('templates/header');
                 $this->load->view('templates/menu');
                 $this->load->view('message', $data);
                 $this->load->view('templates/footer');
             }
-			else
-			{
-                $this->doctor_model->insert_availability($appointment_id, $user_id,$end_date);
-                redirect('doctor/inavailability/');
+			elseif($do=='add'){
+                $users = $this->admin_model->get_work_users();
+                echo json_encode($users);
             }
         }
 
