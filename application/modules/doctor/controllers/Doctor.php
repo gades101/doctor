@@ -255,74 +255,7 @@ class Doctor extends CI_Controller {
 			$this->department();
 		}
 	}
-	/*fees master -----------------------------------------------------------------------------------*/
-	function fees() {
-		if ( $this->is_session_started() === FALSE ){
-			session_start();
-		}
-		//Check if user has logged in
-		if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
-            redirect('login/index');
-        } else {
-			$this->form_validation->set_rules('doctor', 'Doctor ID', 'required');
-			$this->form_validation->set_rules('detail', 'Detail', 'required');
-			$this->form_validation->set_rules('fees', 'Fees', 'required');
-			if ($this->form_validation->run() === FALSE) {
-			} else {
-				$this->doctor_model->add_fees();
-			}
-			if($_SESSION['category'] == 'Doctor'){
-				$user_id = $_SESSION['id'];
-				$data['doctors'] = $this->doctor_model->find_doctor($user_id);
-			}else{
-				$data['doctors'] = $this->doctor_model->find_doctor();
-			}
-			$data['fees'] = $this->doctor_model->find_fees();
-			$this->load->view('templates/header');
-			$this->load->view('templates/menu');
-			$this->load->view('fees',$data);
-			$this->load->view('templates/footer');
-		}
-	}
-	public function edit_fees($id = NULL) {
-        if ( $this->is_session_started() === FALSE ){
-			session_start();
-		}
-		//Check if user has logged in
-		if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
-            redirect('login/index');
-        } else {
-            $this->form_validation->set_rules('doctor', 'Doctor ID', 'required');
-			$this->form_validation->set_rules('detail', 'Detail', 'required');
-			$this->form_validation->set_rules('fees', 'Fees', 'required');
 
-            if ($this->form_validation->run() === FALSE) {
-				$data['doctors'] = $this->doctor_model->find_doctor();
-                $data['fees'] = $this->doctor_model->get_fees($id);
-                $this->load->view('templates/header');
-                $this->load->view('templates/menu');
-                $this->load->view('doctor/edit_fees', $data);
-                $this->load->view('templates/footer');
-            } else {
-                $this->doctor_model->update_fees();
-                if($_SESSION['category'] == 'Doctor'){
-					$user_id = $_SESSION['id'];
-					$data['doctors'] = $this->doctor_model->find_doctor($user_id);
-				}else{
-					$data['doctors'] = $this->doctor_model->find_doctor();
-				}
-				$data['fees'] = $this->doctor_model->find_fees();
-				$this->load->view('templates/header');
-				$this->load->view('templates/menu');
-				$this->load->view('fees',$data);
-				$this->load->view('templates/footer');
-            }
-        }
-    }
-	function delete_fees($id) {
-		$this->doctor_model->delete_fees($id);
-		$this->fees();
-	}
 	/*doctor schedule -----------------------------------------------------------------------------------*/
 	public function doctor_schedule($doctor_id = NULL){
 		if ( $this->is_session_started() === FALSE ){
@@ -494,6 +427,37 @@ class Doctor extends CI_Controller {
 			$this->appointment_model->delete_availability($appointment_id);
 			redirect('doctor/inavailability/');
 		}
+	}
+
+	function add_message(){
+		if ( $this->is_session_started() === FALSE ){
+			session_start();
+		}
+		//Check if user has logged in
+		if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
+            redirect('login/index/');
+        }
+		else
+		{
+			$id = $_SESSION['id'];
+            $this->form_validation->set_rules('start_time', 'Start Time', 'required');
+
+            if ($this->form_validation->run() === FALSE){
+
+                $data['users'] = $this->admin_model->get_work_users();
+
+				$this->load->view('templates/header');
+                $this->load->view('templates/menu');
+                $this->load->view('message', $data);
+                $this->load->view('templates/footer');
+            }
+			else
+			{
+                $this->doctor_model->insert_availability($appointment_id, $user_id,$end_date);
+                redirect('doctor/inavailability/');
+            }
+        }
+
 	}
 }
 ?>

@@ -47,6 +47,25 @@
 		<script src="<?= base_url() ?>assets/js/sketch.js"></script>
 		<!-- CUSTOM SCRIPTS--> 
 		<script src="<?= base_url() ?>assets/js/custom.js"></script>
+<script type="text/javascript">
+
+function new_message(){
+		$.ajax({
+			url: "<?= base_url() ?>index.php/doctor/message/tient_id?>/"+appointment_id+"/",
+			type: 'POST',
+			dataType: 'json',
+			success: function( respond ){
+				var form=$('<form>');
+				form.append($('<input>').attr({name:'from',type:'hidden'}).val(<?= $_SESSION['id']; ?>))
+				.append($('<input>').attr('to',<?= $_SESSION['id']; ?>))
+
+			},
+		});	
+
+}
+
+</script>
+
 		
     </head>
     <body>
@@ -102,7 +121,7 @@
             </div>
 			<div style="color: white;padding: 15px 50px 5px 50px;float: right;font-size: 16px;">
 				Ласкаво просимо, <?=$user['name']; ?>
-				<a href="<?=site_url("admin/change_profile"); ?>" class="btn btn-primary square-btn-adjust">Змінити профіль</a>
+				<a href="<?=site_url("admin/change_profile"); ?>" class="btn btn-primary square-btn-adjust">Написати повідомлення</a>
 				<a href="<?= site_url("login/logout"); ?>" class="btn btn-danger square-btn-adjust"><?php echo $this->lang->line('log_out');?></a>
 			</div>
         </nav>
