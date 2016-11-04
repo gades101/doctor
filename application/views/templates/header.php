@@ -63,28 +63,27 @@ $(window).load(function(){
 	}
 	function new_message(){
 			$.ajax({
-				url: "<?= base_url() ?>index.php/doctor/message/add",
+				url: "<?= base_url() ?>index.php/doctor/message/u_list",
 				type: 'POST',
 				dataType: 'json',
 				success: function( respond ){
-					//console.log(respond);
 					var sel=$('<select>').attr('name','to').append($('<option>').val('').text(''));
 					respond.forEach(function(item){
 						sel.append($('<option>').val(item.userid).text(item.name));
 					});
-					var form=$('<form>').attr('active',"<?= base_url() ?>index.php/doctor/message/add").addClass('add_message');
+					var form=$('<form>').addClass('add_message');
 					form.append($('<input>').attr({name:'from',type:'hidden'}).val(<?= $_SESSION['id']; ?>))
 					.append(sel).addClass('form-group input-group')
 					.append($('<input>').attr({name:'message',type:'text'}).val(<?= $_SESSION['id']; ?>).addClass('form-group input-group'))
 					.append($('<input>').attr({name:'ok',type:'submit',id: 'mess_submit'}).val('Відправити').addClass('form-group input-group'));
-					$('#add_message').append(form);
+					$('#add_message').parent().append(form);
 					$('#mess_submit').click(function(e){
 						$.ajax({
-							type: form.attr('method'),
-						  	url: form.attr('action'),
+							type: 'POST',
+						  	url: "<?= base_url() ?>index.php/doctor/message/add",
 						  	data: form.serialize()
 						}).done(function(response) {
-						  	page_build(page_num,response);
+							console.log(response);
 						}).fail(function() {
 						  	console.log('fail');
 						});

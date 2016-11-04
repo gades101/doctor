@@ -447,6 +447,9 @@ class Doctor extends CI_Controller {
                 $this->load->view('templates/footer');
             }
 			elseif($do=='add'){
+                echo $this->doctor_model->add_message();
+            }
+			elseif($do=='u_list'){
                 $users = $this->admin_model->get_work_users();
                 echo json_encode($users);
             }

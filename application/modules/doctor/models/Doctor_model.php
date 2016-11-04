@@ -309,6 +309,16 @@ class Doctor_model extends CI_Model {
 		}
 	}
 
+	function add_message(){
+		$data['from_id']=$this->input->post('from');
+		$data['to_id']=$this->input->post('to');
+		$data['message']=$this->input->post('message');
+		$this->db->insert('messages',$data);
+		file_put_contents('t1.txt', print_r($this->db->error(),true));
+		if($this->db->affected_rows()>0) return 1;
+		else return 0;
+
+	}
 
 
 }
