@@ -71,7 +71,7 @@ $(window).load(function(){
 					respond.forEach(function(item){
 						sel.append($('<option>').val(item.userid).text(item.name));
 					});
-					var form=$('<form>').addClass('add_message');
+					var form=$('<form>').addClass('add_message panel panel-primary');
 					form.append($('<input>').attr({name:'from',type:'hidden'}).val(<?= $_SESSION['id']; ?>))
 					.append(sel).addClass('form-group input-group')
 					.append($('<input>').attr({name:'message',type:'text'}).val(<?= $_SESSION['id']; ?>).addClass('form-group input-group'))
@@ -83,7 +83,7 @@ $(window).load(function(){
 						  	url: "<?= base_url() ?>index.php/doctor/message/add",
 						  	data: form.serialize()
 						}).done(function(response) {
-							console.log(response);
+							alert('ok');
 						}).fail(function() {
 						  	console.log('fail');
 						});
