@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <?php
+	$unread_messages=$this->menu_model->unread_messages();
 	$level = $_SESSION['category'];
 ?>
 <html>
@@ -48,64 +49,83 @@
 		<!-- CUSTOM SCRIPTS--> 
 		<script src="<?= base_url() ?>assets/js/custom.js"></script>
 		<style type="text/css">
-			.add_message{
+			.message{
 				position: absolute;
 				margin-top: 40px;
 				z-index: 100;
 			}
-			.add_message * {color: #333}
+			.message * {color: #333}
+			.msg_div {display: inline-table;}
 
-		</style>>
+		</style>
 <script type="text/javascript">
 
 $(window).load(function(){
-	function send_message(){
-		
-	}
 	function new_message(){
-			$.ajax({
-				url: "<?= base_url() ?>index.php/doctor/message/u_list",
-				type: 'POST',
-				dataType: 'json',
-				success: function( respond ){
-					var sel=$('<select>').attr('name','to').addClass('form-group input-group form-control').append($('<option>').val('').text(''));
-					respond.forEach(function(item){
-						sel.append($('<option>').val(item.userid).text(item.name));
-					});
-					var form=$('<form>').addClass('add_message panel panel-primary');
-					form.append($('<input>').attr({name:'from',type:'hidden'}).val(<?= $_SESSION['id']; ?>))
-					.append($('<label>').addClass(' col-md-4').text('Кому:'))
-					.append($('<div>').addClass('col-md-8').append(sel))
-					.append($('<textarea>').attr({name:'message',row:'2',id:'message_text'}).addClass('form-group input-group form-control'))
-					.append($('<input>').attr({name:'ok',type:'submit',id: 'mess_submit'}).val('Відправити').addClass('col-md-6 btn btn-primary'))
-					.append($('<div>').attr({id: 'mess_cancel'}).text('Відмінити').addClass('col-md-6 btn btn-danger').click(function(){$('#message_div').remove();;}));
+		$.ajax({
+			url: "<?= base_url() ?>index.php/doctor/message/u_list",
+			type: 'POST',
+			dataType: 'json',
+			success: function( respond ){
+				var sel=$('<select>').attr('name','to').addClass('form-group input-group form-control').append($('<option>').val('').text(''));
+				respond.forEach(function(item){
+					sel.append($('<option>').val(item.userid).text(item.name));
+				});
+				var form=$('<form>').addClass('message panel panel-primary');
+				form.append($('<input>').attr({name:'from',type:'hidden'}).val(<?= $_SESSION['id']; ?>))
+				.append($('<label>').addClass(' col-md-4').text('Кому:'))
+				.append($('<div>').addClass('col-md-8').append(sel))
+				.append($('<textarea>').attr({name:'message',row:'2',id:'message_text'}).addClass('form-group input-group form-control'))
+				.append($('<input>').attr({name:'ok',type:'submit',id: 'mess_submit'}).val('Відправити').addClass('col-md-6 btn btn-primary'))
+				.append($('<div>').attr({id: 'mess_cancel'}).text('Відмінити').addClass('col-md-6 btn btn-danger').click(function(){$('#message_div').remove();}));
 
-					$('#add_message').parent().append($('<div>').attr('id','message_div').append(form));
-					$('#mess_submit').click(function(e){
-						if(sel.val() && $('#message_text').val()){
-							$.ajax({
-								type: 'POST',
-							  	url: "<?= base_url() ?>index.php/doctor/message/add",
-							  	data: form.serialize()
-							}).done(function(response) {
-								alert('Відправлено');
-							}).fail(function() {
-							  	console.log('fail');
-							});
-						}
-						else alert('Оберіть адресата та напишіть текст повідомлення');
-						//отмена действия по умолчанию для кнопки submit
-						e.preventDefault(); 
-					});
-
-				},
-
-			});	
+				$('#add_message').parent().append($('<div>').attr('id','message_div').append(form));
+				$('#mess_submit').click(function(e){
+					if(sel.val() && $('#message_text').val()){
+						$.ajax({
+							type: 'POST',
+						  	url: "<?= base_url() ?>index.php/doctor/message/add",
+						  	data: form.serialize()
+						}).done(function(response) {
+							alert('Відправлено');
+						}).fail(function() {
+						  	console.log('fail');
+						});
+					}
+					else alert('Оберіть адресата та напишіть текст повідомлення');
+					//отмена действия по умолчанию для кнопки submit
+					e.preventDefault(); 
+				});
+			},
+		});	
 	}
 	$('#add_message').click(function(){
 		if(document.getElementById('message_div')) $('#message_div').remove();
 		else new_message();
 	});
+
+
+	function read_message(){
+		$.ajax({
+			url: "<?= base_url() ?>index.php/doctor/message/m_list",
+			type: 'POST',
+			dataType: 'json',
+			success: function( respond ){
+				console.log(respond);
+				var cont=$('<div>').attr('id','read_message_div').addClass('message panel panel-primary col-md-6');
+				respond.forEach(function(item){
+					cont.append($('<div>').addClass('msg_div').append($('<div>').text(item.name+" пише: ")).append($('<div>').text(item.msg_date)))
+					.append($('<div>').addClass('msg_div').text(item.message));
+				});
+				$('#read_message').parent().append($('<div>').attr('id','message_div').append(cont));
+			},
+		});	
+	}
+	read_message();
+		$('#read_message').click(function(){
+			if(document.getElementById('read_message_div')) $('#read_message_div').hide();
+			else read_message();
+		});
 
 });
 
@@ -161,14 +181,14 @@ $(window).load(function(){
                     <h4><?php if($clinic['tag_line'] == NULL){
 								echo $this->lang->line('tag_line');
 							  }else {
-								echo $clinic['tag_line'];
+								//echo $clinic['tag_line'];
 							  } ?>
 					</h4>
             </div>
 			<div style="color: white;padding: 15px 50px 5px 50px;float: right;font-size: 16px;">
 				Ласкаво просимо, <?=$user['name']; ?>
-				<div id='read_message' class="btn btn-danger square-btn-adjust">Для вас є повідомлення</div>
-				<div id='add_message' class="btn btn-primary square-btn-adjust">Написати повідомлення</div>
+				<div id='read_message' class="btn btn-success">Вхідні повідомлення</div>
+				<div id='add_message' class="btn btn-primary">Написати повідомлення</div>
 				<a href="<?= site_url("login/logout"); ?>" class="btn btn-danger square-btn-adjust"><?php echo $this->lang->line('log_out');?></a>
 			</div>
         </nav>

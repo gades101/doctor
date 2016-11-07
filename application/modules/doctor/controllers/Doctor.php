@@ -453,6 +453,10 @@ class Doctor extends CI_Controller {
                 $users = $this->admin_model->get_work_users();
                 echo json_encode($users);
             }
+			elseif($do=='m_list'){
+                $messages = $this->menu_model->unread_messages();
+                echo json_encode($messages);
+            }
         }
 
 	}
