@@ -450,12 +450,16 @@ class Doctor extends CI_Controller {
                 echo $this->doctor_model->add_message();
             }
 			elseif($do=='u_list'){
-                $users = $this->admin_model->get_work_users();
+                $users = $this->admin_model->get_all_work_users();
                 echo json_encode($users);
             }
 			elseif($do=='m_list'){
                 $messages = $this->menu_model->unread_messages();
                 echo json_encode($messages);
+            }
+			elseif($do=='del'){
+                $messages = $this->menu_model->del_message($this->input->post('id'));
+                //echo json_encode($messages);
             }
         }
 

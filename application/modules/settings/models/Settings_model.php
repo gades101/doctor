@@ -181,8 +181,6 @@ class Settings_model extends CI_Model {
         $type=($this->input->post('type'))?" AND type=".$this->db->escape($this->input->post('type'))." " :"";
         $query_str="SELECT  user_name, event_table, type, date, vars FROM ck_event_log WHERE date >=".$this->db->escape($start_date)." AND date <".$this->db->escape($end_date).$user_name.$event_table.$type." ORDER BY id DESC";
         $res=$this->db->query($query_str);
-        file_put_contents('t1.txt', print_r($this->db->last_query(),true));
-
         return $res->result_array();
               /*  $date=" c.pay_date >=". $this->db->escape($start_date)." and c.pay_date < ". $this->db->escape($end_date)." ";
                 $user=($this->input->post('user_id'))?" AND p.userid=".$this->input->post('user_id')." " :"";

@@ -59,13 +59,17 @@ class Menu_model extends CI_Model {
 	}
 
 	public function unread_messages(){
-		$this->db->select('u.name,m.message,m.msg_date');
+		$this->db->select('u.name,m.id,m.message,m.msg_date');
 		$this->db->from('messages m');
 		$this->db->join('users u', 'm.from_id = u.userid', 'left');
 		$this->db->where('to_id',$_SESSION['id']);
+		$this->db->order_by("m.id","DESC");
 		$query=$this->db->get();
-		file_put_contents('t1.txt',print_r($this->db->error(),true));
 		return $query->result_array();
+	}
+
+	public function del_message($id){
+	    $this->db->delete('messages', array('id' => $id));		
 	}
 }
 ?>

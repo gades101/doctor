@@ -55,11 +55,20 @@
 				z-index: 100;
 			}
 			.message * {color: #333}
-			.msg_div {display: inline-table;}
+			.msg_div {display: inline-table;margin: 4px;}
+			.msg_remove{
+				color: #F00;
+				font-family: 'Arial Black';
+				font-weight: bold;
+				font-size: 24px;
+				font-style: italic;
+				cursor: pointer;
+				vertical-align: middle;
+			}
 
 		</style>
 <script type="text/javascript">
-
+var messages;
 $(window).load(function(){
 	function new_message(){
 		$.ajax({
@@ -111,20 +120,37 @@ $(window).load(function(){
 			type: 'POST',
 			dataType: 'json',
 			success: function( respond ){
-				console.log(respond);
-				var cont=$('<div>').attr('id','read_message_div').addClass('message panel panel-primary col-md-6');
-				respond.forEach(function(item){
-					cont.append($('<div>').addClass('msg_div').append($('<div>').text(item.name+" пише: ")).append($('<div>').text(item.msg_date)))
-					.append($('<div>').addClass('msg_div').text(item.message));
-				});
-				$('#read_message').parent().append($('<div>').attr('id','message_div').append(cont));
+				messages=respond;
+				if(messages!='') $('#read_message').text('Для вас є повідомлення').attr('class','btn btn-danger');
+				else $('#read_message').text('Вхідні повідомлення').attr('class','btn btn-success');
+				//console.log(respond);
 			},
 		});	
 	}
 	read_message();
 		$('#read_message').click(function(){
-			if(document.getElementById('read_message_div')) $('#read_message_div').hide();
-			else read_message();
+			read_message();
+			if(messages!=''){
+				var cont=$('<div>').attr('id','read_message_div').addClass('message panel panel-primary col-md-4').append($('<div>').attr('id','read_msg_close').text('Закрити').addClass('col-md-12 btn btn-primary').click(function(){$('#read_message_div').remove();}));
+				messages.forEach(function(item){
+					cont.append($('<div>').append($('<div>').addClass('msg_remove msg_div').attr('data-msg_id',item.id).html('&times')).append($('<div>').addClass('msg_div').append($('<div>').text(item.name+": ")).append($('<div>').text(item.msg_date)))
+					.append($('<div>').addClass('msg_div').text(item.message)));
+				});
+				$('#read_message').parent().append($('<div>').attr('id','message_div').append(cont));
+				$('.msg_remove').click(function(e){
+					$.ajax({
+						type: 'POST',
+					  	url: "<?= base_url() ?>index.php/doctor/message/del",
+					  	data: {id:e.currentTarget.dataset.msg_id}
+					}).done(function(response) {
+						//console.log(e.currentTarget.parentNode.remove());
+						e.currentTarget.parentNode.remove();
+						//messages='';
+						//alert('Відправлено');
+					});
+
+				});
+			}
 		});
 
 });
