@@ -376,12 +376,12 @@ class Appointment_model extends CI_Model {
 
     function get_todos(){
         $user_id = $_SESSION["id"];
-        $query = "Select * FROM " . $this->db->dbprefix('todos') . " WHERE userid = " . $user_id . " AND (done = 0 OR (done_date > DATE_SUB(NOW(), INTERVAL 29 DAY) AND done = 1)) ORDER BY done ASC, add_date DESC;";
+        $query = "Select * FROM " . $this->db->dbprefix('todos') . " WHERE to_id = " . $user_id . " AND (done = 0 OR (done_date > DATE_SUB(NOW(), INTERVAL 29 DAY) AND done = 1)) ORDER BY done ASC, add_date DESC;";
         $result = $this->db->query($query);
         return $result->result_array();
     }
 
-    function add_todos(){
+    /*function add_todos(){
 		if(!$_SESSION)session_start();
         $data['userid'] = $_SESSION["id"];
         $data['add_date'] = date('Y-m-d H:i:s');
@@ -390,7 +390,7 @@ class Appointment_model extends CI_Model {
         $this->db->insert('todos', $data);
 
 		redirect('appointment/index/all');
-    }
+    }*/
 
     function todo_done($done, $id) {
         $data['done'] = $done;
@@ -408,6 +408,17 @@ class Appointment_model extends CI_Model {
         $this->db->delete('todos', array('id_num' => $id));
 
         return;
+    }
+
+    function add_todo(){
+        $data['from_id']=$_SESSION["id"];
+        $data['to_id']=$this->input->post('to');
+        $data['message']=$this->input->post('message');
+        $data['done'] = 0;
+        $data['add_date'] = date('Y-m-d H:i:s');
+        $this->db->insert('todos',$data);
+        if($this->db->affected_rows()>0) return 1;
+        else return 0;
     }
 
 	public function get_patient_id($visit_id) {

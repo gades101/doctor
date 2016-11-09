@@ -58,7 +58,7 @@ class Menu_model extends CI_Model {
 		}
 	}
 
-	public function unread_messages(){
+	/*public function unread_messages(){
 		$this->db->select('u.name,m.id,m.message,m.msg_date');
 		$this->db->from('messages m');
 		$this->db->join('users u', 'm.from_id = u.userid', 'left');
@@ -70,6 +70,6 @@ class Menu_model extends CI_Model {
 
 	public function del_message($id){
 	    $this->db->delete('messages', array('id' => $id));		
-	}
+	}*/
 }
 ?>

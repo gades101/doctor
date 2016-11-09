@@ -53,30 +53,30 @@ class Appointment extends CI_Controller {
 			$timezone = $this->settings_model->get_time_zone();
 			if (function_exists('date_default_timezone_set'))
 				date_default_timezone_set($timezone);
-			//Default to today's date if date is not mentioned
-         if ($year == NULL) { $year = date("Y"); }
-         if ($month == NULL) { $month = date("m"); }
-         if ($day == NULL) { $day = date("d");}
-         $data['year'] = $year;
-         $data['month'] = $month;
-         $data['day'] = $day;
+				//Default to today's date if date is not mentioned
+	        if ($year == NULL) { $year = date("Y"); }
+	        if ($month == NULL) { $month = date("m"); }
+	        if ($day == NULL) { $day = date("d");}
+	        $data['year'] = $year;
+	        $data['month'] = $month;
+	        $data['day'] = $day;
 			$data['dep'] = $dep;
-			$_SESSION['dep'] = $dep;
+				$_SESSION['dep'] = $dep;
 
-			//Fetch Time Interval from settings
-         $data['time_interval'] = $this->settings_model->get_time_interval();
+				//Fetch Time Interval from settings
+	        $data['time_interval'] = $this->settings_model->get_time_interval();
 			$data['time_format'] = 'H:i';//$this->settings_model->get_time_formate();
 
-			//Generate display date in YYYY-MM-DD formate
-         $appointment_date = date("Y-n-d", gmmktime(0, 0, 0, $month, $day, $year));
+				//Generate display date in YYYY-MM-DD formate
+	        $appointment_date = date("Y-n-d", gmmktime(0, 0, 0, $month, $day, $year));
 			$data['appointment_date']= $appointment_date;
 
-			//Fetch Clinic Start Time and Clinic End Time
-         $data['start_time'] = $this->settings_model->get_clinic_start_time();
-         $data['end_time'] = $this->settings_model->get_clinic_end_time();
+				//Fetch Clinic Start Time and Clinic End Time
+	        $data['start_time'] = $this->settings_model->get_clinic_start_time();
+	        $data['end_time'] = $this->settings_model->get_clinic_end_time();
 
-			//Fetch Task Details
-         $data['todos'] = $this->appointment_model->get_todos();
+				//Fetch Task Details
+	        $data['todos'] = $this->appointment_model->get_todos();
 
 			//Display Events
 			$events = $this->event_model->get_events();
@@ -464,12 +464,12 @@ class Appointment extends CI_Controller {
 		echo json_encode($data);
     }
 
-
+/*
     function todos() {
         $this->appointment_model->add_todos();
         $this->index();
     }
-
+*/
     function todos_done($done, $id) {
 
         $this->appointment_model->todo_done($done, $id);
@@ -524,5 +524,41 @@ class Appointment extends CI_Controller {
 			echo json_encode( $data );
 		}
 	}
+
+	function todo($do='browse'){
+		if ( $this->is_session_started() === FALSE ){
+			session_start();
+		}
+		if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
+            return false;
+        }
+		else
+		{
+			$id = $_SESSION['id'];
+            if ($do=='browse'){
+                $data['users'] = $this->admin_model->get_work_users();
+				$this->load->view('templates/header');
+                $this->load->view('templates/menu');
+                $this->load->view('message', $data);
+                $this->load->view('templates/footer');
+            }
+			elseif($do=='add'){
+                echo $this->doctor_model->add_message();
+            }
+			elseif($do=='u_list'){
+                $users = $this->admin_model->get_all_work_users();
+                echo json_encode($users);
+            }
+			elseif($do=='todo_list'){
+                $messages = $this->menu_model->unread_messages();
+                echo json_encode($messages);
+            }
+			elseif($do=='del'){
+                $messages = $this->menu_model->del_message($this->input->post('id'));
+                //echo json_encode($messages);
+            }
+        }
+	}
+
 }
 ?>

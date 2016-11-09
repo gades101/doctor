@@ -8,7 +8,6 @@
 			var element = $(this);
 			var id = $(this).val();
 			if($(this).is(':checked')){
-
 				$.ajax({
 					type: "POST",
 					url: "<?php echo base_url(); ?>index.php/appointment/todos_done/1/" + id,
@@ -26,6 +25,96 @@
 				});
 			}
 		});
+
+		function new_message(){
+			$.ajax({
+				url: "<?= base_url() ?>index.php/appointment/todo/u_list",
+				type: 'POST',
+				dataType: 'json',
+				success: function( respond ){
+					var sel=$('<select>').attr('name','to').addClass('form-group input-group form-control').append($('<option>').val('').text(''));
+					respond.forEach(function(item){
+						sel.append($('<option>').val(item.userid).text(item.name));
+					});
+					var form=$('<form>').addClass('message panel panel-primary');
+					form.append($('<label>').addClass(' col-md-4').text('Кому:'))
+					.append($('<div>').addClass('col-md-8').append(sel))
+					.append($('<textarea>').attr({name:'message',row:'2',id:'message_text'}).addClass('form-group input-group form-control'))
+					.append($('<input>').attr({name:'ok',type:'submit',id: 'mess_submit'}).val('Відправити').addClass('col-md-6 btn btn-primary'))
+					.append($('<div>').attr({id: 'mess_cancel'}).text('Відмінити').addClass('col-md-6 btn btn-danger').click(function(){$('#message_div').remove();}));
+
+					$('#add_todo').parent().append($('<div>').attr('id','message_div').append(form));
+					$('#mess_submit').click(function(e){
+						if(sel.val() && $('#message_text').val()){
+							$.ajax({
+								type: 'POST',
+							  	url: "<?= base_url() ?>index.php/appointment/todo/add",
+							  	data: form.serialize()
+							}).done(function(response) {
+								$('#message_div').remove();
+							}).fail(function() {
+							  	console.log('fail');
+							});
+						}
+						else alert('Оберіть адресата та напишіть текст повідомлення');
+						//отмена действия по умолчанию для кнопки submit
+						e.preventDefault(); 
+					});
+				},
+			});	
+		}
+		$('#add_todo').click(function(){
+			if(document.getElementById('message_div')) $('#message_div').remove();
+			else new_message();
+		});
+
+	function load_todos(){
+		$.ajax({
+			url: "<?= base_url() ?>index.php/appointment/todo/todo_list",
+			type: 'POST',
+			dataType: 'json',
+			success: function( respond ){
+				messages=respond;
+				if(messages!='') $('#load_todos').text('Для вас є повідомлення').attr('class','btn btn-danger');
+				else $('#load_todos').text('Вхідні повідомлення').attr('class','btn btn-success');
+			},
+		});	
+	}
+	//load_todos();
+	$('#load_todos').click(function(){
+		$.ajax({
+			url: "<?= base_url() ?>index.php/doctor/message/m_list",
+			type: 'POST',
+			dataType: 'json',
+			success: function( respond ){
+				messages=respond;
+				if(messages!='') {
+					$('#load_todos').text('Для вас є повідомлення').attr('class','btn btn-danger');
+					var cont=$('<div>').attr('id','read_cont_div').addClass('message panel panel-primary col-md-4').append($('<div>').attr('id','read_msg_close').text('Закрити').addClass('col-md-12 btn btn-primary').click(function(){$('#load_todos_div').remove();}));
+					messages.forEach(function(item){
+						cont.append($('<div>').append($('<div>').addClass('msg_remove msg_div').attr('data-msg_id',item.id).html('&times')).append($('<div>').addClass('msg_div').append($('<div>').text(item.name+": ")).append($('<div>').text(item.msg_date)))
+						.append($('<div>').addClass('msg_div').text(item.message)));
+					});
+					$('#load_todos').parent().append($('<div>').attr('id','load_todos_div').append(cont));
+					$('.msg_remove').click(function(e){
+						$.ajax({
+							type: 'POST',
+						  	url: "<?= base_url() ?>index.php/doctor/message/del",
+						  	data: {id:e.currentTarget.dataset.msg_id}
+						}).done(function(response) {
+							console.log(cont);
+							e.currentTarget.parentNode.remove();
+							if($('#read_cont_div').children().length<=1){
+								$('#load_todos_div').remove();
+								$('#load_todos').text('Вхідні повідомлення').attr('class','btn btn-success');
+							}
+						});
+					});
+				}
+				else $('#load_todos').text('Вхідні повідомлення').attr('class','btn btn-success');
+			},
+		});	
+	});
 
 
 	});
@@ -261,7 +350,7 @@ function check_doctor_availability($i,$doctor_id){
 			</div>
 			<div class="col-md-4">
 				<div class="panel panel-primary">
-					<div class="panel-heading"><?=$this->lang->line('tasks');?></div>
+					<div class="panel-heading"><span><?=$this->lang->line('tasks');?></span><span id='add_todo' class="btn btn-success">+<span></div>
 					<div class="panel-body">
 					<!--------------------------- Display To Do  ------------------------------->
 					<?php echo form_open('appointment/todos'); ?>

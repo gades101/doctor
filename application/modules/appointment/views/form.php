@@ -78,28 +78,28 @@ $(window).load(function(){
 		});
 
 	$("#edit_payment").click(function() {
-			var pay=$('#edit_payment');
-			if (pay.prop('checked')==true){
-				if($('#payment_id').val()>0){
-					var curr_payment=$('#payment_id option:selected');
-					$('#add_money').val('');
-					$('#paid').val(curr_payment.data('paid'));
-					$('#pay_amount').val(curr_payment.data('pay_amount'));
-					$('#pay_block').show();
-				}
-				else{
-					pay.prop('checked',false);
-					alert('Рахунок має бути обраний');
-				}
+		var pay=$('#edit_payment');
+		if (pay.prop('checked')==true){
+			if($('#payment_id').val()>0){
+				var curr_payment=$('#payment_id option:selected');
+				$('#add_money').val('');
+				$('#paid').val(curr_payment.data('paid'));
+				$('#pay_amount').val(curr_payment.data('pay_amount'));
+				$('#pay_block').show();
 			}
-			else {
-				//$('#treatment').val('').prop('readonly',false);
-				$('#pay_block').hide();
-				//$('.payment').val('');
-				//$('#discount').prop('disabled',true).val('');
-				//$('#payment_id').prop('disabled',false);
+			else{
+				pay.prop('checked',false);
+				alert('Рахунок має бути обраний');
 			}
-		});
+		}
+		else {
+			//$('#treatment').val('').prop('readonly',false);
+			$('#pay_block').hide();
+			//$('.payment').val('');
+			//$('#discount').prop('disabled',true).val('');
+			//$('#payment_id').prop('disabled',false);
+		}
+	});
 
 //UPLOAD
 	<?php if (isset($appointment)){ ?>

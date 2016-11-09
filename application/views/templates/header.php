@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <?php
-	$unread_messages=$this->menu_model->unread_messages();
+	//$unread_messages=$this->menu_model->unread_messages();
 	$level = $_SESSION['category'];
 ?>
 <html>
@@ -70,7 +70,7 @@
 <script type="text/javascript">
 var messages;
 $(window).load(function(){
-	function new_message(){
+	/*function new_message(){
 		$.ajax({
 			url: "<?= base_url() ?>index.php/doctor/message/u_list",
 			type: 'POST',
@@ -112,7 +112,7 @@ $(window).load(function(){
 		if(document.getElementById('message_div')) $('#message_div').remove();
 		else new_message();
 	});
-
+*/
 
 	function read_message(){
 		$.ajax({

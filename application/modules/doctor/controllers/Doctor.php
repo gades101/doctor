@@ -428,41 +428,5 @@ class Doctor extends CI_Controller {
 			redirect('doctor/inavailability/');
 		}
 	}
-
-	function message($do='browse'){
-		if ( $this->is_session_started() === FALSE ){
-			session_start();
-		}
-		if (!isset($_SESSION["user_name"]) || $_SESSION["user_name"] == '') {
-            return false;
-        }
-		else
-		{
-			$id = $_SESSION['id'];
-            if ($do=='browse'){
-                $data['users'] = $this->admin_model->get_work_users();
-				$this->load->view('templates/header');
-                $this->load->view('templates/menu');
-                $this->load->view('message', $data);
-                $this->load->view('templates/footer');
-            }
-			elseif($do=='add'){
-                echo $this->doctor_model->add_message();
-            }
-			elseif($do=='u_list'){
-                $users = $this->admin_model->get_all_work_users();
-                echo json_encode($users);
-            }
-			elseif($do=='m_list'){
-                $messages = $this->menu_model->unread_messages();
-                echo json_encode($messages);
-            }
-			elseif($do=='del'){
-                $messages = $this->menu_model->del_message($this->input->post('id'));
-                //echo json_encode($messages);
-            }
-        }
-
-	}
 }
 ?>
