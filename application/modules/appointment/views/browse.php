@@ -26,6 +26,24 @@
 			}
 		});
 
+		function get_todo_list(){
+
+
+		}
+
+		function todo_remove(todo_id){
+			$.ajax({
+				type: 'POST',
+			  	url: "<?= base_url() ?>index.php/appointment/delete_todo/"+todo_id
+			}).done(function(response) {
+			}).fail(function() {
+			  	alert('Помилка');
+			});
+		}
+		$('.todo_remove').click(function(){
+			//console.log(this);
+			todo_remove(this.dataset.todo_id);
+		});
 		function new_message(){
 			$.ajax({
 				url: "<?= base_url() ?>index.php/appointment/todo/u_list",
@@ -39,7 +57,7 @@
 					var form=$('<form>').addClass('message panel panel-primary');
 					form.append($('<label>').addClass(' col-md-4').text('Кому:'))
 					.append($('<div>').addClass('col-md-8').append(sel))
-					.append($('<textarea>').attr({name:'message',row:'2',id:'message_text'}).addClass('form-group input-group form-control'))
+					.append($('<textarea>').attr({name:'todo_text',row:'2',id:'message_text'}).addClass('form-group input-group form-control'))
 					.append($('<input>').attr({name:'ok',type:'submit',id: 'mess_submit'}).val('Відправити').addClass('col-md-6 btn btn-primary'))
 					.append($('<div>').attr({id: 'mess_cancel'}).text('Відмінити').addClass('col-md-6 btn btn-danger').click(function(){$('#message_div').remove();}));
 
@@ -68,6 +86,7 @@
 			else new_message();
 		});
 
+
 	function load_todos(){
 		$.ajax({
 			url: "<?= base_url() ?>index.php/appointment/todo/todo_list",
@@ -83,13 +102,12 @@
 	//load_todos();
 	$('#load_todos').click(function(){
 		$.ajax({
-			url: "<?= base_url() ?>index.php/doctor/message/m_list",
+			url: "<?= base_url() ?>index.php/appointment/todo/todo_list",
 			type: 'POST',
 			dataType: 'json',
 			success: function( respond ){
 				messages=respond;
 				if(messages!='') {
-					$('#load_todos').text('Для вас є повідомлення').attr('class','btn btn-danger');
 					var cont=$('<div>').attr('id','read_cont_div').addClass('message panel panel-primary col-md-4').append($('<div>').attr('id','read_msg_close').text('Закрити').addClass('col-md-12 btn btn-primary').click(function(){$('#load_todos_div').remove();}));
 					messages.forEach(function(item){
 						cont.append($('<div>').append($('<div>').addClass('msg_remove msg_div').attr('data-msg_id',item.id).html('&times')).append($('<div>').addClass('msg_div').append($('<div>').text(item.name+": ")).append($('<div>').text(item.msg_date)))
@@ -353,20 +371,12 @@ function check_doctor_availability($i,$doctor_id){
 					<div class="panel-heading"><span><?=$this->lang->line('tasks');?></span><span id='add_todo' class="btn btn-success">+<span></div>
 					<div class="panel-body">
 					<!--------------------------- Display To Do  ------------------------------->
-					<?php echo form_open('appointment/todos'); ?>
-						<div class="input-group">
-							<input type="text" name="task"  class="form-control">
-							<span class="form-group input-group-btn">
-								<input type="submit" class="btn btn-primary" value='<?=$this->lang->line('submit');?>' />
-							</span>
-						</div>
-					<?php echo form_close(); ?>
 					<?php foreach ($todos as $todo) { ?>
 						<div class="checkbox">
                             <label class="<?php if ($todo['done'] == 1) {echo 'done';} else {echo 'not_done';} ?>">
 								<input type="checkbox" class="todo" name='todo' <?php if ($todo['done'] == 1) {echo 'checked="checked"';} ?> value="<?=$todo['id_num'];?>" /><?=$todo['todo'];?>
 							</label>
-							<a class='todo_img' href='<?=base_url() . "index.php/appointment/delete_todo/" . $todo['id_num'];?>'><i class='fa fa-remove'></i></a>
+							<span class='todo_remove' data-todo_id='<?=$todo['id_num'];?>'><i class='fa fa-remove'></i></span>
                         </div>
 					<?php } ?>
 					</div>

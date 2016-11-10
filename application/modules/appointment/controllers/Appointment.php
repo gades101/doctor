@@ -543,15 +543,15 @@ class Appointment extends CI_Controller {
                 $this->load->view('templates/footer');
             }
 			elseif($do=='add'){
-                echo $this->doctor_model->add_message();
+                echo $this->appointment_model->add_todo();
             }
 			elseif($do=='u_list'){
                 $users = $this->admin_model->get_all_work_users();
                 echo json_encode($users);
             }
 			elseif($do=='todo_list'){
-                $messages = $this->menu_model->unread_messages();
-                echo json_encode($messages);
+                $todos = $this->appointment_model->get_todos();
+                echo json_encode($todos);
             }
 			elseif($do=='del'){
                 $messages = $this->menu_model->del_message($this->input->post('id'));
@@ -559,6 +559,7 @@ class Appointment extends CI_Controller {
             }
         }
 	}
+
 
 }
 ?>

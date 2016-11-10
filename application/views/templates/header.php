@@ -126,7 +126,7 @@ $(window).load(function(){
 			},
 		});	
 	}
-	read_message();
+	//read_message();
 	$('#read_message').click(function(){
 		$.ajax({
 			url: "<?= base_url() ?>index.php/doctor/message/m_list",

@@ -413,10 +413,11 @@ class Appointment_model extends CI_Model {
     function add_todo(){
         $data['from_id']=$_SESSION["id"];
         $data['to_id']=$this->input->post('to');
-        $data['message']=$this->input->post('message');
+        $data['todo']=$this->input->post('todo_text');
         $data['done'] = 0;
         $data['add_date'] = date('Y-m-d H:i:s');
         $this->db->insert('todos',$data);
+        file_put_contents('t1.txt', print_r($this->db->last_query(),true));
         if($this->db->affected_rows()>0) return 1;
         else return 0;
     }
