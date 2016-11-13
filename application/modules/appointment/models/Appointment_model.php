@@ -376,7 +376,7 @@ class Appointment_model extends CI_Model {
 
     function get_todos(){
         $user_id = $_SESSION["id"];
-        $query = "Select * FROM " . $this->db->dbprefix('todos') . " WHERE to_id = " . $user_id . " AND (done = 0 OR (done_date > DATE_SUB(NOW(), INTERVAL 29 DAY) AND done = 1)) ORDER BY done ASC, add_date DESC;";
+        $query = "SELECT t.id_num, t.from_id, t.to_id, t.todo, t.done, DATE_FORMAT(t.add_date, '%H:%i %d-%m-%Y') add_date, u.name FROM ck_todos t LEFT JOIN ck_users u ON t.from_id=u.userid  WHERE to_id = " . $user_id . " AND (t.done = 0 OR (t.done_date > DATE_SUB(NOW(), INTERVAL 29 DAY) AND t.done = 1)) ORDER BY t.done ASC, t.add_date DESC;";
         $result = $this->db->query($query);
         return $result->result_array();
     }

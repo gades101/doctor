@@ -1,141 +1,118 @@
 <script type="text/javascript" charset="utf-8">
-	$(window).load(function(){
-		$('.confirmCancel').click(function(){
-			return confirm("<?=$this->lang->line('areyousure') . " " . $this->lang->line('cancel') . " " . $this->lang->line('appointment') . "?";?>");
-		});
+$(window).load(function(){
+	$('.confirmCancel').click(function(){
+		return confirm("<?=$this->lang->line('areyousure') . " " . $this->lang->line('cancel') . " " . $this->lang->line('appointment') . "?";?>");
+	});
 
-		$(".todo").change(function() {
-			var element = $(this);
-			var id = $(this).val();
-			if($(this).is(':checked')){
-				$.ajax({
-					type: "POST",
-					url: "<?php echo base_url(); ?>index.php/appointment/todos_done/1/" + id,
-					success: function(){
-						element.parent().addClass("done");
-					}
-				});
-			}else{
-				$.ajax({
-					type: "POST",
-					url: "<?php echo base_url(); ?>index.php/appointment/todos_done/0/" + id,
-					success: function(){
-						element.parent().removeClass("done");
-					}
-				});
-			}
-		});
-
-		function get_todo_list(){
-
-
-		}
-
-		function todo_remove(todo_id){
+	function todo_done(element){
+		var id = $(element).val();
+		if($(element).is(':checked')){
 			$.ajax({
-				type: 'POST',
-			  	url: "<?= base_url() ?>index.php/appointment/delete_todo/"+todo_id
-			}).done(function(response) {
-			}).fail(function() {
-			  	alert('Помилка');
+				type: "POST",
+				url: "<?php echo base_url(); ?>index.php/appointment/todos_done/1/" + id,
+				success: function(){
+					$(element).parent().addClass("done");
+				}
+			});
+		}else{
+			$.ajax({
+				type: "POST",
+				url: "<?php echo base_url(); ?>index.php/appointment/todos_done/0/" + id,
+				success: function(){
+					$(element).parent().removeClass("done");
+				}
 			});
 		}
-		$('.todo_remove').click(function(){
-			//console.log(this);
-			todo_remove(this.dataset.todo_id);
-		});
-		function new_message(){
-			$.ajax({
-				url: "<?= base_url() ?>index.php/appointment/todo/u_list",
-				type: 'POST',
-				dataType: 'json',
-				success: function( respond ){
-					var sel=$('<select>').attr('name','to').addClass('form-group input-group form-control').append($('<option>').val('').text(''));
-					respond.forEach(function(item){
-						sel.append($('<option>').val(item.userid).text(item.name));
-					});
-					var form=$('<form>').addClass('message panel panel-primary');
-					form.append($('<label>').addClass(' col-md-4').text('Кому:'))
-					.append($('<div>').addClass('col-md-8').append(sel))
-					.append($('<textarea>').attr({name:'todo_text',row:'2',id:'message_text'}).addClass('form-group input-group form-control'))
-					.append($('<input>').attr({name:'ok',type:'submit',id: 'mess_submit'}).val('Відправити').addClass('col-md-6 btn btn-primary'))
-					.append($('<div>').attr({id: 'mess_cancel'}).text('Відмінити').addClass('col-md-6 btn btn-danger').click(function(){$('#message_div').remove();}));
+	}
 
-					$('#add_todo').parent().append($('<div>').attr('id','message_div').append(form));
-					$('#mess_submit').click(function(e){
-						if(sel.val() && $('#message_text').val()){
-							$.ajax({
-								type: 'POST',
-							  	url: "<?= base_url() ?>index.php/appointment/todo/add",
-							  	data: form.serialize()
-							}).done(function(response) {
-								$('#message_div').remove();
-							}).fail(function() {
-							  	console.log('fail');
-							});
-						}
-						else alert('Оберіть адресата та напишіть текст повідомлення');
-						//отмена действия по умолчанию для кнопки submit
-						e.preventDefault(); 
-					});
-				},
-			});	
-		}
-		$('#add_todo').click(function(){
-			if(document.getElementById('message_div')) $('#message_div').remove();
-			else new_message();
-		});
+	$(".todo").change(function(){todo_done(this);});
 
 
-	function load_todos(){
+
+	function get_todo_list(){
 		$.ajax({
-			url: "<?= base_url() ?>index.php/appointment/todo/todo_list",
+			type: "POST",
+			url: "<?php echo base_url(); ?>index.php/appointment/todo/todo_list/",
+			dataType: 'json',
+			success: function(todos){
+				$('#todo_body').html("");
+				if(todos){	
+					todos.forEach(function(item){
+						if(item.done==0) {var is_done='not_done'; var check=false;}
+						else {var is_done='done'; var check=true;}
+						$('#todo_body').append($('<div>').addClass('todo_row')
+								.append($('<div>').addClass(is_done)
+									.append($('<input>').attr({name:'todo',class:'todo',type:'checkbox',checked:check}).val(item.id_num))
+									.append($('<span>').attr({class:'todo_remove'}).attr('data-todo_id',item.id_num).append($('<i>').addClass('fa fa-remove')))
+									.append(" "+item.name+" "+item.add_date+'</br>'+item.todo)));
+					});
+					$('.todo_remove').click(function(){todo_remove(this.dataset.todo_id);});
+					$(".todo").change(function(){todo_done(this);});
+				}
+			}
+		});
+	}
+
+	function todo_remove(todo_id){
+		$.ajax({
+			type: 'POST',
+		  	url: "<?= base_url() ?>index.php/appointment/delete_todo/"+todo_id
+		}).done(function(response) {
+			get_todo_list();
+		}).fail(function() {
+		  	alert('Помилка');
+		});
+	}
+	$('.todo_remove').click(function(){
+		todo_remove(this.dataset.todo_id);
+	});
+	function new_message(){
+		$.ajax({
+			url: "<?= base_url() ?>index.php/appointment/todo/u_list",
 			type: 'POST',
 			dataType: 'json',
 			success: function( respond ){
-				messages=respond;
-				if(messages!='') $('#load_todos').text('Для вас є повідомлення').attr('class','btn btn-danger');
-				else $('#load_todos').text('Вхідні повідомлення').attr('class','btn btn-success');
+				var sel=$('<select>').attr('name','to').addClass('form-group input-group form-control').append($('<option>').val('').text(''));
+				respond.forEach(function(item){
+					var opt=$('<option>').val(item.userid).text(item.name);
+					if(item.userid==<?=$_SESSION['id'];?>)opt.attr('selected',true);
+					sel.append(opt);
+				});
+				var form=$('<form>').addClass('message panel panel-primary');
+				form.append($('<label>').addClass(' col-md-4').text('Кому:'))
+				.append($('<div>').addClass('col-md-8').append(sel))
+				.append($('<textarea>').attr({name:'todo_text',row:'2',id:'message_text'}).addClass('form-group input-group form-control'))
+				.append($('<input>').attr({name:'ok',type:'submit',id: 'mess_submit'}).val('Відправити').addClass('col-md-6 btn btn-primary'))
+				.append($('<div>').attr({id: 'mess_cancel'}).text('Відмінити').addClass('col-md-6 btn btn-danger').click(function(){$('#message_div').remove();}));
+
+				$('#add_todo').parent().append($('<div>').attr('id','message_div').append(form));
+				$('#mess_submit').click(function(e){
+					if(sel.val() && $('#message_text').val()){
+						$.ajax({
+							type: 'POST',
+						  	url: "<?= base_url() ?>index.php/appointment/todo/add",
+						  	data: form.serialize()
+						}).done(function(response) {
+							$('#message_div').remove();
+							get_todo_list();
+						}).fail(function() {
+						  	console.log('fail');
+						});
+					}
+					else alert('Оберіть адресата та напишіть текст повідомлення');
+					//отмена действия по умолчанию для кнопки submit
+					e.preventDefault(); 
+				});
 			},
 		});	
 	}
-	//load_todos();
-	$('#load_todos').click(function(){
-		$.ajax({
-			url: "<?= base_url() ?>index.php/appointment/todo/todo_list",
-			type: 'POST',
-			dataType: 'json',
-			success: function( respond ){
-				messages=respond;
-				if(messages!='') {
-					var cont=$('<div>').attr('id','read_cont_div').addClass('message panel panel-primary col-md-4').append($('<div>').attr('id','read_msg_close').text('Закрити').addClass('col-md-12 btn btn-primary').click(function(){$('#load_todos_div').remove();}));
-					messages.forEach(function(item){
-						cont.append($('<div>').append($('<div>').addClass('msg_remove msg_div').attr('data-msg_id',item.id).html('&times')).append($('<div>').addClass('msg_div').append($('<div>').text(item.name+": ")).append($('<div>').text(item.msg_date)))
-						.append($('<div>').addClass('msg_div').text(item.message)));
-					});
-					$('#load_todos').parent().append($('<div>').attr('id','load_todos_div').append(cont));
-					$('.msg_remove').click(function(e){
-						$.ajax({
-							type: 'POST',
-						  	url: "<?= base_url() ?>index.php/doctor/message/del",
-						  	data: {id:e.currentTarget.dataset.msg_id}
-						}).done(function(response) {
-							console.log(cont);
-							e.currentTarget.parentNode.remove();
-							if($('#read_cont_div').children().length<=1){
-								$('#load_todos_div').remove();
-								$('#load_todos').text('Вхідні повідомлення').attr('class','btn btn-success');
-							}
-						});
-					});
-				}
-				else $('#load_todos').text('Вхідні повідомлення').attr('class','btn btn-success');
-			},
-		});	
+	$('#add_todo').click(function(){
+		if(document.getElementById('message_div')) $('#message_div').remove();
+		else new_message();
 	});
+	$('#reload_todo').click(function(){get_todo_list();});
 
-
-	});
+});
 </script>
 <?php
 global $time_intervals;
@@ -368,15 +345,16 @@ function check_doctor_availability($i,$doctor_id){
 			</div>
 			<div class="col-md-4">
 				<div class="panel panel-primary">
-					<div class="panel-heading"><span><?=$this->lang->line('tasks');?></span><span id='add_todo' class="btn btn-success">+<span></div>
-					<div class="panel-body">
+					<div class="panel-heading"><span>Повідомлення</span><span id='add_todo' class="panel_btn" title="Написати повідомлення">&#10010</span><span id='reload_todo' class="panel_btn" title="Отримати повідомлення">&#8635</span></div>
+					<div class="panel-body" id="todo_body" style="overflow-y:auto;height:250px;padding:0; width:100%;">
 					<!--------------------------- Display To Do  ------------------------------->
 					<?php foreach ($todos as $todo) { ?>
-						<div class="checkbox">
-                            <label class="<?php if ($todo['done'] == 1) {echo 'done';} else {echo 'not_done';} ?>">
-								<input type="checkbox" class="todo" name='todo' <?php if ($todo['done'] == 1) {echo 'checked="checked"';} ?> value="<?=$todo['id_num'];?>" /><?=$todo['todo'];?>
-							</label>
-							<span class='todo_remove' data-todo_id='<?=$todo['id_num'];?>'><i class='fa fa-remove'></i></span>
+						<div class="todo_row">
+                            <div class="<?php if ($todo['done'] == 1) {echo 'done';} else {echo 'not_done';} ?>">
+								<input type="checkbox" class="todo" name='todo' <?php if ($todo['done'] == 1) {echo 'checked="checked"';} ?> value="<?=$todo['id_num'];?>" />
+								<span class='todo_remove' data-todo_id='<?=$todo['id_num'];?>'><i class='fa fa-remove'></i></span>
+								<?=$todo['name'];?> <?=$todo['add_date'];?></br><?=$todo['todo'];?>
+							</div>				
                         </div>
 					<?php } ?>
 					</div>

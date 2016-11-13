@@ -6371,6 +6371,24 @@ button.close {
 .event_three{background-color: rgb(248, 200, 196) !important;}
 .event_week{background-color: rgb(205, 248, 196) !important;}
 .event_month{background-color: rgb(248, 246, 196) !important;}
+.panel_btn {
+    font-size: 21px !important;
+    cursor: pointer;
+    background-color: #074669;
+    top: -5px;
+    position: relative;
+    padding: 0px 8px;
+    margin-left: 3px;
+    float: right;
+}
+.todo{
+  margin: 0 3px 0 2px !important;
+  position: relative !important;
+  top: 2px;
+}
+.todo_row:nth-child(2n){
+  background: #efefef;
+}
 /*.dataTables_empty {display:none;}*/
 /*# sourceMappingURL=bootstrap.css.map */
 /*# sourceMappingURL=bootstrap.css.map */

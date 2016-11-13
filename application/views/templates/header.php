@@ -48,125 +48,6 @@
 		<script src="<?= base_url() ?>assets/js/sketch.js"></script>
 		<!-- CUSTOM SCRIPTS--> 
 		<script src="<?= base_url() ?>assets/js/custom.js"></script>
-		<style type="text/css">
-			.message{
-				position: absolute;
-				margin-top: 40px;
-				z-index: 100;
-			}
-			.message * {color: #333}
-			.msg_div {display: inline-table;margin: 4px;}
-			.msg_remove{
-				color: #F00;
-				font-family: 'Arial Black';
-				font-weight: bold;
-				font-size: 24px;
-				font-style: italic;
-				cursor: pointer;
-				vertical-align: middle;
-			}
-
-		</style>
-<script type="text/javascript">
-var messages;
-$(window).load(function(){
-	/*function new_message(){
-		$.ajax({
-			url: "<?= base_url() ?>index.php/doctor/message/u_list",
-			type: 'POST',
-			dataType: 'json',
-			success: function( respond ){
-				var sel=$('<select>').attr('name','to').addClass('form-group input-group form-control').append($('<option>').val('').text(''));
-				respond.forEach(function(item){
-					sel.append($('<option>').val(item.userid).text(item.name));
-				});
-				var form=$('<form>').addClass('message panel panel-primary');
-				form.append($('<input>').attr({name:'from',type:'hidden'}).val(<?= $_SESSION['id']; ?>))
-				.append($('<label>').addClass(' col-md-4').text('Кому:'))
-				.append($('<div>').addClass('col-md-8').append(sel))
-				.append($('<textarea>').attr({name:'message',row:'2',id:'message_text'}).addClass('form-group input-group form-control'))
-				.append($('<input>').attr({name:'ok',type:'submit',id: 'mess_submit'}).val('Відправити').addClass('col-md-6 btn btn-primary'))
-				.append($('<div>').attr({id: 'mess_cancel'}).text('Відмінити').addClass('col-md-6 btn btn-danger').click(function(){$('#message_div').remove();}));
-
-				$('#add_message').parent().append($('<div>').attr('id','message_div').append(form));
-				$('#mess_submit').click(function(e){
-					if(sel.val() && $('#message_text').val()){
-						$.ajax({
-							type: 'POST',
-						  	url: "<?= base_url() ?>index.php/doctor/message/add",
-						  	data: form.serialize()
-						}).done(function(response) {
-							$('#message_div').remove();
-						}).fail(function() {
-						  	console.log('fail');
-						});
-					}
-					else alert('Оберіть адресата та напишіть текст повідомлення');
-					//отмена действия по умолчанию для кнопки submit
-					e.preventDefault(); 
-				});
-			},
-		});	
-	}
-	$('#add_message').click(function(){
-		if(document.getElementById('message_div')) $('#message_div').remove();
-		else new_message();
-	});
-*/
-
-	function read_message(){
-		$.ajax({
-			url: "<?= base_url() ?>index.php/doctor/message/m_list",
-			type: 'POST',
-			dataType: 'json',
-			success: function( respond ){
-				messages=respond;
-				if(messages!='') $('#read_message').text('Для вас є повідомлення').attr('class','btn btn-danger');
-				else $('#read_message').text('Вхідні повідомлення').attr('class','btn btn-success');
-			},
-		});	
-	}
-	//read_message();
-	$('#read_message').click(function(){
-		$.ajax({
-			url: "<?= base_url() ?>index.php/doctor/message/m_list",
-			type: 'POST',
-			dataType: 'json',
-			success: function( respond ){
-				messages=respond;
-				if(messages!='') {
-					$('#read_message').text('Для вас є повідомлення').attr('class','btn btn-danger');
-					var cont=$('<div>').attr('id','read_cont_div').addClass('message panel panel-primary col-md-4').append($('<div>').attr('id','read_msg_close').text('Закрити').addClass('col-md-12 btn btn-primary').click(function(){$('#read_message_div').remove();}));
-					messages.forEach(function(item){
-						cont.append($('<div>').append($('<div>').addClass('msg_remove msg_div').attr('data-msg_id',item.id).html('&times')).append($('<div>').addClass('msg_div').append($('<div>').text(item.name+": ")).append($('<div>').text(item.msg_date)))
-						.append($('<div>').addClass('msg_div').text(item.message)));
-					});
-					$('#read_message').parent().append($('<div>').attr('id','read_message_div').append(cont));
-					$('.msg_remove').click(function(e){
-						$.ajax({
-							type: 'POST',
-						  	url: "<?= base_url() ?>index.php/doctor/message/del",
-						  	data: {id:e.currentTarget.dataset.msg_id}
-						}).done(function(response) {
-							console.log(cont);
-							e.currentTarget.parentNode.remove();
-							if($('#read_cont_div').children().length<=1){
-								$('#read_message_div').remove();
-								$('#read_message').text('Вхідні повідомлення').attr('class','btn btn-success');
-							}
-						});
-					});
-				}
-				else $('#read_message').text('Вхідні повідомлення').attr('class','btn btn-success');
-			},
-		});	
-	});
-
-});
-
-
-</script>
-
 		
     </head>
     <body>
@@ -222,8 +103,6 @@ $(window).load(function(){
             </div>
 			<div style="color: white;padding: 15px 50px 5px 50px;float: right;font-size: 16px;">
 				Ласкаво просимо, <?=$user['name']; ?>
-				<div id='read_message' class="btn btn-success">Вхідні повідомлення</div>
-				<div id='add_message' class="btn btn-primary">Написати повідомлення</div>
 				<a href="<?= site_url("login/logout"); ?>" class="btn btn-danger square-btn-adjust"><?php echo $this->lang->line('log_out');?></a>
 			</div>
         </nav>
