@@ -72,14 +72,14 @@ $(window).load(function(){
 			type: 'POST',
 			dataType: 'json',
 			success: function( respond ){
-				var sel=$('<select>').attr('name','to').addClass('form-group input-group form-control').append($('<option>').val('').text(''));
+				var sel=$('<select>').attr('name','to').addClass('form-group input-group form-control');
 				respond.forEach(function(item){
 					var opt=$('<option>').val(item.userid).text(item.name);
 					if(item.userid==<?=$_SESSION['id'];?>)opt.attr('selected',true);
 					sel.append(opt);
 				});
 				var form=$('<form>').addClass('message panel panel-primary');
-				form.append($('<label>').addClass(' col-md-4').text('Кому:'))
+				form.append($('<label>').addClass(' col-md-4').attr('style','color:#333').text('Кому:'))
 				.append($('<div>').addClass('col-md-8').append(sel))
 				.append($('<textarea>').attr({name:'todo_text',row:'2',id:'message_text'}).addClass('form-group input-group form-control'))
 				.append($('<input>').attr({name:'ok',type:'submit',id: 'mess_submit'}).val('Відправити').addClass('col-md-6 btn btn-primary'))

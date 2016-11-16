@@ -6389,6 +6389,7 @@ button.close {
 .todo_row:nth-child(2n){
   background: #efefef;
 }
+.message{position: absolute; margin-top: 40px;z-index: 100;}
 /*.dataTables_empty {display:none;}*/
 /*# sourceMappingURL=bootstrap.css.map */
 /*# sourceMappingURL=bootstrap.css.map */
